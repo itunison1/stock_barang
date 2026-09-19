@@ -1,26 +1,28 @@
 /**
  * Konfigurasi Database & Server Akses PT Unison Industrial Indonesia
- * Sesuai data produksi internal MEviewer & parameter sistem.
+ * Sesuai data produksi internal MEviewer & parameter sistem nyata.
  */
 
 export const UNISON_DB_CONFIG = {
   company: {
     name: 'PT Unison Industrial Indonesia',
     shortName: 'PT Unison',
-    specialty: 'Produsen & Distributor Fasteners Industri (Mur, Baut, Sekrup, Washer, & Anchor)',
+    specialty: 'Produsen & Distributor Fasteners Industri (Mur, Baut, Stud, Sekrup, Washer, & Anchor)',
     industry: 'Industrial Fasteners & Hardware Manufacturing',
     standard: 'DIN • JIS • ISO • ASTM',
     address: 'Kawasan Industri Cikarang / Bekasi, Jawa Barat',
   },
 
-  // Server & Database Credentials (Production / Staging bridge)
+  // Kredensial Database MySQL Server Nyata (Sesuai di MEviewer config.php)
   server: {
-    host: '192.168.1.140', // Server database & MEview
-    fallbackHost: '192.168.1.159',
+    host: '192.168.1.159', // Host aktif database produksi
+    secondaryHost: '192.168.1.140', // Server MEview
     database: 'produksi',
     username: 'usr_android',
-    password: 'zUNSprod',
+    password: 'zUNSprod', // Password database produksi Unison
     port: 3306,
+    table_items: 'item',
+    table_users: 'user_produksi',
   },
 
   // Remote Management Access
@@ -39,7 +41,7 @@ export const UNISON_DB_CONFIG = {
     },
   },
 
-  // Daftar Resmi Gudang PT Unison Industrial Indonesia
+  // Daftar Resmi 11 Gudang PT Unison Industrial Indonesia
   warehouses: [
     { id: 'WH-U2-G1', code: 'U2 GUDANG1', name: 'Gudang U2 - Unit 1', zone: 'Fastener Finishing', active: true },
     { id: 'WH-U2-G2', code: 'U2 GUDANG2', name: 'Gudang U2 - Unit 2', zone: 'Mur & Nut Processing', active: true },

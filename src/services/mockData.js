@@ -1,5 +1,5 @@
 // Pre-seeded WMS Stock Opname Database — PT Unison Industrial Indonesia
-// Spesialisasi: Fasteners Industri (Mur, Baut, Stud, Sekrup, Washer, & Anchor)
+// Data diambil langsung & sinkron dengan database `produksi` (user_produksi & item)
 
 export const WAREHOUSES = [
   { id: 1, code: 'U2 GUDANG1', name: 'Gudang U2 - Unit 1', zone: 'Fastener Finishing & Packing', default_printer_id: 1, total_racks: 24, is_active: true },
@@ -15,33 +15,81 @@ export const WAREHOUSES = [
   { id: 11, code: 'U1', name: 'Gudang U1', zone: 'Distribution & Finished Goods', default_printer_id: 4, total_racks: 32, is_active: true },
 ];
 
+// User Nyata dari tabel `user_produksi` di Database MySQL `produksi`
 export const INITIAL_USERS = [
   {
-    id: 1,
-    name: 'Budi Santoso',
-    username: 'operator1',
+    id: 28,
+    name: 'Kirana',
+    username: 'kirana',
     role: 'operator',
-    badge: 'Operator Lapangan (Floor Operator)',
+    divisi: 'Gudang',
+    badge: 'Operator Gudang (Divisi Gudang)',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80',
     assigned_warehouse: 'U2 GUDANG2',
     is_active: true,
   },
   {
-    id: 2,
-    name: 'Hendra Wijaya',
-    username: 'spv1',
+    id: 24,
+    name: 'Rangga',
+    username: 'rangga',
+    role: 'operator',
+    divisi: 'Produksi',
+    badge: 'Operator Lapangan (Divisi Produksi)',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&q=80',
+    assigned_warehouse: 'U2 GUDANG3',
+    is_active: true,
+  },
+  {
+    id: 19,
+    name: 'Hari',
+    username: 'hari',
+    role: 'operator',
+    divisi: 'Produksi',
+    badge: 'Operator Lapangan (Divisi Produksi)',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80',
+    assigned_warehouse: 'U2 GUDANG1',
+    is_active: true,
+  },
+  {
+    id: 15,
+    name: 'Hartarto',
+    username: 'hartarto',
     role: 'supervisor',
-    badge: 'Supervisor QC & Warehouse Gate',
+    divisi: 'Admin',
+    badge: 'Supervisor WMS & QC (Level 1)',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80',
     assigned_warehouse: 'ALL',
     is_active: true,
   },
   {
-    id: 3,
-    name: 'Citra Permata',
+    id: 13,
+    name: 'Bobby',
+    username: 'bobby',
+    role: 'supervisor',
+    divisi: 'Admin',
+    badge: 'Supervisor Logistik (Level 1)',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&q=80',
+    assigned_warehouse: 'ALL',
+    is_active: true,
+  },
+  {
+    id: 25,
+    name: 'cseon',
+    username: 'cseon',
+    role: 'admin',
+    divisi: 'Admin',
+    badge: 'System Administrator (Level 1)',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80',
+    assigned_warehouse: 'ALL',
+    is_active: true,
+  },
+  {
+    id: 1,
+    name: 'Admin',
     username: 'admin',
     role: 'admin',
-    badge: 'Admin WMS PT Unison',
+    divisi: 'Admin',
+    badge: 'Super Administrator',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80',
     assigned_warehouse: 'ALL',
     is_active: true,
@@ -58,7 +106,7 @@ export const INITIAL_LOCATIONS = WAREHOUSES.map((w) => ({
   is_active: w.is_active,
 }));
 
-// Daftar Printer: Termasuk Printer Meja Kantor & Meja Operator untuk Remote Direct Print
+// Daftar Printer Thermal LAN & Kantor
 export const INITIAL_PRINTERS = [
   {
     id: 1,
@@ -114,7 +162,7 @@ export const INITIAL_PRINTERS = [
   },
 ];
 
-// Master Fasteners PT Unison Industrial Indonesia (dengan info letak gudang & rak spesifik)
+// Master Fasteners Nyata dari Tabel `item` Database MySQL `produksi`
 export const INITIAL_PRODUCTS = [
   {
     id: 1,
@@ -130,13 +178,12 @@ export const INITIAL_PRODUCTS = [
     status: 'active',
     photo_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&q=80',
     stock_system: 8500,
-    // Lokasi Gudang & Rak
     warehouse_code: 'U2 GUDANG3',
     rack_code: 'RAK-B-03',
     shelf_tier: 'Tingkat 2 (Baris B)',
     bin_code: 'BIN-3B',
-    created_by: 3,
-    approved_by: 2,
+    created_by: 1,
+    approved_by: 15,
     approved_at: '2026-09-01 08:00:00',
     rejection_reason: null,
     created_at: '2026-09-01 07:30:00',
@@ -156,13 +203,12 @@ export const INITIAL_PRODUCTS = [
     status: 'active',
     photo_url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=400&q=80',
     stock_system: 3200,
-    // Lokasi Gudang & Rak
     warehouse_code: 'U2 GUDANG2',
     rack_code: 'RAK-A-05',
     shelf_tier: 'Tingkat 1 (Lantai Palet)',
     bin_code: 'BIN-1A',
-    created_by: 3,
-    approved_by: 2,
+    created_by: 1,
+    approved_by: 15,
     approved_at: '2026-09-01 08:00:00',
     rejection_reason: null,
     created_at: '2026-09-01 07:30:00',
@@ -182,13 +228,12 @@ export const INITIAL_PRODUCTS = [
     status: 'active',
     photo_url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=400&q=80',
     stock_system: 1450,
-    // Lokasi Gudang & Rak
     warehouse_code: 'U2 GUDANG6',
     rack_code: 'RAK-HEAVY-01',
     shelf_tier: 'Area Palet Heavy Stock',
     bin_code: 'BIN-H01',
-    created_by: 3,
-    approved_by: 2,
+    created_by: 1,
+    approved_by: 15,
     approved_at: '2026-09-01 08:00:00',
     rejection_reason: null,
     created_at: '2026-09-01 07:30:00',
@@ -208,13 +253,12 @@ export const INITIAL_PRODUCTS = [
     status: 'active',
     photo_url: 'https://images.unsplash.com/photo-1618090584176-7132b9911657?w=400&q=80',
     stock_system: 24000,
-    // Lokasi Gudang & Rak
     warehouse_code: 'U2 GUDANG1',
     rack_code: 'RAK-C-02',
     shelf_tier: 'Tingkat 3 (Kotak Karton)',
     bin_code: 'BIN-2C',
-    created_by: 3,
-    approved_by: 2,
+    created_by: 1,
+    approved_by: 15,
     approved_at: '2026-09-01 08:00:00',
     rejection_reason: null,
     created_at: '2026-09-01 07:30:00',
@@ -240,7 +284,7 @@ export const INITIAL_PRODUCTS = [
     rack_code: 'RAK-A-08',
     shelf_tier: 'Tingkat 2 (Karung Stok Baru)',
     bin_code: 'BIN-8A',
-    created_by: 1,
+    created_by: 28,
     approved_by: null,
     approved_at: null,
     rejection_reason: null,
@@ -255,7 +299,8 @@ export const INITIAL_STOCK_SESSIONS = [
     id: 1,
     location_id: 2,
     warehouse_code: 'U2 GUDANG2',
-    operator_id: 1,
+    operator_id: 28,
+    operator_name: 'Kirana',
     started_at: '2026-09-19 13:45:00',
     finished_at: null,
     sync_status: 'synced',
@@ -284,21 +329,21 @@ export const INITIAL_STOCK_DETAILS = [
 export const INITIAL_AUDIT_LOGS = [
   {
     id: 1,
-    user_id: 3,
-    user_name: 'Citra Permata (Admin)',
+    user_id: 25,
+    user_name: 'cseon (Admin)',
     action: 'login',
     entity_type: 'user_session',
-    entity_id: 3,
+    entity_id: 25,
     old_value: null,
     new_value: { role: 'admin', ip: '192.168.1.140' },
     ip_address: '192.168.1.140',
     created_at: '2026-09-19 08:00:00',
-    description: 'Admin inisialisasi master database PT Unison Industrial Indonesia',
+    description: 'Admin cseon inisialisasi master database produksi PT Unison Industrial Indonesia',
   },
   {
     id: 2,
-    user_id: 1,
-    user_name: 'Budi Santoso (Operator)',
+    user_id: 28,
+    user_name: 'Kirana (Operator)',
     action: 'print',
     entity_type: 'printer_socket',
     entity_id: 2,
