@@ -1,8 +1,17 @@
 import React from 'react';
 import { Icon } from './Icons';
 import { UnisonLogo } from './UnisonLogo';
+import { useWms } from '../../services/store';
 
-export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal, onOpenDbConfigModal }) => {
+export const Header = ({
+  viewMode,
+  setViewMode,
+  onOpenBlueprintModal,
+  onOpenDbConfigModal,
+  onOpenExecutiveModal,
+}) => {
+  const { liveDbStatus } = useWms();
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/85 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-3 sm:px-6 h-16 flex items-center justify-between gap-3">
@@ -15,21 +24,38 @@ export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal, onOpenDbCo
               WMS MODE A
             </span>
             <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
-              11 GUDANG AKTIF
+              11 GUDANG
             </span>
+            {liveDbStatus?.connected && (
+              <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                176K ITEM (usr_android)
+              </span>
+            )}
           </div>
         </div>
 
         {/* View Mode Switcher & Navigation */}
         <div className="flex items-center gap-2">
+          {/* Executive Presentation for Direksi Button */}
+          <button
+            onClick={onOpenExecutiveModal}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/50 bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 text-xs font-mono font-bold transition-all shadow"
+            title="Buka Slide Presentasi Lengkap untuk Direksi (Pak Hartarto & Pak Bobby)"
+          >
+            <Icon name="shield" size={14} className="text-amber-400" />
+            <span className="hidden sm:inline">Presentasi Direksi</span>
+            <span className="sm:hidden">Direksi</span>
+          </button>
+
           {/* Server Config Button */}
           <button
             onClick={onOpenDbConfigModal}
             className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono transition-colors"
-            title="Lihat Konfigurasi Database Server 192.168.1.140"
+            title="Lihat Konfigurasi Database Server 192.168.1.159 / 1.140"
           >
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px]">DB 1.140</span>
+            <span className={`h-2 w-2 rounded-full ${liveDbStatus?.connected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+            <span className="text-[11px]">DB 1.159</span>
           </button>
 
           {/* View Mode Pills */}

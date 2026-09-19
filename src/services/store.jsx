@@ -22,6 +22,17 @@ export const WmsProvider = ({ children }) => {
   const [stockDetails, setStockDetails] = useState(INITIAL_STOCK_DETAILS);
   const [auditLogs, setAuditLogs] = useState(INITIAL_AUDIT_LOGS);
 
+  // Live MySQL Database Bridge (192.168.1.159 database 'produksi' via usr_android)
+  const [liveDbStatus, setLiveDbStatus] = useState({
+    connected: false,
+    host: '192.168.1.159:3306',
+    database: 'produksi',
+    user: 'usr_android',
+    total_items: 176673,
+    total_users: 14,
+    checked: false,
+  });
+
   // Mobile Device Local State (simulating Android Room DB + SharedPreferences + WorkManager)
   const [roomProducts, setRoomProducts] = useState([]); // Cached active products in Room
   const [currentRack, setCurrentRack] = useState(INITIAL_LOCATIONS[1]); // Default: U2 GUDANG2
@@ -49,6 +60,40 @@ export const WmsProvider = ({ children }) => {
       message: 'Socket connection established to Printer Meja Kantor SPV (192.168.1.140:9100)',
     },
   ]);
+
+  // Check Live MySQL Database Status on Mount
+  useEffect(() => {
+    fetch('http://localhost:3001/api/status')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.connected) {
+          setLiveDbStatus({
+            connected: true,
+            host: data.host,
+            database: data.database,
+            user: data.user,
+            total_items: data.total_items,
+            total_users: data.total_users,
+            checked: true,
+          });
+          logEvent('LIVE_DB', `Terhubung ke MySQL Server: ${data.database}@${data.host} (${data.total_items.toLocaleString()} item aktif) via usr_android`);
+        }
+      })
+      .catch(() => {
+        setLiveDbStatus((prev) => ({ ...prev, connected: false, checked: true }));
+      });
+  }, []);
+
+  // Search Live Fasteners directly from MySQL database `produksi`
+  const searchLiveItems = async (query = '', limit = 20) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/items?q=${encodeURIComponent(query)}&limit=${limit}`);
+      const json = await res.json();
+      return json.success ? json.data : [];
+    } catch {
+      return [];
+    }
+  };
 
   // Push an event log to the real-time inspector
   const logEvent = (type, message, data = null) => {
@@ -563,6 +608,8 @@ export const WmsProvider = ({ children }) => {
         currentSession,
         stockDetails,
         auditLogs,
+        liveDbStatus,
+        searchLiveItems,
 
         // Mobile / Offline State
         roomProducts,

@@ -6,12 +6,14 @@ import { SupervisorDashboard } from './components/dashboard/SupervisorDashboard'
 import { ThermalLabelModal } from './components/thermal/ThermalLabelModal';
 import { BlueprintModal } from './components/common/BlueprintModal';
 import { DbConfigModal } from './components/common/DbConfigModal';
+import { ExecutivePresentationModal } from './components/common/ExecutivePresentationModal';
 import { LiveEventInspector } from './components/inspector/LiveEventInspector';
 
 function AppContent() {
   const [viewMode, setViewMode] = useState('dual'); // 'dual' | 'mobile' | 'dashboard'
   const [isBlueprintModalOpen, setIsBlueprintModalOpen] = useState(false);
   const [isDbConfigModalOpen, setIsDbConfigModalOpen] = useState(false);
+  const [isExecutiveModalOpen, setIsExecutiveModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-16">
@@ -21,12 +23,13 @@ function AppContent() {
         setViewMode={setViewMode}
         onOpenBlueprintModal={() => setIsBlueprintModalOpen(true)}
         onOpenDbConfigModal={() => setIsDbConfigModalOpen(true)}
+        onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
       />
 
       {/* Main Workspace Area */}
       <main className="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-5 flex flex-col">
         {/* Helper Banner for PT Unison Fasteners & Mode A Workflow */}
-        <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900 to-amber-950/30 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+        <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900 to-amber-950/40 border border-blue-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-lg">
           <div className="flex items-center gap-2.5">
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
             <div>
@@ -34,22 +37,28 @@ function AppContent() {
                 PT UNISON INDUSTRIAL INDONESIA — WMS MODE A (FASTENERS / MUR & BAUT):
               </span>
               <span className="text-slate-400">
-                11 Gudang (U2 GUDANG 1-6, U2 F29, UCP, GUDANG JAYA, D30, U1) • Direct Socket Print TCP:9100 • Database 192.168.1.140
+                11 Gudang • Direct Socket Print TCP:9100 • Database `produksi` (176.673 Item via usr_android)
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center flex-wrap gap-2.5 shrink-0">
+            <button
+              onClick={() => setIsExecutiveModalOpen(true)}
+              className="px-3 py-1 rounded-xl bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-500 hover:to-amber-500 text-white font-bold text-[11px] shadow flex items-center gap-1.5 transition-all animate-pulse"
+            >
+              <span>⭐ Presentasi Direksi (7 Bab)</span>
+            </button>
             <button
               onClick={() => setIsDbConfigModalOpen(true)}
               className="text-emerald-400 hover:text-emerald-300 font-mono text-[11px] underline"
             >
-              Info Server 1.140 →
+              DB Produksi 1.159 →
             </button>
             <button
               onClick={() => setIsBlueprintModalOpen(true)}
               className="text-blue-400 hover:text-blue-300 font-mono text-[11px] underline"
             >
-              Alur 8 Langkah Blueprint →
+              Blueprint 8 Langkah →
             </button>
           </div>
         </div>
@@ -91,6 +100,10 @@ function AppContent() {
       <DbConfigModal
         isOpen={isDbConfigModalOpen}
         onClose={() => setIsDbConfigModalOpen(false)}
+      />
+      <ExecutivePresentationModal
+        isOpen={isExecutiveModalOpen}
+        onClose={() => setIsExecutiveModalOpen(false)}
       />
 
       {/* Real-time Event & Socket Inspector */}
