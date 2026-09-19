@@ -34,10 +34,10 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
 
             <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
               <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                <Icon name="shield" size={14} /> Hak Otoritas Direksi & Supervisor
+                <Icon name="shield" size={14} /> Hak Otoritas Approval & Validasi
               </div>
               <p className="text-[11px] text-slate-300">
-                Barang baru <b>TIDAK AKAN MASUK</b> ke stok resmi perusahaan sebelum <b>Direksi (Pak Hartarto / Pak Bobby) atau Supervisor</b> melihat foto fisik dan menekan tombol <b>Approve</b>.
+                Barang baru <b>TIDAK AKAN MASUK</b> ke stok resmi perusahaan sebelum <b>Supervisor / Otorisasi Manajemen</b> memeriksa foto fisik dan menekan tombol <b>Approve</b>.
               </p>
             </div>
           </div>
@@ -132,14 +132,14 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
       ),
     },
     {
-      title: 'Hak Otoritas Direksi & Approval Gate (Mode A)',
-      subtitle: 'Kewenangan Bapak Hartarto & Bapak Bobby dalam Menjaga Integritas Stok Resmi',
-      badge: 'BAB 5 • DIREKSI APPROVAL GATE',
+      title: 'Hak Approval Gate & Otorisasi Sistem (Mode A)',
+      subtitle: 'Kewenangan Verifikasi Lapangan dalam Menjaga Integritas Stok Resmi',
+      badge: 'BAB 5 • APPROVAL GATE',
       content: (
         <div className="space-y-3 text-slate-200 text-xs leading-relaxed font-sans">
           <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-900/50 space-y-1.5">
             <h4 className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-              <Icon name="shield" size={15} /> Mengapa Keputusan Ada di Tangan Direksi / Supervisor?
+              <Icon name="shield" size={15} /> Mengapa Keputusan Ada di Tangan Supervisor / Manajemen?
             </h4>
             <p className="text-[11px] text-slate-300">
               Dalam industri mur dan baut, beda diameter ulir 1 milimeter (misal M8 vs M10) atau beda material (Baja 8.8 vs Stainless SS304) sangat fatal jika salah catat. Oleh karena itu, operator diwajibkan menyertakan <b>FOTO FISIK ASLI</b>.
@@ -152,7 +152,7 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
                 <Icon name="checkCircle" size={13} /> SETUJUI (APPROVE)
               </div>
               <div className="text-[10px] text-slate-400 mt-1">
-                Status barang berubah menjadi <b>ACTIVE</b>, qty fisik resmi masuk ke pembukuan stok perusahaan, dan tercatat di Audit Log dengan nama Direksi yang menyetujui.
+                Status barang berubah menjadi <b>ACTIVE</b>, qty fisik resmi masuk ke pembukuan stok perusahaan, dan tercatat di Audit Log dengan nama otoritas yang menyetujui.
               </div>
             </div>
 
@@ -161,7 +161,7 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
                 <Icon name="xCircle" size={13} /> TOLAK (REJECT)
               </div>
               <div className="text-[10px] text-slate-400 mt-1">
-                Direksi/SPV memasukkan alasan penolakan (misal: "Ulir salah", "Bukan barang standar Unison"). Status berubah jadi <b>REJECTED</b> dan operator menerima catatan evaluasi.
+                Supervisor memasukkan alasan penolakan (misal: "Ulir salah", "Bukan barang standar Unison"). Status berubah jadi <b>REJECTED</b> dan operator menerima catatan evaluasi.
               </div>
             </div>
           </div>
@@ -221,6 +221,14 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
   ];
 
   const slide = slides[currentSlide];
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyLink = () => {
+    const directUrl = `${window.location.origin}${window.location.pathname}#alur-kerja`;
+    navigator.clipboard.writeText(directUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-3 sm:p-5 animate-fade-in">
@@ -232,23 +240,33 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-slate-100 tracking-tight">
-                  PANDUAN EKSEKUTIF DIREKSI & ATURAN WMS
+                  ATURAN & ALUR KERJA SISTEM WMS
                 </h3>
                 <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800 font-bold">
                   PT UNISON
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                Dokumen Presentasi untuk Bapak Hartarto & Bapak Bobby
+                Dokumentasi Konsep, Standar Operasional & Alur Kerja Mode A
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
-          >
-            <Icon name="x" size={20} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCopyLink}
+              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-blue-300 text-[10px] font-mono flex items-center gap-1 transition-colors"
+              title="Salin tautan langsung ke halaman Alur Kerja ini"
+            >
+              <Icon name="link" size={12} />
+              <span>{copiedLink ? '✓ Tersalin!' : 'Salin Link'}</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            >
+              <Icon name="x" size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Slide Tracker Pills */}

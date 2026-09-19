@@ -37,15 +37,15 @@ export const Header = ({
 
         {/* View Mode Switcher & Navigation */}
         <div className="flex items-center gap-2">
-          {/* Executive Presentation for Direksi Button */}
+          {/* Rule & Alur Kerja Button */}
           <button
             onClick={onOpenExecutiveModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/50 bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 text-xs font-mono font-bold transition-all shadow"
-            title="Buka Slide Presentasi Lengkap untuk Direksi (Pak Hartarto & Pak Bobby)"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-500/50 bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 text-xs font-mono font-bold transition-all shadow"
+            title="Buka Panduan Rule & Alur Kerja Lengkap Sistem WMS (7 Bab)"
           >
-            <Icon name="shield" size={14} className="text-amber-400" />
-            <span className="hidden sm:inline">Presentasi Direksi</span>
-            <span className="sm:hidden">Direksi</span>
+            <Icon name="layers" size={14} className="text-blue-400" />
+            <span className="hidden sm:inline">Rule & Alur Kerja</span>
+            <span className="sm:hidden">Alur Kerja</span>
           </button>
 
           {/* Server Config Button */}

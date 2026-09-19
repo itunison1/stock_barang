@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WmsProvider } from './services/store';
 import { Header } from './components/common/Header';
 import { MobileTerminal } from './components/mobile/MobileTerminal';
@@ -15,6 +15,38 @@ function AppContent() {
   const [isDbConfigModalOpen, setIsDbConfigModalOpen] = useState(false);
   const [isExecutiveModalOpen, setIsExecutiveModalOpen] = useState(false);
 
+  // Direct URL Hash / Query Link Support (#alur-kerja or #rule)
+  useEffect(() => {
+    const checkHash = () => {
+      const h = window.location.hash.toLowerCase();
+      const s = window.location.search.toLowerCase();
+      if (
+        h === '#alur-kerja' ||
+        h === '#rule' ||
+        s.includes('view=alur-kerja') ||
+        s.includes('view=rule') ||
+        s.includes('page=alur-kerja')
+      ) {
+        setIsExecutiveModalOpen(true);
+      }
+    };
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
+  }, []);
+
+  const openAlurKerja = () => {
+    setIsExecutiveModalOpen(true);
+    window.location.hash = 'alur-kerja';
+  };
+
+  const closeAlurKerja = () => {
+    setIsExecutiveModalOpen(false);
+    if (window.location.hash === '#alur-kerja' || window.location.hash === '#rule') {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-16">
       {/* App Header */}
@@ -23,7 +55,7 @@ function AppContent() {
         setViewMode={setViewMode}
         onOpenBlueprintModal={() => setIsBlueprintModalOpen(true)}
         onOpenDbConfigModal={() => setIsDbConfigModalOpen(true)}
-        onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
+        onOpenExecutiveModal={openAlurKerja}
       />
 
       {/* Main Workspace Area */}
@@ -43,10 +75,11 @@ function AppContent() {
           </div>
           <div className="flex items-center flex-wrap gap-2.5 shrink-0">
             <button
-              onClick={() => setIsExecutiveModalOpen(true)}
-              className="px-3 py-1 rounded-xl bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-500 hover:to-amber-500 text-white font-bold text-[11px] shadow flex items-center gap-1.5 transition-all animate-pulse"
+              onClick={openAlurKerja}
+              className="px-3 py-1 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-[11px] shadow flex items-center gap-1.5 transition-all"
+              title="Tautan langsung: #alur-kerja"
             >
-              <span>⭐ Presentasi Direksi (7 Bab)</span>
+              <span>📋 Rule & Alur Kerja (7 Bab)</span>
             </button>
             <button
               onClick={() => setIsDbConfigModalOpen(true)}
@@ -103,7 +136,7 @@ function AppContent() {
       />
       <ExecutivePresentationModal
         isOpen={isExecutiveModalOpen}
-        onClose={() => setIsExecutiveModalOpen(false)}
+        onClose={closeAlurKerja}
       />
 
       {/* Real-time Event & Socket Inspector */}
