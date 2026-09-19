@@ -61,11 +61,43 @@ export const WmsProvider = ({ children }) => {
     },
   ]);
 
+  // Dynamic API URL Helper (supports Apache api.php on 192.168.1.140 and local server.js on 3001)
+  const getApiUrl = (endpoint, params = {}) => {
+    const isApacheHosted =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === '192.168.1.140' || window.location.pathname.includes('/stock'));
+
+    if (isApacheHosted) {
+      const url = new URL('api.php', window.location.href);
+      if (endpoint === 'status') url.searchParams.set('action', 'status');
+      else if (endpoint === 'items') {
+        url.searchParams.set('action', 'items');
+        if (params.q) url.searchParams.set('q', params.q);
+        if (params.limit) url.searchParams.set('limit', params.limit);
+      } else if (endpoint === 'warehouses') {
+        url.searchParams.set('action', 'warehouses');
+      }
+      return url.toString();
+    }
+
+    // Default to local Node server.js or Apache 192.168.1.140
+    const base = 'http://localhost:3001';
+    if (endpoint === 'status') return `${base}/api/status`;
+    if (endpoint === 'items') return `${base}/api/items?q=${encodeURIComponent(params.q || '')}&limit=${params.limit || 30}`;
+    if (endpoint === 'warehouses') return `${base}/api/warehouses`;
+    return `${base}/api/${endpoint}`;
+  };
+
   // Check Live MySQL Database Status on Mount
   useEffect(() => {
-    fetch('http://localhost:3001/api/status')
-      .then((res) => res.json())
-      .then((data) => {
+    const checkStatus = async () => {
+      // Try local or apache
+      const primaryUrl = getApiUrl('status');
+      const fallbackUrl = 'http://192.168.1.140/stock_barang/api.php?action=status';
+
+      try {
+        const res = await fetch(primaryUrl).catch(() => fetch(fallbackUrl));
+        const data = await res.json();
         if (data.connected) {
           setLiveDbStatus({
             connected: true,
@@ -76,18 +108,27 @@ export const WmsProvider = ({ children }) => {
             total_users: data.total_users,
             checked: true,
           });
-          logEvent('LIVE_DB', `Terhubung ke MySQL Server: ${data.database}@${data.host} (${data.total_items.toLocaleString()} item aktif) via usr_android`);
+          logEvent(
+            'LIVE_DB',
+            `Terhubung ke MySQL Server: ${data.database}@${data.host} (${data.total_items.toLocaleString()} item aktif) via usr_android`
+          );
+          return;
         }
-      })
-      .catch(() => {
-        setLiveDbStatus((prev) => ({ ...prev, connected: false, checked: true }));
-      });
+      } catch {
+        // Ignored
+      }
+      setLiveDbStatus((prev) => ({ ...prev, connected: false, checked: true }));
+    };
+
+    checkStatus();
   }, []);
 
   // Search Live Fasteners directly from MySQL database `produksi`
-  const searchLiveItems = async (query = '', limit = 20) => {
+  const searchLiveItems = async (query = '', limit = 30) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/items?q=${encodeURIComponent(query)}&limit=${limit}`);
+      const primaryUrl = getApiUrl('items', { q: query, limit });
+      const fallbackUrl = `http://192.168.1.140/stock_barang/api.php?action=items&q=${encodeURIComponent(query)}&limit=${limit}`;
+      const res = await fetch(primaryUrl).catch(() => fetch(fallbackUrl));
       const json = await res.json();
       return json.success ? json.data : [];
     } catch {
