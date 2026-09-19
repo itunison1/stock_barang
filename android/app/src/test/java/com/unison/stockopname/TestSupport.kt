@@ -12,6 +12,12 @@ fun newTestDb(): AppDatabase =
         .allowMainThreadQueries()
         .build()
 
+class InMemoryKeyValueStore : com.unison.stockopname.data.prefs.KeyValueStore {
+    private val map = mutableMapOf<String, String>()
+    override fun getString(key: String): String? = map[key]
+    override fun putString(key: String, value: String?) { if (value == null) map.remove(key) else map[key] = value }
+}
+
 class FakeSyncTrigger : SyncTrigger {
     var calls = 0
     override fun request() { calls++ }
