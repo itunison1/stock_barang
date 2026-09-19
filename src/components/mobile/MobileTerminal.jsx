@@ -39,6 +39,12 @@ export const MobileTerminal = () => {
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
   const [locatorSearch, setLocatorSearch] = useState('');
 
+  // Fastener Scale / Timbangan Calculator Modal
+  const [showScaleModal, setShowScaleModal] = useState(false);
+  const [scaleGrossWeight, setScaleGrossWeight] = useState(''); // kg
+  const [scaleTareWeight, setScaleTareWeight] = useState('0.5'); // kg (peti/karung)
+  const [scaleWeightPer100Pcs, setScaleWeightPer100Pcs] = useState('1.2'); // kg per 100 pcs
+
   // Handle barcode submission (from input, physical laser scanner, or quick buttons)
   const handleScan = (codeToScan) => {
     const code = (codeToScan || barcodeInput).trim();
@@ -433,9 +439,19 @@ export const MobileTerminal = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-emerald-300 font-bold mb-0.5">
-                              Qty Fisik di Rak *
-                            </label>
+                            <div className="flex items-center justify-between mb-0.5">
+                              <label className="text-[10px] font-mono text-emerald-300 font-bold">
+                                Qty Fisik di Rak *
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => setShowScaleModal(true)}
+                                className="text-[9px] font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 hover:border-emerald-500 px-1.5 py-0.2 rounded transition-colors flex items-center gap-0.5"
+                                title="Gunakan kalkulator timbangan untuk konversi berat ke pcs"
+                              >
+                                <span>⚖️ Timbang KG</span>
+                              </button>
+                            </div>
                             <input
                               type="number"
                               required
@@ -686,6 +702,115 @@ export const MobileTerminal = () => {
             );
           }}
         />
+      )}
+
+      {/* Fastener Scale / Timbangan Calculator Modal Popup */}
+      {showScaleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-sm bg-slate-900 border border-emerald-500/50 rounded-2xl p-4 space-y-3 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-base">⚖️</span>
+                <h4 className="text-xs font-bold text-emerald-300 font-mono">
+                  KALKULATOR TIMBANGAN FASTENER
+                </h4>
+              </div>
+              <button
+                onClick={() => setShowScaleModal(false)}
+                className="text-slate-400 hover:text-slate-200"
+              >
+                <Icon name="x" size={16} />
+              </button>
+            </div>
+
+            <div className="text-[11px] text-slate-400">
+              Konversi otomatis berat timbangan ke estimasi Qty (Pcs/Set) untuk kemasan Karung / Peti kayu:
+            </div>
+
+            <div className="space-y-2 text-xs font-mono">
+              <div>
+                <label className="block text-[10px] text-slate-300 mb-0.5">
+                  1. Berat Total Kotor / Gross (Kg):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Contoh: 30.5"
+                  value={scaleGrossWeight}
+                  onChange={(e) => setScaleGrossWeight(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-100 font-bold focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[10px] text-slate-400 mb-0.5">
+                    Tare Kemasan (Kg):
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={scaleTareWeight}
+                    onChange={(e) => setScaleTareWeight(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-300 focus:outline-none"
+                    title="Berat kosong karung (0.3-0.5 kg) atau peti (1.5-3 kg)"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-slate-400 mb-0.5">
+                    Berat / 100 Pcs (Kg):
+                  </label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={scaleWeightPer100Pcs}
+                    onChange={(e) => setScaleWeightPer100Pcs(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-300 focus:outline-none"
+                    title="Berat standar sampel 100 biji mur/baut"
+                  />
+                </div>
+              </div>
+
+              {/* Calculated Result */}
+              {(() => {
+                const gross = parseFloat(scaleGrossWeight) || 0;
+                const tare = parseFloat(scaleTareWeight) || 0;
+                const net = Math.max(0, gross - tare);
+                const sample = parseFloat(scaleWeightPer100Pcs) || 1;
+                const calculatedPcs = Math.round((net / sample) * 100);
+
+                return (
+                  <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/80 space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Berat Bersih (Netto):</span>
+                      <span className="text-slate-200 font-bold">{net.toFixed(2)} Kg</span>
+                    </div>
+                    <div className="flex justify-between text-xs items-center pt-1 border-t border-emerald-900/60">
+                      <span className="text-emerald-300 font-bold">Hasil Estimasi:</span>
+                      <span className="text-base text-emerald-400 font-bold">
+                        {calculatedPcs.toLocaleString()} PCS
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={calculatedPcs <= 0}
+                      onClick={() => {
+                        setPhysicalQtyInput(calculatedPcs.toString());
+                        setCountNoteInput(`Dihitung Timbangan (Gross: ${gross}kg, Net: ${net.toFixed(2)}kg)`);
+                        setShowScaleModal(false);
+                      }}
+                      className="w-full mt-2 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow"
+                    >
+                      <Icon name="check" size={14} />
+                      Terapkan {calculatedPcs.toLocaleString()} Pcs ke Form
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
