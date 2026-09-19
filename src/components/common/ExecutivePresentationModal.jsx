@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icon } from './Icons';
 import { UnisonLogo } from './UnisonLogo';
 import { UNISON_DB_CONFIG } from '../../config/database';
 
 export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // Keyboard navigation (Arrow keys)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        setCurrentSlide((prev) => Math.min(slides.length - 1, prev + 1));
+      } else if (e.key === 'ArrowLeft') {
+        setCurrentSlide((prev) => Math.max(0, prev - 1));
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -221,7 +239,6 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
   ];
 
   const slide = slides[currentSlide];
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const handleCopyLink = () => {
     const directUrl = `${window.location.origin}${window.location.pathname}#alur-kerja`;
@@ -231,10 +248,12 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-3 sm:p-5 animate-fade-in">
-      <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md ${isFullscreen ? 'p-0' : 'p-2 sm:p-4'} animate-fade-in`}>
+      <div className={`relative w-full bg-slate-900 border border-slate-700 shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ${
+        isFullscreen ? 'h-screen w-screen max-w-none max-h-none rounded-none' : 'max-w-4xl rounded-3xl max-h-[92vh]'
+      }`}>
         {/* Presentation Header */}
-        <div className="px-6 py-4 bg-slate-850 border-b border-slate-700 flex items-center justify-between">
+        <div className="px-5 py-3.5 bg-slate-850 border-b border-slate-700 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <UnisonLogo size="sm" showText={false} />
             <div>
@@ -252,6 +271,13 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 text-[10px] font-mono flex items-center gap-1 transition-colors"
+              title={isFullscreen ? 'Keluar mode layar penuh (Normal)' : 'Mode Layar Penuh'}
+            >
+              <span>{isFullscreen ? '❐ Normal' : '⛶ Layar Penuh'}</span>
+            </button>
             <button
               onClick={handleCopyLink}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-blue-300 text-[10px] font-mono flex items-center gap-1 transition-colors"

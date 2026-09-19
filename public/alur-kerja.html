@@ -3,335 +3,783 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panduan Rule & Alur Kerja Sistem WMS — PT Unison Industrial Indonesia</title>
-  <script src="./tailwind.min.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            slate: {
-              850: '#0f172a',
-              950: '#050811',
-            }
-          }
-        }
+  <title>Rule & Alur Kerja Sistem WMS — PT Unison Industrial Indonesia</title>
+  <link rel="icon" type="image/png" href="./unison_logo.png" />
+  <style>
+    :root {
+      --bg-main: #050811;
+      --bg-card: #0b1120;
+      --bg-elevated: #0f172a;
+      --border-subtle: #1e293b;
+      --border-focus: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      height: 38px;
+      width: 38px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #000;
+      padding: 2px;
+      border: 1px solid #334155;
+    }
+
+    .brand-title-wrap h1 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      background: rgba(37, 99, 235, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-family: inherit;
+    }
+
+    .btn-outline {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border-color: var(--border-subtle);
+    }
+    .btn-outline:hover {
+      color: var(--text-main);
+      background: #1e293b;
+      border-color: #475569;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--accent-blue-hover);
+    }
+
+    /* Main Workspace Layout */
+    main {
+      flex: 1;
+      max-width: 1040px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 40px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .presentation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 580px;
+    }
+
+    /* Chapter Tabs / Pills Bar */
+    .tabs-bar {
+      background: var(--bg-main);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: auto;
+      gap: 12px;
+    }
+
+    .tabs-list {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      border-color: #475569;
+    }
+    .tab-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .tab-counter {
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    /* Slide Content Area */
+    .slide-body {
+      padding: 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slide-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 18px;
+    }
+
+    .slide-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 10px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .slide-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .slide-pane {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.2s ease forwards;
+    }
+    .slide-pane.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Presentation Rich Blocks */
+    .banner-box {
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(30, 58, 138, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .banner-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 6px;
+    }
+    .banner-box p {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .info-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      padding: 16px;
+      border-radius: 14px;
+    }
+    .info-card .card-head {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-card p, .info-card li {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.55;
+    }
+
+    .tag-amber { color: #fbbf24; }
+    .tag-emerald { color: #34d399; }
+    .tag-purple { color: #c084fc; }
+    .tag-blue { color: #60a5fa; }
+    .tag-red { color: #f87171; }
+
+    ol.step-list {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      margin-top: 8px;
+    }
+    .data-table th, .data-table td {
+      padding: 8px 12px;
+      border: 1px solid #1e293b;
+      text-align: left;
+    }
+    .data-table th {
+      background: #0f172a;
+      color: #94a3b8;
+    }
+    .data-table td {
+      background: rgba(15, 23, 42, 0.5);
+      color: #e2e8f0;
+    }
+
+    /* Footer Navigation */
+    .card-footer {
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--border-subtle);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: ui-monospace, monospace;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding: 10px 14px;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+      .slide-body {
+        padding: 20px 14px;
+      }
+      .footer-note {
+        display: none;
       }
     }
-  </script>
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
-  <!-- Top Navigation Header -->
-  <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 py-3.5 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <img src="./unison_logo.png" alt="PT Unison" class="h-9 w-9 object-contain rounded-xl border border-slate-700 bg-slate-950 p-1" />
-      <div>
-        <div class="flex items-center gap-2">
-          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight">
-            RULE & ALUR KERJA SISTEM WMS
-          </h1>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800 font-bold">
-            PT UNISON
-          </span>
-        </div>
-        <p class="text-xs text-slate-400">
-          Standar Operasional Stock Opname Mode A (Fasteners / Mur & Baut)
-        </p>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand-group">
+      <img src="./unison_logo.png" alt="PT Unison" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-title-wrap">
+        <h1>
+          RULE & ALUR KERJA SISTEM WMS
+          <span class="brand-badge">PT UNISON</span>
+        </h1>
+        <div class="brand-subtitle">Standar Operasional Prosedur Stock Opname Mode A (Fasteners / Mur & Baut)</div>
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
-      <a
-        href="./"
-        class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors"
-      >
-        <span>← Kembali ke Aplikasi WMS</span>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="toggleFullscreen()" id="fullscreen-btn" title="Layar Penuh (F11)">
+        ⛶ Layar Penuh
+      </button>
+      <a href="./#alur-kerja" class="btn btn-primary" title="Buka di Dashboard Sistem WMS">
+        Buka Aplikasi WMS →
       </a>
     </div>
   </header>
 
-  <!-- Presentation Workspace -->
-  <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
-    <!-- Card Container -->
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-      <!-- Chapter Pills Nav -->
-      <div class="bg-slate-950 px-4 sm:px-6 py-3 border-b border-slate-800 flex items-center justify-between gap-2 overflow-x-auto text-xs font-mono">
-        <div class="flex gap-1.5" id="pills-container">
-          <!-- Populated by JS -->
+  <!-- Main Presentation Container -->
+  <main>
+    <div class="presentation-card">
+
+      <!-- Navigation Tabs / Pills -->
+      <div class="tabs-bar">
+        <div class="tabs-list" id="tabs-list">
+          <button class="tab-btn active" onclick="goToSlide(0)">Bab 1: Konsep Mode A</button>
+          <button class="tab-btn" onclick="goToSlide(1)">Bab 2: Alur Rak & Scan</button>
+          <button class="tab-btn" onclick="goToSlide(2)">Bab 3: Remote Print 9100</button>
+          <button class="tab-btn" onclick="goToSlide(3)">Bab 4: Offline Blind Spot</button>
+          <button class="tab-btn" onclick="goToSlide(4)">Bab 5: Approval Gate</button>
+          <button class="tab-btn" onclick="goToSlide(5)">Bab 6: 11 Gudang Unison</button>
+          <button class="tab-btn" onclick="goToSlide(6)">Bab 7: DB Produksi Live</button>
         </div>
-        <span class="text-slate-400 text-xs whitespace-nowrap ml-2" id="slide-tracker">
-          Bab 1 dari 7
-        </span>
+        <div class="tab-counter" id="tab-counter">Bab 1 dari 7</div>
       </div>
 
-      <!-- Slide Body -->
-      <div class="p-6 sm:p-8 space-y-4 min-h-[420px] flex flex-col justify-between" id="slide-container">
-        <!-- Content injected by JS -->
+      <!-- Slide Content Area -->
+      <div class="slide-body">
+
+        <!-- SLIDE 1: Konsep Dasar Mode A -->
+        <div class="slide-pane active" id="slide-0">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 1 • EXECUTIVE SUMMARY</span>
+            <h2 class="slide-title">Ringkasan Eksekutif: Mengapa Menggunakan "Mode A"?</h2>
+            <p class="slide-subtitle">Konsep Dasar: Proposal Approval Pattern untuk Melindungi Integritas Stok Resmi Perusahaan</p>
+          </div>
+
+          <div class="banner-box">
+            <h4>Latar Belakang & Masalah Riil di Lantai Gudang Mur & Baut</h4>
+            <p>
+              Pada gudang manufaktur mur dan baut dengan ratusan ribu variasi ukuran, operator sering menemukan karung atau peti kayu di rak yang belum ada label barcode-nya atau belum tercatat di sistem. <b>Jika operator diblokir tidak bisa input</b>, proses opname macet total. Sebaliknya, <b>jika operator dibebaskan memasukkan barang langsung ke stok resmi</b>, data pembukuan perusahaan rentan salah hitung atau tidak valid.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div class="card-head tag-amber">⚡ Solusi Mode A (Proposal System)</div>
+              <p>
+                Operator lapangan <b>TIDAK DIBLOKIR</b>. Barang temuan baru langsung dibuatkan proposal berstatus <b>PENDING</b>, label stiker draft langsung dicetak di tempat dan ditempel pada karung/peti agar fisik barang memiliki identitas jelas.
+              </p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-emerald">🛡️ Hak Otoritas Approval & Validasi</div>
+              <p>
+                Barang baru <b>TIDAK AKAN MASUK</b> ke stok resmi pembukuan perusahaan sebelum <b>Supervisor / Otorisasi Manajemen</b> melihat foto fisik asli dan menekan tombol <b>Approve</b>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 2: Alur Operator di Lorong Rak -->
+        <div class="slide-pane" id="slide-1">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 2 • ATURAN OPERATOR DI LORONG RAK</span>
+            <h2 class="slide-title">Alur Scan Barcode di Rak & Pengecekan Lokasi Otomatis (Rule 1)</h2>
+            <p class="slide-subtitle">Menampilkan Nama Barang, Gudang Asli, Nomor Rak, Satuan Kemasan, dan Deteksi Salah Taruh</p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-head tag-amber">Langkah Kerja Operator di Lorong Rak:</div>
+            <ol class="step-list">
+              <li>Operator berjalan menyusuri lorong rak membawa Handheld PDA (atau HP Android).</li>
+              <li>Operator men-scan barcode pada kemasan karung, peti kayu, atau kardus.</li>
+              <li>
+                <b>Informasi Otomatis Muncul di Layar Handheld:</b>
+                <table class="data-table">
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Hasil Deteksi Otomatis Sistem</th>
+                  </tr>
+                  <tr>
+                    <td>Nama Barang</td>
+                    <td><b>BAUT 3/8 x 50 CEMET</b> (Kode: AB6C50)</td>
+                  </tr>
+                  <tr>
+                    <td>Kemasan Resmi</td>
+                    <td><b>KARUNG (1.000 Pcs / Karung)</b></td>
+                  </tr>
+                  <tr>
+                    <td>Gudang Terdaftar</td>
+                    <td><span class="tag-amber"><b>U2 GUDANG3</b></span></td>
+                  </tr>
+                  <tr>
+                    <td>Nomor Rak Resmi</td>
+                    <td><span class="tag-emerald"><b>RAK-B-03 • Tingkat 2 (Baris B)</b></span></td>
+                  </tr>
+                </table>
+              </li>
+              <li>
+                <b>Peringatan Salah Taruh (Misplacement):</b> Bila operator sedang opname di <code>U2 GUDANG1</code> tetapi barang tersebut tercatat milik <code>U2 GUDANG3</code>, sistem langsung memicu peringatan relokasi agar tidak salah susun.
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- SLIDE 3: Remote Direct Printing -->
+        <div class="slide-pane" id="slide-2">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 3 • REMOTE PRINTING (RULE 2)</span>
+            <h2 class="slide-title">Cetak Dokumen & Label Langsung ke Printer Kantor / Operator</h2>
+            <p class="slide-subtitle">Pengiriman Instruksi Cetak Otomatis dari Tengah Rak Melalui RAW Socket TCP:9100</p>
+          </div>
+
+          <div class="banner-box" style="background: rgba(88, 28, 135, 0.2); border-color: rgba(139, 92, 246, 0.3);">
+            <h4 style="color:#c084fc;">Efisiensi: Tanpa Harus Bolak-Balik ke Meja Kantor</h4>
+            <p>
+              Operator yang posisinya berada di ujung lorong gudang dapat langsung mengirim instruksi cetak ke printer meja kantor direksi atau meja admin depan lorong tanpa meninggalkan tumpukan peti barang.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div class="card-head tag-purple">PILIHAN 1: PRINTER MEJA KANTOR</div>
+              <p style="font-family:monospace; color:#c084fc; font-weight:bold;">IP 192.168.1.140 : 9100</p>
+              <p style="margin-top:6px;">Struk/label keluar langsung di meja kantor Direksi / Supervisor untuk arsip dan verifikasi fisik.</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-purple">PILIHAN 2: PRINTER MEJA OPERATOR</div>
+              <p style="font-family:monospace; color:#c084fc; font-weight:bold;">IP 192.168.1.50 : 9100</p>
+              <p style="margin-top:6px;">Label keluar di meja kerja depan lorong, siap diambil oleh operator setelah menyelesaikan satu baris rak.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 4: Arsitektur Offline-First -->
+        <div class="slide-pane" id="slide-3">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 4 • ARSITEKTUR OFFLINE-FIRST (RULE 3)</span>
+            <h2 class="slide-title">Perlindungan Area Blind Spot (Gudang Rangka Baja & Peti)</h2>
+            <p class="slide-subtitle">Gudang Logam Sering Menghalangi Sinyal WiFi: Aplikasi Tetap Lancar 100% Tanpa Koneksi Internet</p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-head tag-emerald">Mekanisme Kerja Handheld PDA Saat Sinyal Putus:</div>
+            <ol class="step-list">
+              <li>
+                <b>Database Lokal di HP (Room DB / SQLite Cache):</b> Seluruh master data barang di-cache ke penyimpanan internal HP saat operator pertama kali login di awal shift.
+              </li>
+              <li>
+                <b>Scan & Hitung Fisik Tidak Pernah Macet:</b> Saat operator masuk ke tengah tumpukan peti baja tebal di mana sinyal WiFi hilang, operator tetap bisa scan barcode, hitung jumlah fisik, dan input data tanpa kendala sedikit pun.
+              </li>
+              <li>
+                <b>Sinkronisasi Otomatis di Latar Belakang (WorkManager):</b> Begitu operator melangkah keluar lorong dan HP kembali menangkap sinyal WiFi, sistem Android secara otomatis mengeksekusi sinkronisasi data ke server database pusat tanpa perlu menekan tombol apa pun.
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- SLIDE 5: Approval Gate & Otorisasi -->
+        <div class="slide-pane" id="slide-4">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 5 • APPROVAL GATE & OTORISASI (RULE 4)</span>
+            <h2 class="slide-title">Hak Verifikasi Lapangan Sebelum Masuk ke Stok Resmi</h2>
+            <p class="slide-subtitle">Perlindungan Kualitas Data: Verifikasi Foto Fisik & Parameter Spesifikasi Teknis</p>
+          </div>
+
+          <div class="banner-box" style="background: rgba(120, 53, 15, 0.2); border-color: rgba(245, 158, 11, 0.3);">
+            <h4 style="color:#fbbf24;">Mengapa Keputusan Final Berada di Tangan Supervisor / Manajemen?</h4>
+            <p>
+              Pada industri fasteners, perbedaan diameter ulir 1 milimeter (misal baut M8 vs M10) atau beda jenis material (Baja 8.8 vs Stainless SS304) sangat berisiko jika salah input. Oleh karena itu, operator diwajibkan menyertakan <b>FOTO FISIK ASLI</b> ber-watermark.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <div class="info-card" style="border-color: rgba(16, 185, 129, 0.4);">
+              <div class="card-head tag-emerald">✓ SETUJUI (APPROVE)</div>
+              <p>
+                Status barang berubah menjadi <b>ACTIVE</b>, qty fisik resmi masuk ke pembukuan stok perusahaan, dan tercatat otomatis di Audit Log dengan nama otorisator dan stempel waktu.
+              </p>
+            </div>
+            <div class="info-card" style="border-color: rgba(239, 68, 68, 0.4);">
+              <div class="card-head tag-red">✕ TOLAK (REJECT)</div>
+              <p>
+                Supervisor memasukkan catatan penolakan (contoh: "Spesifikasi ulir salah" atau "Bukan standar PT Unison"). Status menjadi <b>REJECTED</b> dan operator langsung menerima feedback perbaikan.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 6: Struktur 11 Gudang Unison -->
+        <div class="slide-pane" id="slide-5">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 6 • STRUKTUR FASILITAS PERGUDANGAN</span>
+            <h2 class="slide-title">Pemetaan 11 Gudang Resmi PT Unison Industrial Indonesia</h2>
+            <p class="slide-subtitle">Struktur Penempatan Terintegrasi untuk Seluruh Kategori Fasteners & Bahan Baku</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div class="card-head tag-amber">U1 GUDANG1</div>
+              <p style="font-size:11px;">Bahan Baku Wire Rod & Raw Material Logam</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-amber">U2 GUDANG1</div>
+              <p style="font-size:11px;">Komponen Setengah Jadi (WIP Fasteners)</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-emerald">U2 GUDANG2</div>
+              <p style="font-size:11px;">Produk Fasteners Standar (Baut & Mur Hex)</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-emerald">U2 GUDANG3</div>
+              <p style="font-size:11px;">Fasteners Khusus & Finishing Cemet / Galvanis</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-purple">U3 PACKING</div>
+              <p style="font-size:11px;">Pengemasan Kardus, Karung, & Peti Ekspor</p>
+            </div>
+            <div class="info-card">
+              <div class="card-head tag-blue">U4 FINISH GOODS</div>
+              <p style="font-size:11px;">Gudang Utama Distribusi Siap Kirim</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 7: Database Produksi Live -->
+        <div class="slide-pane" id="slide-6">
+          <div class="slide-meta">
+            <span class="slide-badge">BAB 7 • LIVE DATABASE INTEGRATION</span>
+            <h2 class="slide-title">Integrasi Nyata Database `produksi` (176.673 Barang)</h2>
+            <p class="slide-subtitle">Koneksi Aktif ke Server MySQL Perusahaan Melalui Kredensial Resmi usr_android</p>
+          </div>
+
+          <div class="info-card" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(6, 78, 59, 0.15);">
+            <div class="card-head tag-emerald" style="justify-content: space-between;">
+              <span>STATUS KONEKSI DATABASE PRODUKSI</span>
+              <span style="font-size:10px; background:#064e3b; padding:2px 8px; border-radius:6px; border:1px solid #059669;">● AKTIF & STABIL</span>
+            </div>
+            <table class="data-table">
+              <tr>
+                <th>Parameter Server</th>
+                <th>Nilai Konfigurasi</th>
+              </tr>
+              <tr>
+                <td>IP Server & Port</td>
+                <td><b>192.168.1.159 : 3306</b> (MySQL Server)</td>
+              </tr>
+              <tr>
+                <td>Nama Database</td>
+                <td><b class="tag-emerald">produksi</b></td>
+              </tr>
+              <tr>
+                <td>Username Terkoneksi</td>
+                <td><b>usr_android</b> (Hak Akses Terverifikasi)</td>
+              </tr>
+              <tr>
+                <td>Total Data Barang</td>
+                <td><b class="tag-amber">176.673 Item Mur & Baut</b></td>
+              </tr>
+              <tr>
+                <td>Data User Terbaca</td>
+                <td><b>14 Akun Operator & Direksi Aktif</b></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="banner-box" style="margin-top:10px;">
+            <h4>Backend API Bridge Teruji</h4>
+            <p>
+              Aplikasi web ini bukan sekadar simulasi mockup statis, melainkan sudah dilengkapi <b>Backend API Bridge nyata</b> (PHP <code>api.php</code>) di server <code>192.168.1.140</code> yang menghubungkan aplikasi web dan mobile ke database produksi secara real-time.
+            </p>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Presentation Footer Controls -->
-      <div class="px-6 py-4 bg-slate-850 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
-        <button
-          id="btn-prev"
-          onclick="changeSlide(-1)"
-          class="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        >
+      <!-- Footer Controls -->
+      <div class="card-footer">
+        <button class="btn btn-outline" id="btn-prev" onclick="changeSlide(-1)">
           ← Bab Sebelumnya
         </button>
 
-        <div class="text-slate-400 text-[11px] hidden sm:block">
-          PT Unison Industrial Indonesia • Mode A Proposal Pattern
+        <div class="footer-note">
+          PT Unison Industrial Indonesia • Gunakan tombol panah [←] [→] keyboard
         </div>
 
-        <button
-          id="btn-next"
-          onclick="changeSlide(1)"
-          class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors shadow"
-        >
+        <button class="btn btn-primary" id="btn-next" onclick="changeSlide(1)">
           Bab Berikutnya →
         </button>
       </div>
+
     </div>
   </main>
 
   <script>
-    const slides = [
-      {
-        badge: "BAB 1 • KONSEP UTAMA",
-        title: "Mengapa Menggunakan 'Mode A' (Proposal Approval Pattern)?",
-        subtitle: "Solusi Cerdas: Melindungi Integritas Stok Resmi Tanpa Memacetkan Pekerjaan Operator",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-blue-950/30 border border-blue-900/50">
-              <h4 class="font-bold text-blue-300 mb-1.5">Latar Belakang & Kenyataan di Lantai Gudang</h4>
-              <p>
-                Pada pabrik manufaktur mur dan baut, operator sering menemukan barang di rak yang belum ada kode barcode-nya atau belum tercatat di sistem. Jika operator diblokir tidak bisa kerja, proses opname berhenti. Sebaliknya, jika operator dibebaskan memasukkan barang langsung ke master data resmi, pembukuan stok rawan kacau.
-              </p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-                <div class="font-bold text-amber-400">⚡ Solusi Mode A (Proposal System)</div>
-                <p class="text-xs text-slate-300">
-                  Operator lapangan <b>TIDAK DIBLOKIR</b>. Barang temuan baru dibuatkan proposal berstatus <b>PENDING</b>, label stiker draft langsung dicetak di tempat dan ditempel pada karung/peti agar fisik barang memiliki identitas jelas.
-                </p>
-              </div>
-              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-                <div class="font-bold text-emerald-400">🛡️ Hak Otoritas Approval & Validasi</div>
-                <p class="text-xs text-slate-300">
-                  Barang baru <b>TIDAK AKAN MASUK</b> ke stok resmi pembukuan perusahaan sebelum <b>Supervisor / Otorisasi Manajemen</b> melihat foto fisik asli ber-watermark dan menekan tombol <b>Approve</b>.
-                </p>
-              </div>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 2 • ATURAN OPERATOR DI LORONG RAK",
-        title: "Alur Scan Barcode di Rak & Pengecekan Lokasi Otomatis (Rule 1)",
-        subtitle: "Menampilkan Nama Barang, Gudang Asli, Nomor Rak, Satuan Kemasan, dan Deteksi Salah Taruh",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-              <div class="font-bold text-amber-300">Tahapan Kerja Operator di Lorong Rak:</div>
-              <ol class="list-decimal pl-5 space-y-2 text-slate-300 text-xs">
-                <li>Operator berjalan menyusuri lorong rak membawa Handheld PDA (atau HP Android).</li>
-                <li>Operator men-scan barcode pada kemasan karung, peti kayu, atau kardus.</li>
-                <li>
-                  <b>Informasi Otomatis Muncul di Layar:</b>
-                  <div class="grid grid-cols-2 gap-2 p-3 mt-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px]">
-                    <div>Nama Barang: <b class="text-slate-100">BAUT 3/8 x 50 CEMET</b></div>
-                    <div>Kemasan: <b class="text-slate-100">KARUNG (2.497 Pcs)</b></div>
-                    <div>Gudang Resmi: <b class="text-amber-400">U2 GUDANG3</b></div>
-                    <div>Nomor Rak: <b class="text-emerald-400">RAK-B-03 • Tingkat 2</b></div>
-                  </div>
-                </li>
-                <li>
-                  <b>Peringatan Salah Gudang (*Misplacement*):</b> Jika operator sedang opname di <code>U2 GUDANG1</code> tetapi barang tersebut tercatat milik <code>U2 GUDANG3</code>, sistem langsung memicu peringatan relokasi.
-                </li>
-              </ol>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 3 • REMOTE PRINTING",
-        title: "Remote Direct Print ke Meja Kantor / Meja Operator (Rule 2)",
-        subtitle: "Kirim Dokumen & Stiker Thermal Langsung dari Tengah Rak Melalui Soket TCP:9100",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-purple-950/30 border border-purple-900/50">
-              <h4 class="font-bold text-purple-300 mb-1">Efisien Tanpa Harus Jalan Bolak-Balik ke Kantor</h4>
-              <p>
-                Operator yang sedang berada di tengah-tengah lorong rak dapat langsung menembakkan instruksi cetak thermal via soket port 9100 tanpa melalui server hop:
-              </p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs pt-1">
-              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div class="text-slate-400 text-[10px] font-bold">TARGET 1: PRINTER MEJA KANTOR</div>
-                <div class="text-purple-300 font-bold text-sm mt-0.5">IP 192.168.1.140:9100</div>
-                <div class="text-slate-400 text-xs mt-1">Struk hasil opname keluar langsung di meja kantor SPV/Manajemen untuk arsip pengecekan.</div>
-              </div>
-              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div class="text-slate-400 text-[10px] font-bold">TARGET 2: PRINTER MEJA OPERATOR</div>
-                <div class="text-purple-300 font-bold text-sm mt-0.5">IP 192.168.1.50:9100</div>
-                <div class="text-slate-400 text-xs mt-1">Label keluar di meja kerja depan lorong, siap diambil setelah selesai satu blok rak.</div>
-              </div>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 4 • ARSITEKTUR OFFLINE-FIRST",
-        title: "Ketahanan Terhadap Blind Spot Sinyal WiFi (Gudang Baja)",
-        subtitle: "Aplikasi Tetap Lancar 100% Menggunakan Room Database Lokal di Memori HP",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-              <div class="font-bold text-emerald-400">Prinsip Kerja Saat Sinyal Putus:</div>
-              <ul class="list-disc pl-5 space-y-2 text-slate-300 text-xs">
-                <li><b>Master Cache di HP:</b> Data master 11 gudang sudah disimpan di memori internal HP saat awal shift.</li>
-                <li><b>Scan Tanpa Internet:</b> Saat operator masuk ke area tertutup tumpukan peti baja tebal, scan barcode dan hitung fisik tetap berjalan lancar tanpa hambatan loading.</li>
-                <li><b>WorkManager Auto-Sync:</b> Begitu operator keluar lorong dan HP kembali menangkap sinyal WiFi, Android WorkManager otomatis mengirim antrian data ke server tanpa perlu menekan tombol apa pun.</li>
-              </ul>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 5 • KALKULATOR TIMBANGAN FASTENER",
-        title: "Konversi Berat Timbangan ke Pcs (Counting Scale Integration)",
-        subtitle: "Solusi Nyata Menghitung Ribuan Baut / Mur Tanpa Harus Menghitung Satuan",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-900/50">
-              <h4 class="font-bold text-emerald-300 mb-1">Menjawab Kebutuhan Timbangan Pabrik PT Unison</h4>
-              <p>
-                Satu peti atau karung berisi ribuan hingga puluhan ribu pcs mur dan baut. Aplikasi dilengkapi fitur <b>Kalkulator Timbangan Digital</b> langsung di HP operator:
-              </p>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs space-y-2">
-              <div class="text-amber-400 font-bold">Rumus Perhitungan Otomatis:</div>
-              <div class="bg-slate-900 p-2.5 rounded-lg text-slate-300 text-[11px]">
-                Qty Estimasi = (Berat Total Kotor - Tare Kemasan Karung/Peti) / Berat Sampel 100 Pcs × 100
-              </div>
-              <p class="text-slate-400 text-xs">
-                Operator hanya perlu menimbang karung, memasukkan angka berat kotor (misal 30.5 kg), dan aplikasi otomatis mengisi jumlah fisik 2.500 pcs beserta catatan auditnya.
-              </p>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 6 • STRUKTUR 11 GUDANG RESMI",
-        title: "Pemetaan Seluruh Fasilitas Pergudangan PT Unison Industrial Indonesia",
-        subtitle: "Pelacakan Multi-Warehouse Terintegrasi",
-        html: `
-          <div class="space-y-3 text-xs font-mono">
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG1</b><div class="text-slate-300 text-[10px]">Fastener Finishing & Packing</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG2</b><div class="text-slate-300 text-[10px]">Mur & Hex Nut Storage</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG3</b><div class="text-slate-300 text-[10px]">Baut Hex & Socket Stock</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG4</b><div class="text-slate-300 text-[10px]">Stainless Steel (SS304/SS316)</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG5</b><div class="text-slate-300 text-[10px]">Plating & Galvanizing Stock</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 GUDANG6</b><div class="text-slate-300 text-[10px]">Heavy Peti Wood Packaging</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 F29</b><div class="text-slate-300 text-[10px]">Machining & Thread Tapping</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U2 UCP</b><div class="text-slate-300 text-[10px]">Central Staging & QC Check</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">GUDANG JAYA</b><div class="text-slate-300 text-[10px]">Logistik Distribusi Utama</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">D30</b><div class="text-slate-300 text-[10px]">Raw Materials & Wire Rod</div></div>
-              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800"><b class="text-amber-400">U1</b><div class="text-slate-300 text-[10px]">Finished Goods & Delivery</div></div>
-            </div>
-          </div>
-        `
-      },
-      {
-        badge: "BAB 7 • LIVE DATABASE INTEGRATION",
-        title: "Integrasi Nyata Database `produksi` (176.673 Barang)",
-        subtitle: "Terhubung Langsung ke Server MySQL via User Resmi usr_android",
-        html: `
-          <div class="space-y-4 text-slate-200 text-xs sm:text-sm leading-relaxed">
-            <div class="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-900/50 space-y-2 font-mono">
-              <div class="flex items-center justify-between text-emerald-400 font-bold text-xs">
-                <span>STATUS KONEKSI DATABASE PRODUKSI</span>
-                <span class="bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 text-[10px]">● AKTIF / TERKONEKSI</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-xs pt-1 text-slate-300">
-                <div>Server IP: <b class="text-slate-100">192.168.1.159:3306</b></div>
-                <div>Database: <b class="text-emerald-300">produksi</b></div>
-                <div>User Akses: <b class="text-slate-100">usr_android</b></div>
-                <div>Total Data: <b class="text-amber-400 font-bold">176.673 Item</b></div>
-              </div>
-            </div>
-            <p class="text-xs text-slate-300">
-              Aplikasi ini terhubung langsung ke tabel master <code>item</code>, tabel lokasi <code>wip_lokasi_m</code>, dan <code>user_produksi</code>, sehingga pencarian kode barang dan data stok berlangsung secara instan dan akurat.
-            </p>
-          </div>
-        `
-      }
-    ];
+    var currentSlide = 0;
+    var totalSlides = 7;
 
-    let currentSlide = 0;
+    function renderSlide(index) {
+      currentSlide = Math.max(0, Math.min(totalSlides - 1, index));
 
-    function renderSlide() {
-      const s = slides[currentSlide];
-      const container = document.getElementById('slide-container');
-      container.innerHTML = `
-        <div>
-          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-400 px-2.5 py-0.5 rounded bg-blue-950/60 border border-blue-900">
-            \${s.badge}
-          </span>
-          <h2 class="text-lg sm:text-xl font-bold text-white mt-2.5 tracking-tight">
-            \${s.title}
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            \${s.subtitle}
-          </p>
-        </div>
-        <div class="py-3 flex-1">
-          \${s.html}
-        </div>
-      `;
-
-      document.getElementById('slide-tracker').innerText = `Bab \${currentSlide + 1} dari \${slides.length}`;
-      document.getElementById('btn-prev').disabled = currentSlide === 0;
-
-      const nextBtn = document.getElementById('btn-next');
-      if (currentSlide === slides.length - 1) {
-        nextBtn.innerText = 'Kembali ke Awal ↺';
-      } else {
-        nextBtn.innerText = 'Bab Berikutnya →';
+      // Update panes
+      for (var i = 0; i < totalSlides; i++) {
+        var pane = document.getElementById('slide-' + i);
+        if (pane) {
+          if (i === currentSlide) {
+            pane.classList.add('active');
+          } else {
+            pane.classList.remove('active');
+          }
+        }
       }
 
-      // Render pills
-      const pillsContainer = document.getElementById('pills-container');
-      pillsContainer.innerHTML = slides.map((item, idx) => `
-        <button
-          onclick="goToSlide(\${idx})"
-          class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all \${
-            currentSlide === idx
-              ? 'bg-blue-600 text-white shadow'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }"
-        >
-          Bab \${idx + 1}
-        </button>
-      `).join('');
+      // Update tab buttons
+      var tabs = document.querySelectorAll('.tab-btn');
+      for (var j = 0; j < tabs.length; j++) {
+        if (j === currentSlide) {
+          tabs[j].classList.add('active');
+        } else {
+          tabs[j].classList.remove('active');
+        }
+      }
+
+      // Update counter
+      var counter = document.getElementById('tab-counter');
+      if (counter) {
+        counter.innerText = 'Bab ' + (currentSlide + 1) + ' dari ' + totalSlides;
+      }
+
+      // Update footer buttons
+      var prevBtn = document.getElementById('btn-prev');
+      if (prevBtn) {
+        prevBtn.disabled = (currentSlide === 0);
+        prevBtn.style.opacity = (currentSlide === 0) ? '0.4' : '1';
+        prevBtn.style.cursor = (currentSlide === 0) ? 'not-allowed' : 'pointer';
+      }
+
+      var nextBtn = document.getElementById('btn-next');
+      if (nextBtn) {
+        if (currentSlide === totalSlides - 1) {
+          nextBtn.innerText = 'Kembali ke Bab 1 ↺';
+        } else {
+          nextBtn.innerText = 'Bab Berikutnya →';
+        }
+      }
     }
 
     function changeSlide(dir) {
-      if (currentSlide === slides.length - 1 && dir === 1) {
-        currentSlide = 0;
+      if (currentSlide === totalSlides - 1 && dir === 1) {
+        goToSlide(0);
       } else {
-        currentSlide = Math.max(0, Math.min(slides.length - 1, currentSlide + dir));
+        goToSlide(currentSlide + dir);
       }
-      renderSlide();
     }
 
     function goToSlide(idx) {
-      currentSlide = idx;
-      renderSlide();
+      renderSlide(idx);
     }
 
-    renderSlide();
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(function(err) {});
+        document.getElementById('fullscreen-btn').innerText = '❐ Normal';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+        document.getElementById('fullscreen-btn').innerText = '⛶ Layar Penuh';
+      }
+    }
+
+    // Keyboard Arrow Navigation
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      }
+    });
+
+    // Initialize
+    renderSlide(0);
   </script>
 </body>
 </html>
