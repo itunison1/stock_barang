@@ -1,0 +1,54 @@
+package com.unison.stockopname.data.api
+
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import retrofit2.Response
+import java.io.IOException
+
+sealed class ApiResult<out T> {
+    data class Ok<T>(val data: T) : ApiResult<T>()
+    object AuthExpired : ApiResult<Nothing>()
+    data class Failure(val message: String, val retryable: Boolean) : ApiResult<Nothing>()
+}
+
+fun <T> ApiResult<T>.asUnit(): ApiResult<Unit> = when (this) {
+    is ApiResult.Ok -> ApiResult.Ok(Unit)
+    is ApiResult.AuthExpired -> ApiResult.AuthExpired
+    is ApiResult.Failure -> this
+}
+
+private val gson = Gson()
+
+/**
+ * Bungkus satu panggilan Retrofit. 401 di endpoint terautentikasi = token kedaluwarsa;
+ * di endpoint login (unauthorizedIsExpiry = false) itu hanya password salah.
+ */
+suspend fun <T> apiCall(
+    unauthorizedIsExpiry: Boolean = true,
+    block: suspend () -> Response<ApiEnvelope<T>>,
+): ApiResult<T> = try {
+    val r = block()
+    if (r.isSuccessful) {
+        val body = r.body()
+        val data = body?.data
+        if (body != null && body.success && data != null) ApiResult.Ok(data)
+        else ApiResult.Failure(body?.message ?: "Respons server kosong.", retryable = false)
+    } else {
+        val message = errorMessage(r)
+        when {
+            r.code() == 401 && unauthorizedIsExpiry -> ApiResult.AuthExpired
+            r.code() >= 500 -> ApiResult.Failure(message, retryable = true)
+            else -> ApiResult.Failure(message, retryable = false)
+        }
+    }
+} catch (e: IOException) {
+    ApiResult.Failure("Tidak ada koneksi ke server.", retryable = true)
+} catch (e: JsonParseException) {
+    ApiResult.Failure("Respons server tidak valid.", retryable = false)
+}
+
+private fun errorMessage(r: Response<*>): String {
+    val raw = try { r.errorBody()?.string() } catch (e: IOException) { null }
+    val parsed = try { gson.fromJson(raw, ApiEnvelope::class.java)?.message } catch (e: JsonParseException) { null }
+    return parsed?.takeIf { it.isNotBlank() } ?: "Server error (HTTP ${r.code()})."
+}
