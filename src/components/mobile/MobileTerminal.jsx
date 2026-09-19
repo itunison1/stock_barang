@@ -65,24 +65,38 @@ export const MobileTerminal = () => {
       return;
     }
 
+    // Check if code contains structured 2D barcode format (e.g. ITEM_CODE|LOT_NO|QTY|DATE)
+    let itemBarcode = code;
+    let lotNo = '';
+    let extractedQty = null;
+    let prodDate = '';
+
+    if (code.includes('|')) {
+      const parts = code.split('|').map((s) => s.trim());
+      itemBarcode = parts[0] || code;
+      lotNo = parts[1] || '';
+      extractedQty = parts[2] || null;
+      prodDate = parts[3] || '';
+    }
+
     // Step 2: Scan Barcode Barang yang sudah tertempel di kardus/rak
-    const result = scanProduct(code);
+    const result = scanProduct(itemBarcode);
     setBarcodeInput('');
 
     if (result.status === 'NOT_FOUND') {
-      setProposalBarcode(code);
+      setProposalBarcode(itemBarcode);
       setShowProposalModal(true);
       setScanResult(null);
     } else if (result.status === 'ACTIVE') {
       setScanResult(result);
-      setPhysicalQtyInput(result.product.stock_system.toString());
-      setCountNoteInput('');
+      setPhysicalQtyInput(extractedQty || result.product.stock_system.toString());
+      setCountNoteInput(lotNo ? `Lot: ${lotNo}${prodDate ? ` (Prod: ${prodDate})` : ''}` : '');
     } else if (result.status === 'PENDING') {
       setScanResult(result);
-      setPhysicalQtyInput((result.product.proposed_qty || 100).toString());
-      setCountNoteInput('Barang proposal pending');
+      setPhysicalQtyInput(extractedQty || (result.product.proposed_qty || 100).toString());
+      setCountNoteInput(lotNo ? `Proposal Lot: ${lotNo}` : 'Barang proposal pending');
     } else if (result.status === 'REJECTED') {
-      alert(`Barcode ${code} DITOLAK: ${result.product.rejection_reason}`);
+      alert(`Barcode ${itemBarcode} DITOLAK: ${result.product.rejection_reason}`);
     }
   };
 

@@ -377,6 +377,7 @@ export const INITIAL_AUDIT_LOGS = [
 export const QUICK_BARCODES = [
   // Fasteners Scans
   { barcode: '8992001001001', type: 'product', label: 'BAUT 3/8 x 50 CEMET (Di U2 GUDANG3)', status: 'active' },
+  { barcode: '8992001001001|LOT-2609A|2497|2026-09-19', type: 'product', label: 'QR 2D: BAUT 3/8 (Lot: 2609A | Qty: 2497)', status: 'active' },
   { barcode: '8992001001002', type: 'product', label: 'Stud Bolt 3/8" x 4" (Di U2 GUDANG2)', status: 'active' },
   { barcode: '8992001001003', type: 'product', label: 'ANCHOR BOLT 5/8" (Di U2 GUDANG6)', status: 'active' },
   { barcode: '8992001001004', type: 'product', label: 'PEN PIN 1/8 x 40 mm (Di U2 GUDANG1)', status: 'active' },

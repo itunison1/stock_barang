@@ -21,15 +21,29 @@ export const SupervisorDashboard = () => {
     selectedPrinterId,
     setSelectedPrinterId,
     resetDatabase,
+    liveDbStatus,
+    searchLiveItems,
   } = useWms();
 
-  const [activeTab, setActiveTab] = useState('tracking'); // 'tracking' | 'pending' | 'sessions' | 'catalog' | 'printers' | 'audit'
+  const [activeTab, setActiveTab] = useState('tracking'); // 'tracking' | 'pending' | 'sessions' | 'livedb' | 'printers' | 'audit'
   const [rejectModalItem, setRejectModalItem] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [zoomedPhoto, setZoomedPhoto] = useState(null);
   const [catalogFilter, setCatalogFilter] = useState('all'); // 'all' | 'active' | 'pending' | 'rejected'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWarehouseFilter, setSelectedWarehouseFilter] = useState('ALL');
+
+  // Live Database search state (176.673 items via usr_android)
+  const [liveSearchQuery, setLiveSearchQuery] = useState('BAUT');
+  const [liveItems, setLiveItems] = useState([]);
+  const [isLoadingLive, setIsLoadingLive] = useState(false);
+
+  const fetchLiveSearch = async (q = '') => {
+    setIsLoadingLive(true);
+    const results = await searchLiveItems(q, 40);
+    setLiveItems(results);
+    setIsLoadingLive(false);
+  };
 
   // Pending proposals list
   const pendingList = products.filter((p) => p.status === 'pending');
@@ -216,6 +230,22 @@ export const SupervisorDashboard = () => {
         >
           <Icon name="layers" size={15} />
           Hasil Scan & Variance
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab('livedb');
+            if (liveItems.length === 0) fetchLiveSearch(liveSearchQuery);
+          }}
+          className={`py-3 px-4 font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+            activeTab === 'livedb'
+              ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <Icon name="database" size={15} />
+          Live DB Produksi (176k)
         </button>
 
         <button
@@ -754,6 +784,175 @@ export const SupervisorDashboard = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================ */}
+        {/* TAB 4: LIVE MYSQL DATABASE PRODUKSI (176.673 ITEMS VIA usr_android) */}
+        {/* ============================================================ */}
+        {activeTab === 'livedb' && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Live Database Header Status */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-blue-950/30 border border-emerald-800/60 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
+                  <Icon name="database" size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-white">LIVE SERVER DATABASE PRODUKSI</h3>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      AKTIF / TERKONEKSI
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Server: <b className="text-slate-200">192.168.1.159:3306</b> • DB: <b className="text-emerald-300">produksi</b> • User: <b className="text-slate-200">usr_android</b> • Total: <b className="text-amber-400 font-bold">176.673 Fasteners</b>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => fetchLiveSearch(liveSearchQuery)}
+                  disabled={isLoadingLive}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors shadow disabled:opacity-40"
+                >
+                  <Icon name="refresh" size={13} className={isLoadingLive ? 'animate-spin' : ''} />
+                  <span>{isLoadingLive ? 'Mengambil Data...' : 'Refresh DB'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Live Search Input & Fastener Quick Keywords */}
+            <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={liveSearchQuery}
+                    onChange={(e) => setLiveSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && fetchLiveSearch(liveSearchQuery)}
+                    placeholder="Cari dari 176.673 barang: ketik kode (AB6C50) atau nama (BAUT, MUR, STUD, SS304)..."
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                  {isLoadingLive && (
+                    <div className="absolute right-3 top-2.5 text-emerald-400 text-xs font-mono animate-pulse">
+                      Mencari...
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => fetchLiveSearch(liveSearchQuery)}
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs font-mono flex items-center justify-center gap-1.5 transition-colors shadow"
+                >
+                  <Icon name="search" size={14} />
+                  <span>Cari di MySQL</span>
+                </button>
+              </div>
+
+              {/* Quick Preset Buttons for Live DB */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+                <span className="text-[10px] text-slate-400 mr-1">Keyword Populer:</span>
+                {['BAUT', 'MUR', 'STUD', 'AB6', 'HEX', 'CEMET', 'WASHER', 'M10'].map((kw) => (
+                  <button
+                    key={kw}
+                    onClick={() => {
+                      setLiveSearchQuery(kw);
+                      fetchLiveSearch(kw);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] transition-colors border ${
+                      liveSearchQuery === kw
+                        ? 'bg-emerald-600 text-white border-emerald-500 font-bold'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    {kw}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Database Items Table */}
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
+              <div className="px-5 py-3 border-b border-slate-800 flex items-center justify-between text-xs font-mono bg-slate-950/60">
+                <span className="text-slate-300">
+                  Ditemukan: <b className="text-emerald-400">{liveItems.length} barang</b> dari tabel <code>item</code> (Maksimal 40 record ditampilkan)
+                </span>
+                <span className="text-slate-500 text-[10px]">
+                  Target Printer: <b className="text-purple-300">{targetPrinter.name}</b>
+                </span>
+              </div>
+
+              <div className="overflow-x-auto max-h-[500px]">
+                <table className="w-full text-left text-xs font-mono">
+                  <thead className="sticky top-0 bg-slate-950 text-slate-400 text-[10px] uppercase border-b border-slate-800 z-10">
+                    <tr>
+                      <th className="py-2.5 px-4">ITCODE (SKU / Barcode)</th>
+                      <th className="py-2.5 px-4">Nama Barang (ITNAME)</th>
+                      <th className="py-2.5 px-4">Kemasan & Satuan</th>
+                      <th className="py-2.5 px-4">Stok Terdaftar</th>
+                      <th className="py-2.5 px-4">Posisi Gudang / Bin</th>
+                      <th className="py-2.5 px-4 text-right">Aksi Direct Print</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                    {liveItems.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="text-center py-8 text-slate-500">
+                          {isLoadingLive ? 'Sedang memuat data dari database produksi...' : 'Ketik kata kunci lalu tekan "Cari di MySQL"'}
+                        </td>
+                      </tr>
+                    ) : (
+                      liveItems.map((item) => (
+                        <tr key={`${item.id}-${item.sku}`} className="hover:bg-slate-850/60 transition-colors">
+                          <td className="py-2.5 px-4">
+                            <span className="font-bold text-amber-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                              {item.sku}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-4 font-sans font-medium text-slate-100 max-w-xs truncate">
+                            {item.name}
+                          </td>
+                          <td className="py-2.5 px-4 text-[11px] text-slate-400">
+                            <span className="text-slate-200 font-bold">{item.pack || 'DUS'}</span>
+                            {item.isi_per_pack > 1 && ` (${item.isi_per_pack.toLocaleString()} ${item.unit})`}
+                          </td>
+                          <td className="py-2.5 px-4 font-bold text-emerald-400">
+                            {item.stock_system} {item.unit}
+                          </td>
+                          <td className="py-2.5 px-4 text-[11px]">
+                            <span className="text-blue-300 font-bold">{item.warehouse_code}</span>
+                            <span className="text-slate-500 block text-[9px]">{item.rack_code}</span>
+                          </td>
+                          <td className="py-2.5 px-4 text-right">
+                            <button
+                              onClick={() =>
+                                directPrintThermal({
+                                  barcode: item.barcode,
+                                  productName: item.name,
+                                  sku: item.sku,
+                                  category: item.category,
+                                  qty: item.stock_system || 100,
+                                  rackCode: `${item.warehouse_code} - ${item.rack_code}`,
+                                  status: 'active',
+                                  targetPrinterId: selectedPrinterId,
+                                })
+                              }
+                              className="px-2.5 py-1 rounded-lg bg-purple-950 hover:bg-purple-900 border border-purple-800 text-purple-300 text-[10px] font-bold transition-colors inline-flex items-center gap-1 shadow"
+                              title="Kirim instruksi cetak thermal via soket TCP:9100 ke printer kantor"
+                            >
+                              <Icon name="printer" size={12} />
+                              <span>Cetak Label TCP:9100</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

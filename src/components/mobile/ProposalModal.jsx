@@ -11,7 +11,7 @@ const SAMPLE_PHOTOS = [
 ];
 
 export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
-  const { currentRack, createProposal, isOnline } = useWms();
+  const { currentRack, createProposal, isOnline, currentUser } = useWms();
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Baut Hexagon');
@@ -20,16 +20,81 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
   const [notes, setNotes] = useState('Stok mur/baut baru ditemukan di rak saat opname.');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoMode, setPhotoMode] = useState('presets'); // 'presets' | 'upload'
+  const [isWatermarked, setIsWatermarked] = useState(true);
+
+  // Apply automatic anti-fraud watermark on captured / uploaded image
+  const applyWatermark = (imageSrc) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width || 640;
+      canvas.height = img.height || 480;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        setPhotoUrl(imageSrc);
+        return;
+      }
+
+      // 1. Draw photo
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 2. Semi-transparent bottom banner for watermark
+      const bannerHeight = Math.max(60, canvas.height * 0.22);
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.88)';
+      ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
+
+      // Gold line separator
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, 3);
+
+      // Text watermark
+      ctx.fillStyle = '#ffffff';
+      const fontSize = Math.max(12, Math.round(canvas.width * 0.026));
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.fillText('PT UNISON INDUSTRIAL INDONESIA — WMS MODE A', 14, canvas.height - bannerHeight + fontSize + 4);
+
+      ctx.fillStyle = '#93c5fd';
+      const subFontSize = Math.max(10, Math.round(canvas.width * 0.020));
+      ctx.font = `${subFontSize}px monospace`;
+      const timeStr = new Date().toLocaleString();
+      ctx.fillText(`Operator: ${currentUser?.name || 'Operator'} | Lokasi: ${currentRack?.code || 'U2 GUDANG1'}`, 14, canvas.height - bannerHeight + fontSize + subFontSize + 8);
+      ctx.fillText(`Timestamp: ${timeStr} | Barcode: ${barcode}`, 14, canvas.height - bannerHeight + fontSize + (subFontSize * 2) + 14);
+
+      // Red QC Anti-Fraud Stamp Badge on top right
+      ctx.fillStyle = 'rgba(220, 38, 38, 0.9)';
+      ctx.fillRect(canvas.width - 155, 12, 142, 26);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('QC BUKTI FISIK WMS', canvas.width - 146, 29);
+
+      try {
+        const watermarkedData = canvas.toDataURL('image/jpeg', 0.85);
+        setPhotoUrl(watermarkedData);
+        setIsWatermarked(true);
+      } catch {
+        setPhotoUrl(imageSrc);
+      }
+    };
+    img.onerror = () => {
+      setPhotoUrl(imageSrc);
+    };
+    img.src = imageSrc;
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotoUrl(reader.result);
+        applyWatermark(reader.result);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSelectPreset = (url) => {
+    applyWatermark(url);
   };
 
   const handleSubmit = (e) => {
@@ -51,7 +116,7 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
         category,
         photoUrl,
         proposedQty,
-        notes,
+        notes: `${notes} [Watermarked QC: ${currentUser?.name || 'Operator'}]`,
         locationCode: currentRack?.code || 'U2 GUDANG1',
       });
       setIsSubmitting(false);
@@ -199,7 +264,7 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                         <button
                           key={item.label}
                           type="button"
-                          onClick={() => setPhotoUrl(item.url)}
+                          onClick={() => handleSelectPreset(item.url)}
                           className={`text-[10px] px-2 py-1 rounded border transition-colors ${
                             photoUrl === item.url
                               ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-semibold'
@@ -209,6 +274,9 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                           {item.label}
                         </button>
                       ))}
+                    </div>
+                    <div className="text-[9px] font-mono text-emerald-400 flex items-center gap-1 pt-1">
+                      <span>🛡️ Watermark Otomatis: {currentUser?.name || 'Operator'} • {currentRack?.code || 'U2 GUDANG1'}</span>
                     </div>
                   </div>
                 ) : (

@@ -95,6 +95,10 @@ export const ThermalLabelModal = () => {
                 <span>Lokasi: <b>{activeThermalLabel.rackCode}</b></span>
                 <span>Kat: {activeThermalLabel.category}</span>
               </div>
+              <div className="text-[9px] text-slate-600 flex justify-between mt-0.5 pt-0.5 border-t border-slate-300">
+                <span>Lot: <b>{activeThermalLabel.lotNo || 'LOT-2609A'}</b></span>
+                <span>Batch/Heat: <b>HT-42B</b></span>
+              </div>
             </div>
 
             {/* Barcode Strip */}
