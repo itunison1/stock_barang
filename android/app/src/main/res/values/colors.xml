@@ -3,9 +3,15 @@
     <color name="brand_orange">#FF6B00</color>
     <color name="bg_dark">#1E2530</color>
     <color name="bg_card">#2A3242</color>
+    <color name="bg_card_darker">#181F2A</color>
+    <color name="bg_dark_banner">#181F2A</color>
+    <color name="tab_unselected">#242C3A</color>
+    <color name="border_card">#3F4D63</color>
     <color name="text_light">#F5F5F5</color>
     <color name="text_muted">#9AA5B1</color>
+    <color name="blue_sub">#93C5FD</color>
     <color name="success_green">#2ECC71</color>
     <color name="danger_red">#E74C3C</color>
+    <color name="warning_gold">#F59E0B</color>
     <color name="ic_launcher_background">#1E2530</color>
 </resources>

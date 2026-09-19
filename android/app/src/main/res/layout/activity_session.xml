@@ -1,15 +1,1109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:gravity="center" android:background="@color/bg_dark"
-    android:padding="32dp">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/session_title" android:textColor="@color/success_green"
-        android:textSize="22sp" android:textStyle="bold" />
-    <TextView android:id="@+id/textInfo" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:textColor="@color/text_light" android:textSize="16sp" android:layout_marginTop="12dp"
-        android:gravity="center" />
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Layar scan menyusul." android:textColor="@color/text_muted"
-        android:textSize="13sp" android:layout_marginTop="24dp" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
+
+    <!-- Top Header Banner: Active Warehouse & Operator -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/bg_dark_banner"
+        android:padding="10dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textActiveWarehouse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GUDANG AKTIF"
+                android:textColor="@color/brand_orange"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textActiveOperator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Operator: -"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnEndSession"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Ganti Gudang"
+            android:textColor="@color/text_light"
+            android:textSize="11sp"
+            android:background="@drawable/bg_btn_secondary"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Keluar"
+            android:textColor="@color/danger_red"
+            android:textSize="11sp"
+            android:background="@drawable/bg_btn_secondary"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+    </LinearLayout>
+
+    <!-- Outbox Warning Banner -->
+    <LinearLayout
+        android:id="@+id/layoutOutboxBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#2C3545"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textOutboxBanner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="⚠️ Antrean data menunggu kirim"
+            android:textColor="@color/warning_gold"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnQuickSync"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Sync"
+            android:textColor="@color/text_light"
+            android:textSize="11sp"
+            android:background="@drawable/bg_btn_orange"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+    </LinearLayout>
+
+    <!-- Navigation Tab Bar -->
+    <LinearLayout
+        android:id="@+id/layoutTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/bg_card"
+        android:padding="4dp">
+
+        <Button
+            android:id="@+id/btnTabScan"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SCAN"
+            android:textColor="@color/text_light"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_tab_selected"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/btnTabProposal"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="PROPOSAL"
+            android:textColor="@color/text_light"
+            android:textSize="12sp"
+            android:background="@drawable/bg_tab_unselected"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/btnTabPrint"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="CETAK"
+            android:textColor="@color/text_light"
+            android:textSize="12sp"
+            android:background="@drawable/bg_tab_unselected"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/btnTabSync"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SYNC"
+            android:textColor="@color/text_light"
+            android:textSize="12sp"
+            android:background="@drawable/bg_tab_unselected"
+            android:layout_margin="2dp" />
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- ================= TAB 1: SCAN & HITUNG ================= -->
+            <LinearLayout
+                android:id="@+id/tabContentScan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <!-- Scanner Notice -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Zebra DataWedge aktif. Tekan tombol scanner fisik atau ketik barcode di bawah:"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp" />
+
+                <!-- Opname Mode Selection (SKU vs SLOC) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mode Opname:"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupOpnameMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioModeSku"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Mode SKU (Item)"
+                            android:textColor="@color/text_light"
+                            android:checked="true"
+                            android:textSize="12sp" />
+
+                        <RadioButton
+                            android:id="@+id/radioModeSloc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Mode SLOC (Rak/Bin)"
+                            android:textColor="@color/text_light"
+                            android:textSize="12sp" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <!-- Scan Source Indicator -->
+                <TextView
+                    android:id="@+id/textScanSource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sumber: DATAWEDGE / MANUAL"
+                    android:textColor="@color/blue_sub"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Barcode Input Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <EditText
+                        android:id="@+id/inputBarcode"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="Scan / Masukkan Barcode"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textSize="15sp"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true" />
+
+                    <Button
+                        android:id="@+id/btnScanManual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="CARI"
+                        android:textColor="@color/text_light"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_orange"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressScan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Card Result: FOUND -->
+                <LinearLayout
+                    android:id="@+id/cardFoundItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="14dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textFoundItemCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KODE BARANG"
+                        android:textColor="@color/brand_orange"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textFoundItemName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nama Barang Spesifikasi"
+                        android:textColor="@color/text_light"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/textFoundItemDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stok Sistem: 0 | Satuan: PCS"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"
+                        android:layout_marginTop="4dp" />
+
+                    <!-- Warning: Misplacement Alert -->
+                    <LinearLayout
+                        android:id="@+id/cardMisplacement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card_warning"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/textMisplacement"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⚠️ PERINGATAN: Barang terdaftar di gudang lain!"
+                            android:textColor="@color/danger_red"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Hitung Fisik Section -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HITUNG JUMLAH FISIK:"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="14dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="6dp">
+
+                        <Button
+                            android:id="@+id/btnMinus10"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:text="-10"
+                            android:textColor="@color/text_light"
+                            android:textSize="12sp"
+                            android:background="@drawable/bg_btn_secondary" />
+
+                        <Button
+                            android:id="@+id/btnMinus1"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:text="-1"
+                            android:textColor="@color/text_light"
+                            android:textSize="13sp"
+                            android:background="@drawable/bg_btn_secondary"
+                            android:layout_marginStart="4dp" />
+
+                        <EditText
+                            android:id="@+id/inputQtyPhysical"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:text="0"
+                            android:textColor="@color/text_light"
+                            android:background="@drawable/bg_input_field"
+                            android:gravity="center"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:inputType="number"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginEnd="6dp" />
+
+                        <Button
+                            android:id="@+id/btnPlus1"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:text="+1"
+                            android:textColor="@color/text_light"
+                            android:textSize="13sp"
+                            android:background="@drawable/bg_btn_secondary"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPlus10"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:text="+10"
+                            android:textColor="@color/text_light"
+                            android:textSize="12sp"
+                            android:background="@drawable/bg_btn_secondary" />
+                    </LinearLayout>
+
+                    <!-- Real-time Variance Status -->
+                    <TextView
+                        android:id="@+id/textVariance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Selisih: 0 (SESUAI)"
+                        android:textColor="@color/success_green"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp" />
+
+                    <!-- Optional Rack & Note -->
+                    <EditText
+                        android:id="@+id/inputRack"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Lokasi / Kode Rak (opsional)"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/inputCountNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Catatan perhitungan (opsional)"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginTop="6dp" />
+
+                    <!-- Save & Print Buttons -->
+                    <Button
+                        android:id="@+id/btnSaveCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="SIMPAN HITUNGAN FISIK"
+                        android:textColor="@color/text_light"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_btn_green"
+                        android:layout_marginTop="14dp" />
+
+                    <Button
+                        android:id="@+id/btnPrintCountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:text="🖨️ CETAK LABEL RESMI"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- Card Result: NOT FOUND -->
+                <LinearLayout
+                    android:id="@+id/cardNotFound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textNotFoundMsg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="❌ Barcode tidak ditemukan di katalog lokal."
+                        android:textColor="@color/danger_red"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Barang ini dapat didaftarkan sebagai Proposal Mode A (bukti fisik foto wajib) untuk ditinjau oleh Supervisor."
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"
+                        android:layout_marginTop="6dp" />
+
+                    <Button
+                        android:id="@+id/btnCreateProposal"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="BUAT PROPOSAL TEMUAN FISIK (MODE A)"
+                        android:textColor="@color/text_light"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_orange"
+                        android:layout_marginTop="12dp" />
+                </LinearLayout>
+
+                <!-- Card Result: PENDING PROPOSAL -->
+                <LinearLayout
+                    android:id="@+id/cardPending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textPendingMsg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ℹ️ Barcode ini memiliki proposal [PENDING] menunggu approval."
+                        android:textColor="@color/warning_gold"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnPrintPendingDraft"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:text="🖨️ CETAK LABEL DRAFT (PENDING)"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_marginTop="10dp" />
+                </LinearLayout>
+
+                <!-- Card Result: REJECTED PROPOSAL -->
+                <LinearLayout
+                    android:id="@+id/cardRejected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textRejectedMsg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️ Proposal untuk barcode ini DITOLAK oleh Supervisor."
+                        android:textColor="@color/danger_red"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnRecreateProposal"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="AJUKAN ULANG PROPOSAL"
+                        android:textColor="@color/text_light"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_orange"
+                        android:layout_marginTop="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ================= TAB 2: PROPOSAL (MODE A) ================= -->
+            <LinearLayout
+                android:id="@+id/tabContentProposal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PROPOSAL TEMUAN FISIK (MODE A)"
+                    android:textColor="@color/brand_orange"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mendaftarkan barang baru/temuan di rak. Status PENDING menunggu persetujuan supervisor. Foto bukti fisik WAJIB."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <EditText
+                    android:id="@+id/inputPropBarcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Barcode / Kode Barang *"
+                    android:textColor="@color/text_light"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/inputPropName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Nama / Spesifikasi Mur Baut *"
+                    android:textColor="@color/text_light"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_field"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kategori:"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerPropCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/inputPropQty"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Qty Usulan Fisik (misal: 100) *"
+                    android:textColor="@color/text_light"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp"
+                    android:inputType="number"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/inputPropNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Catatan Temuan / Nomor Rak"
+                    android:textColor="@color/text_light"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Foto Bukti Fisik Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BUKTI FOTO FISIK (WAJIB):"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnCapturePhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="📷 AMBIL FOTO FISIK (KAMERA)"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_marginTop="8dp" />
+
+                    <ImageView
+                        android:id="@+id/imagePropPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="8dp"
+                        android:background="#020617"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textPropPhotoStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️ Belum ada foto. Foto bukti fisik WAJIB untuk Mode A."
+                        android:textColor="@color/danger_red"
+                        android:textSize="12sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+
+                <!-- Submit Button -->
+                <Button
+                    android:id="@+id/btnSubmitProposal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="SIMPAN PROPOSAL (PENDING)"
+                    android:textColor="@color/text_light"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_btn_orange"
+                    android:enabled="false" />
+
+                <Button
+                    android:id="@+id/btnPrintDraftProposal"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="🖨️ CETAK LABEL DRAFT - PENDING APPROVAL"
+                    android:textColor="@color/text_light"
+                    android:textSize="13sp"
+                    android:background="@drawable/bg_btn_secondary"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- ================= TAB 3: CETAK LABEL ================= -->
+            <LinearLayout
+                android:id="@+id/tabContentPrint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CETAK LABEL ESC/POS (TCP 9100)"
+                    android:textColor="@color/brand_orange"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Direct raw TCP socket tanpa hop server (Bab 3.2)."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Printer Selection Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pilih Printer Target:"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinnerPrinters"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <EditText
+                            android:id="@+id/inputPrintHost"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="3"
+                            android:hint="IP Printer (192.168.1.50)"
+                            android:textColor="@color/text_light"
+                            android:textColorHint="@color/text_muted"
+                            android:background="@drawable/bg_input_field"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:textSize="13sp" />
+
+                        <EditText
+                            android:id="@+id/inputPrintPort"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:text="9100"
+                            android:textColor="@color/text_light"
+                            android:background="@drawable/bg_input_field"
+                            android:gravity="center"
+                            android:textSize="13sp"
+                            android:inputType="number"
+                            android:layout_marginStart="6dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Data to Print Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Parameter Label:"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/inputPrintBarcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Barcode Label"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginTop="6dp" />
+
+                    <EditText
+                        android:id="@+id/inputPrintName"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Nama / Deskripsi Barang"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginTop="6dp" />
+
+                    <EditText
+                        android:id="@+id/inputPrintQty"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Qty"
+                        android:textColor="@color/text_light"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:inputType="number"
+                        android:layout_marginTop="6dp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupLabelType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioPrintOfficial"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Label Resmi Opname"
+                            android:textColor="@color/text_light"
+                            android:checked="true"
+                            android:textSize="13sp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPrintPending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DRAFT - PENDING APPROVAL (Mode A)"
+                            android:textColor="@color/warning_gold"
+                            android:textSize="13sp" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnPrintExecute"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="🖨️ KIRIM PERINTAH CETAK"
+                    android:textColor="@color/text_light"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_btn_orange" />
+
+                <TextView
+                    android:id="@+id/textPrintFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- ================= TAB 4: SYNC & OUTBOX ================= -->
+            <LinearLayout
+                android:id="@+id/tabContentSync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SINKRONISASI &amp; ANTREAN OUTBOX"
+                    android:textColor="@color/brand_orange"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aplikasi bekerja offline-first. Data opname dan proposal tersimpan aman di database lokal dan dikirim via Outbox."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Outbox Status Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textOutboxSummary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Antrean Outbox: 0 Pending | 0 Gagal"
+                        android:textColor="@color/text_light"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnTriggerSync"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="🔄 KIRIM ANTREAN OUTBOX SEKARANG"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_btn_green"
+                        android:layout_marginTop="10dp" />
+
+                    <Button
+                        android:id="@+id/btnRetryFailed"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:text="⚡ RESET &amp; COBA LAGI DATA GAGAL"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Catatan: Bila server membalas HTTP 503 (karena tabel wms_* belum dibuat oleh DBA), data aman di perangkat dan akan dikirim saat tabel siap."
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- Master Sync Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/textMasterSummary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cache Master: 0 item barang | 0 gudang"
+                        android:textColor="@color/text_light"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnSyncMaster"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="📥 SINKRONISASI MASTER KATALOG DARI SERVER"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_marginTop="10dp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressMasterSync"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textMasterFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+
+                <!-- Backend WMS Roadmap Notice Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Roadmap Backend WMS &amp; Adjustment:"
+                        android:textColor="@color/warning_gold"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Metode Lanjutan: Cycle Count, Dynamic Count, Overhaul, dan Zone Count memerlukan skema tabel batch &amp; approval multi-user di server.\n• Stock Adjustment: Hasil selisih (variance) saat ini menjadi dasar proposal/audit log yang ditinjau SPV di web dashboard, bukan auto-update stok langsung ke database produksi.\n• Mode saat ini: SKU dan SLOC (Storage Location / Rak) dengan audit trail lengkap."
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+
+                <!-- Outbox List Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_rounded"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Riwayat Data Antrean Outbox:"
+                        android:textColor="@color/text_light"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutOutboxList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -59,4 +59,20 @@ class RulesTest {
     @Test fun existingWithoutActionIsProgrammerError() {
         assertThrows(IllegalStateException::class.java) { DuplicateCountPolicy.resolve(100, 40, null) }
     }
+
+    // --- watermark spec ---
+    @Test fun watermarkSpecDefaultsAndValues() {
+        val spec = WatermarkSpec(
+            operator = "cseon",
+            warehouse = "U2 GUDANG1",
+            timestamp = "2026-09-19 21:00:00",
+            barcode = "BM-HEX-M10-50"
+        )
+        assertEquals("PT UNISON INDUSTRIAL INDONESIA - WMS MODE A", spec.title)
+        assertEquals("cseon", spec.operator)
+        assertEquals("U2 GUDANG1", spec.warehouse)
+        assertEquals("2026-09-19 21:00:00", spec.timestamp)
+        assertEquals("BM-HEX-M10-50", spec.barcode)
+        assertEquals("QC BUKTI FISIK WMS", spec.badge)
+    }
 }

@@ -30,3 +30,12 @@ object DuplicateCountPolicy {
         else -> error("Hitungan ganda butuh keputusan operator (timpa atau tambah)")
     }
 }
+
+data class WatermarkSpec(
+    val title: String = "PT UNISON INDUSTRIAL INDONESIA - WMS MODE A",
+    val operator: String,
+    val warehouse: String,
+    val timestamp: String,
+    val barcode: String,
+    val badge: String = "QC BUKTI FISIK WMS",
+)
