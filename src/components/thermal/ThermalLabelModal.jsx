@@ -37,7 +37,7 @@ export const ThermalLabelModal = () => {
                 </span>
               </div>
               <div className="text-[10px] font-mono text-slate-400">
-                Target: {activeThermalLabel.printerIp} (No Server Hop)
+                PT Unison Industrial Indonesia • No Server Hop
               </div>
             </div>
           </div>
@@ -61,10 +61,12 @@ export const ThermalLabelModal = () => {
           >
             {/* Paper Header */}
             <div className="text-center border-b border-slate-800/20 pb-2 mb-2">
-              <div className="font-extrabold text-[13px] tracking-wider uppercase text-slate-950">
-                WMS WAREHOUSE LOGISTICS
+              <div className="font-black text-[12px] tracking-wider uppercase text-slate-950">
+                PT UNISON INDUSTRIAL INDONESIA
               </div>
-              <div className="text-[9px] text-slate-600">INVENTORY TRACKING LABEL</div>
+              <div className="text-[8.5px] text-slate-600 tracking-wide">
+                FASTENER INVENTORY LABEL • MUR & BAUT
+              </div>
             </div>
 
             {/* Status Watermark */}
@@ -82,7 +84,7 @@ export const ThermalLabelModal = () => {
 
             {/* Product Title & Details */}
             <div className="my-2 text-left">
-              <div className="text-[12px] font-bold text-slate-950 leading-tight">
+              <div className="text-[11.5px] font-bold text-slate-950 leading-tight">
                 {activeThermalLabel.productName}
               </div>
               <div className="text-[10px] text-slate-700 mt-1 flex justify-between">
@@ -90,7 +92,7 @@ export const ThermalLabelModal = () => {
                 <span className="font-bold">Qty: {activeThermalLabel.qty} pcs</span>
               </div>
               <div className="text-[10px] text-slate-700 flex justify-between mt-0.5">
-                <span>Rak: {activeThermalLabel.rackCode}</span>
+                <span>Lokasi: <b>{activeThermalLabel.rackCode}</b></span>
                 <span>Kat: {activeThermalLabel.category}</span>
               </div>
             </div>
@@ -112,7 +114,7 @@ export const ThermalLabelModal = () => {
             </div>
 
             <div className="text-center text-[7px] text-slate-500 mt-1">
-              ESC/POS RAW SOCKET • PORT 9100 DIRECT
+              ESC/POS RAW SOCKET • PORT 9100 DIRECT • TARGET: {activeThermalLabel.printerIp}
             </div>
           </div>
 
@@ -124,7 +126,7 @@ export const ThermalLabelModal = () => {
                 RAW ESC/POS HEX STREAM (Socket TCP:9100)
               </div>
               <div className="text-[9px] font-mono text-slate-400 break-all bg-slate-950 p-2 rounded border border-slate-800">
-                1B 40 1B 61 01 1B 21 30 57 4D 53 20 57 41 52 45 48 4F 55 53 45 0A 1B 61 00 1D 6B 04{' '}
+                1B 40 1B 61 01 1B 21 30 55 4E 49 53 4F 4E 20 49 4E 44 55 53 54 52 49 41 4C 0A 1B 61 00 1D 6B 04{' '}
                 {activeThermalLabel.barcode} 00 1D 56 42 00
               </div>
               <div className="text-[9px] text-slate-500 mt-1">

@@ -3,21 +3,21 @@ import { Icon } from '../common/Icons';
 import { useWms } from '../../services/store';
 
 const SAMPLE_PHOTOS = [
-  { label: 'Sembako / Beras', url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80' },
-  { label: 'Minyak Goreng', url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80' },
-  { label: 'Biskuit / Snack', url: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80' },
-  { label: 'Minuman / Teh', url: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
-  { label: 'Sabun / Shampo', url: 'https://images.unsplash.com/photo-1607006314177-3e3c631a0e10?w=400&q=80' },
+  { label: 'Baut Hexagon SS304', url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&q=80' },
+  { label: 'Mur Hex Nut M10', url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=400&q=80' },
+  { label: 'Baut L Socket Cap', url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=400&q=80' },
+  { label: 'Flange Nut Kuning', url: 'https://images.unsplash.com/photo-1618090584176-7132b9911657?w=400&q=80' },
+  { label: 'Ring Plat Washer', url: 'https://images.unsplash.com/photo-1589792905706-7b4bf37d2fbf?w=400&q=80' },
 ];
 
 export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
   const { currentRack, createProposal, isOnline } = useWms();
 
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('Sembako');
-  const [proposedQty, setProposedQty] = useState('12');
+  const [category, setCategory] = useState('Baut Hexagon');
+  const [proposedQty, setProposedQty] = useState('500');
   const [photoUrl, setPhotoUrl] = useState(SAMPLE_PHOTOS[0].url);
-  const [notes, setNotes] = useState('Barang baru ditemukan saat opname rak.');
+  const [notes, setNotes] = useState('Stok mur/baut baru ditemukan di rak saat opname.');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoMode, setPhotoMode] = useState('presets'); // 'presets' | 'upload'
 
@@ -35,11 +35,11 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name.trim()) {
-      alert('Nama barang wajib diisi!');
+      alert('Nama spesifikasi mur/baut wajib diisi!');
       return;
     }
     if (!photoUrl) {
-      alert('Mode A mewajibkan foto barang fisik untuk bukti review supervisor!');
+      alert('Mode A mewajibkan foto fisik mur/baut untuk bukti review supervisor!');
       return;
     }
 
@@ -52,7 +52,7 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
         photoUrl,
         proposedQty,
         notes,
-        locationCode: currentRack?.code || 'RAK-A-01',
+        locationCode: currentRack?.code || 'U2 GUDANG1',
       });
       setIsSubmitting(false);
       onSuccess(newProposal);
@@ -73,7 +73,7 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                 MODE A — BARANG TIDAK TERDAFTAR
               </div>
               <div className="text-[10px] text-amber-300/80 font-mono">
-                Alur Proposal Draft • Direct Thermal Print • Menunggu Approval SPV
+                PT Unison Industrial Indonesia • Direct Thermal Print • Menunggu Approval SPV
               </div>
             </div>
           </div>
@@ -94,9 +94,9 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
               <div className="text-xs font-mono font-bold text-amber-400 mt-0.5 break-all">{barcode}</div>
             </div>
             <div>
-              <div className="text-[10px] uppercase font-mono text-slate-400">Lokasi Rak Terkunci</div>
+              <div className="text-[10px] uppercase font-mono text-slate-400">Gudang / Lokasi Terkunci</div>
               <div className="text-xs font-mono font-bold text-emerald-400 mt-0.5">
-                {currentRack?.code || 'RAK-A-01'}
+                {currentRack?.code || 'U2 GUDANG1'}
               </div>
             </div>
           </div>
@@ -104,14 +104,14 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
           {/* Product Name */}
           <div>
             <label className="block text-xs font-medium text-slate-200 mb-1">
-              Nama Barang Fisik <span className="text-red-400">*</span>
+              Spesifikasi Mur / Baut <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Contoh: Minyak Goreng Sania 2L Pouch"
+              placeholder="Contoh: Baut Hexagon M12 x 40 mm Grade 8.8"
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
             />
           </div>
@@ -119,17 +119,19 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
           {/* Category & Physical Qty */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-200 mb-1">Kategori</label>
+              <label className="block text-xs font-medium text-slate-200 mb-1">Kategori Fastener</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-500"
               >
-                <option value="Sembako">Sembako</option>
-                <option value="Makanan Instan">Makanan Instan</option>
-                <option value="Minuman">Minuman</option>
-                <option value="Biskuit & Snack">Biskuit & Snack</option>
-                <option value="Kebersihan">Kebersihan</option>
+                <option value="Baut Hexagon">Baut Hexagon</option>
+                <option value="Mur / Hex Nut">Mur / Hex Nut</option>
+                <option value="Baut Socket Cap">Baut Socket Cap (L)</option>
+                <option value="Flange & Lock Nut">Flange & Lock Nut</option>
+                <option value="Ring Plat & Washer">Ring Plat & Washer</option>
+                <option value="Sekrup & Tapping">Sekrup & Tapping</option>
+                <option value="Anchor & Dynabolt">Anchor & Dynabolt</option>
                 <option value="Lain-lain">Lain-lain</option>
               </select>
             </div>
@@ -161,14 +163,14 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                   onClick={() => setPhotoMode('presets')}
                   className={`px-2 py-0.5 rounded ${photoMode === 'presets' ? 'bg-amber-600 text-white' : 'text-slate-400'}`}
                 >
-                  Preset Cepat
+                  Preset Fasteners
                 </button>
                 <button
                   type="button"
                   onClick={() => setPhotoMode('upload')}
                   className={`px-2 py-0.5 rounded ${photoMode === 'upload' ? 'bg-amber-600 text-white' : 'text-slate-400'}`}
                 >
-                  Kamera / File
+                  Kamera / Upload
                 </button>
               </div>
             </div>
@@ -184,14 +186,14 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                   </div>
                 )}
                 <div className="absolute bottom-0 inset-x-0 bg-slate-950/80 text-[8px] font-mono text-center py-0.5 text-slate-300">
-                  BUKTI FISIK
+                  QC BUKTI
                 </div>
               </div>
 
               <div className="flex-1 min-w-0">
                 {photoMode === 'presets' ? (
                   <div className="space-y-1.5">
-                    <div className="text-[10px] text-slate-400">Pilih foto sampel simulasi:</div>
+                    <div className="text-[10px] text-slate-400">Pilih sampel produk fastener:</div>
                     <div className="flex flex-wrap gap-1">
                       {SAMPLE_PHOTOS.map((item) => (
                         <button
@@ -212,7 +214,7 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
                 ) : (
                   <div>
                     <label className="block text-[10px] text-slate-400 mb-1">
-                      Ambil foto dengan kamera perangkat atau unggah file:
+                      Ambil foto produk mur/baut via kamera atau unggah:
                     </label>
                     <input
                       type="file"
@@ -229,12 +231,12 @@ export const ProposalModal = ({ barcode, onClose, onSuccess }) => {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1">Catatan Lokasi / Kondisi</label>
+            <label className="block text-xs font-medium text-slate-200 mb-1">Catatan Lokasi Rak & Kondisi</label>
             <textarea
               rows={2}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Contoh: Ditemukan di tumpukan karton bawah rak"
+              placeholder="Contoh: Ditemukan di palet samping lorong 3"
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
             />
           </div>

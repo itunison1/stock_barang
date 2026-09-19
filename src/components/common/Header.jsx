@@ -1,34 +1,38 @@
 import React from 'react';
 import { Icon } from './Icons';
+import { UnisonLogo } from './UnisonLogo';
 
-export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal }) => {
+export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal, onOpenDbConfigModal }) => {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Logo & Title */}
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/85 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 h-16 flex items-center justify-between gap-3">
+        {/* Company Branding & Logo */}
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center font-black text-xs text-white tracking-widest shadow-lg shadow-blue-950">
-            WMS
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm font-bold text-slate-100 tracking-tight flex items-center gap-1.5">
-                STOCK OPNAME
-                <span className="text-blue-400 font-extrabold">MODE A</span>
-              </h1>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-mono">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                PROPOSAL APPROVAL
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">
-              Operator Draft → Direct Print (9100) → Supervisor Approval Gate
-            </p>
+          <UnisonLogo size="md" />
+          <div className="hidden xl:block h-6 w-px bg-slate-800" />
+          <div className="hidden xl:flex items-center gap-2 text-[10px] font-mono text-slate-400">
+            <span className="px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-900">
+              WMS MODE A
+            </span>
+            <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+              11 GUDANG AKTIF
+            </span>
           </div>
         </div>
 
-        {/* View Mode Switcher Pills */}
+        {/* View Mode Switcher & Navigation */}
         <div className="flex items-center gap-2">
+          {/* Server Config Button */}
+          <button
+            onClick={onOpenDbConfigModal}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono transition-colors"
+            title="Lihat Konfigurasi Database Server 192.168.1.140"
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px]">DB 1.140</span>
+          </button>
+
+          {/* View Mode Pills */}
           <div className="bg-slate-900 border border-slate-800 p-1 rounded-xl flex items-center gap-1 text-xs font-mono">
             <button
               onClick={() => setViewMode('dual')}
@@ -40,7 +44,7 @@ export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal }) => {
               title="Tampilkan HP Operator dan Web Dashboard berdampingan"
             >
               <Icon name="layers" size={14} />
-              <span className="hidden md:inline">Dual View (Side-by-Side)</span>
+              <span className="hidden md:inline">Dual View</span>
               <span className="md:hidden">Dual</span>
             </button>
 
@@ -79,7 +83,7 @@ export const Header = ({ viewMode, setViewMode, onOpenBlueprintModal }) => {
             className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono transition-colors"
           >
             <Icon name="terminal" size={14} className="text-amber-400" />
-            <span>Alur Blueprint 8 Langkah</span>
+            <span>Blueprint 8 Langkah</span>
           </button>
         </div>
       </div>
