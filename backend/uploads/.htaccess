@@ -1,0 +1,5 @@
+# Folder foto proposal: jangan pernah eksekusi PHP di sini.
+RemoveHandler .php .phtml .php5
+RemoveType .php .phtml .php5
+php_flag engine off
+Options -Indexes -ExecCGI
