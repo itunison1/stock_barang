@@ -1,0 +1,5 @@
+# Folder update: hanya file statis (APK, version.json). Tanpa eksekusi PHP, tanpa daftar isi.
+RemoveHandler .php .phtml
+php_flag engine off
+Options -Indexes
+AddType application/vnd.android.package-archive .apk
