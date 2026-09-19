@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from '../common/Icons';
 import { useWms } from '../../services/store';
 import { BarcodeGenerator } from '../barcode/BarcodeGenerator';
+import { WAREHOUSES } from '../../services/mockData';
 
 export const SupervisorDashboard = () => {
   const {
@@ -17,15 +18,18 @@ export const SupervisorDashboard = () => {
     users,
     switchUser,
     directPrintThermal,
+    selectedPrinterId,
+    setSelectedPrinterId,
     resetDatabase,
   } = useWms();
 
-  const [activeTab, setActiveTab] = useState('pending'); // 'pending' | 'sessions' | 'catalog' | 'printers' | 'audit'
+  const [activeTab, setActiveTab] = useState('tracking'); // 'tracking' | 'pending' | 'sessions' | 'catalog' | 'printers' | 'audit'
   const [rejectModalItem, setRejectModalItem] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [zoomedPhoto, setZoomedPhoto] = useState(null);
   const [catalogFilter, setCatalogFilter] = useState('all'); // 'all' | 'active' | 'pending' | 'rejected'
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedWarehouseFilter, setSelectedWarehouseFilter] = useState('ALL');
 
   // Pending proposals list
   const pendingList = products.filter((p) => p.status === 'pending');
@@ -41,7 +45,7 @@ export const SupervisorDashboard = () => {
 
   const handleOpenReject = (item) => {
     setRejectModalItem(item);
-    setRejectionReason('Barcode atau nama barang tidak sesuai standar gudang.');
+    setRejectionReason('Spesifikasi ulir atau material tidak sesuai master resmi PT Unison.');
   };
 
   const handleConfirmReject = (e) => {
@@ -53,6 +57,8 @@ export const SupervisorDashboard = () => {
     }
   };
 
+  const targetPrinter = printers.find((p) => p.id === Number(selectedPrinterId)) || printers[0];
+
   return (
     <div className="flex-1 bg-slate-950 text-slate-100 rounded-[24px] border border-slate-800 shadow-2xl flex flex-col overflow-hidden">
       {/* Top Navigation Header */}
@@ -63,22 +69,40 @@ export const SupervisorDashboard = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold tracking-tight text-white">SUPERVISOR DASHBOARD</h2>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-950 border border-amber-800 text-amber-300 font-bold">
-                MODE A GATEWAY
+              <h2 className="text-base font-bold tracking-tight text-white">PORTAL SUPERVISOR WMS</h2>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-950 border border-blue-800 text-blue-300 font-bold">
+                PT UNISON INDUSTRIAL INDONESIA
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Web Portal Approval Gate • Verifikasi Foto Fisik & Integritas Master Stok
+              Pelacakan Lokasi Barang • Remote Direct Print (TCP:9100) • Approval Gate Mode A
             </p>
           </div>
         </div>
 
-        {/* User Role Switcher & Reset Button */}
-        <div className="flex items-center gap-3">
+        {/* User Role Switcher & Remote Printer Selector */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Target Printer for Remote Print */}
+          <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono">
+            <Icon name="printer" size={13} className="text-purple-400" />
+            <span className="text-slate-400 text-[10px]">Print Target:</span>
+            <select
+              value={selectedPrinterId}
+              onChange={(e) => setSelectedPrinterId(e.target.value)}
+              className="bg-transparent text-purple-300 font-bold focus:outline-none cursor-pointer text-[11px] max-w-[170px] truncate"
+              title="Pilih printer target untuk remote print"
+            >
+              {printers.map((p) => (
+                <option key={p.id} value={p.id} className="bg-slate-900 text-slate-100">
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* User Switcher */}
           <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
             <Icon name="user" size={14} className="text-amber-400" />
-            <span className="text-slate-400">Login sbg:</span>
             <select
               value={currentUser.id}
               onChange={(e) => switchUser(e.target.value)}
@@ -95,7 +119,7 @@ export const SupervisorDashboard = () => {
           <button
             onClick={resetDatabase}
             className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
-            title="Reset Data Demo ke Kondisi Awal"
+            title="Reset Data Demo"
           >
             <Icon name="refresh" size={16} />
           </button>
@@ -106,20 +130,9 @@ export const SupervisorDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-6 border-b border-slate-800/80 bg-slate-900/30">
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
           <div>
-            <div className="text-[11px] font-mono uppercase text-slate-400">Antrian Proposal</div>
-            <div className="text-2xl font-bold font-mono text-amber-400 mt-1">{pendingList.length}</div>
-            <div className="text-[10px] text-amber-400/80 mt-0.5">Menunggu Approval SPV</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
-            <Icon name="alertTriangle" size={20} />
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-          <div>
-            <div className="text-[11px] font-mono uppercase text-slate-400">Master Aktif Resmi</div>
-            <div className="text-2xl font-bold font-mono text-emerald-400 mt-1">{activeList.length}</div>
-            <div className="text-[10px] text-emerald-400/80 mt-0.5">Tersinkron di HP</div>
+            <div className="text-[11px] font-mono uppercase text-slate-400">Total Fasteners Resmi</div>
+            <div className="text-2xl font-bold font-mono text-emerald-400 mt-1">{activeList.length} SKU</div>
+            <div className="text-[10px] text-emerald-400/80 mt-0.5">Tercatat di 11 Gudang</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
             <Icon name="checkCircle" size={20} />
@@ -128,7 +141,18 @@ export const SupervisorDashboard = () => {
 
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
           <div>
-            <div className="text-[11px] font-mono uppercase text-slate-400">Selisih Fisik (Variance)</div>
+            <div className="text-[11px] font-mono uppercase text-slate-400">Antrian Proposal Mode A</div>
+            <div className="text-2xl font-bold font-mono text-amber-400 mt-1">{pendingList.length}</div>
+            <div className="text-[10px] text-amber-400/80 mt-0.5">Menunggu Verifikasi SPV</div>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
+            <Icon name="alertTriangle" size={20} />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+          <div>
+            <div className="text-[11px] font-mono uppercase text-slate-400">Selisih Opname (Variance)</div>
             <div className="text-2xl font-bold font-mono text-blue-400 mt-1">{totalVarianceDiscrepancies}</div>
             <div className="text-[10px] text-slate-400 mt-0.5">Item butuh rekonsiliasi</div>
           </div>
@@ -139,20 +163,32 @@ export const SupervisorDashboard = () => {
 
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
           <div>
-            <div className="text-[11px] font-mono uppercase text-slate-400">Printer LAN Socket</div>
+            <div className="text-[11px] font-mono uppercase text-slate-400">Gudang Aktif PT Unison</div>
             <div className="text-2xl font-bold font-mono text-slate-200 mt-1">
-              {printers.filter((p) => p.is_active).length} Online
+              {WAREHOUSES.length} Gudang
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">Port 9100 Direct</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">U2 G1-G6, F29, UCP, Jaya, D30, U1</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center border border-slate-700">
-            <Icon name="printer" size={20} />
+            <Icon name="mapPin" size={20} />
           </div>
         </div>
       </div>
 
       {/* Main Tabs Navigation */}
       <div className="flex border-b border-slate-800 px-6 bg-slate-900/40 overflow-x-auto gap-2 text-xs font-mono">
+        <button
+          onClick={() => setActiveTab('tracking')}
+          className={`py-3 px-4 font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+            activeTab === 'tracking'
+              ? 'border-blue-500 text-blue-400 bg-blue-500/10'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Icon name="mapPin" size={15} />
+          Pelacakan Lokasi Barang (Rule 1 & 3)
+        </button>
+
         <button
           onClick={() => setActiveTab('pending')}
           className={`py-3 px-4 font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
@@ -162,7 +198,7 @@ export const SupervisorDashboard = () => {
           }`}
         >
           <Icon name="alertTriangle" size={15} />
-          Antrian Approval Proposal
+          Antrian Approval Mode A
           {pendingList.length > 0 && (
             <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-extrabold text-[10px]">
               {pendingList.length}
@@ -174,24 +210,12 @@ export const SupervisorDashboard = () => {
           onClick={() => setActiveTab('sessions')}
           className={`py-3 px-4 font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
             activeTab === 'sessions'
-              ? 'border-blue-500 text-blue-400 bg-blue-500/10'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Icon name="layers" size={15} />
-          Monitoring Opname & Variance
-        </button>
-
-        <button
-          onClick={() => setActiveTab('catalog')}
-          className={`py-3 px-4 font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
-            activeTab === 'catalog'
               ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Icon name="package" size={15} />
-          Katalog Master Produk ({products.length})
+          <Icon name="layers" size={15} />
+          Hasil Scan & Variance
         </button>
 
         <button
@@ -203,7 +227,7 @@ export const SupervisorDashboard = () => {
           }`}
         >
           <Icon name="printer" size={15} />
-          Printer LAN Thermal (9100)
+          Remote Printer Meja & Kantor (Rule 2)
         </button>
 
         <button
@@ -222,7 +246,167 @@ export const SupervisorDashboard = () => {
       {/* Tab Content Area */}
       <div className="flex-1 p-6 overflow-y-auto">
         {/* ============================================================ */}
-        {/* TAB 1: PROPOSAL APPROVAL QUEUE (MODE A GATE) */}
+        {/* TAB 1: PELACAKAN LOKASI BARANG (FASTENER TRACKER - RULES 1 & 3) */}
+        {/* ============================================================ */}
+        {activeTab === 'tracking' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <Icon name="search" size={16} className="text-blue-400" />
+                  PELACAKAN LOKASI & DETAIL BARANG (11 GUDANG)
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Scan barcode di rak atau cari nama baut/mur untuk melihat letak gudang, nomor rak, baris tingkat, dan stok sistem.
+                </p>
+              </div>
+
+              {/* Warehouse Filter */}
+              <div className="flex items-center gap-2 text-xs font-mono">
+                <span className="text-slate-400 text-[11px]">Filter Gudang:</span>
+                <select
+                  value={selectedWarehouseFilter}
+                  onChange={(e) => setSelectedWarehouseFilter(e.target.value)}
+                  className="bg-slate-900 border border-slate-700 text-slate-200 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-blue-500 font-bold"
+                >
+                  <option value="ALL">Semua 11 Gudang</option>
+                  {WAREHOUSES.map((wh) => (
+                    <option key={wh.id} value={wh.code}>
+                      {wh.code} ({wh.name})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Search Input Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari nama baut/mur, diameter ulir (M8/M10), kode SKU (AB6C50), atau barcode..."
+                className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 pl-10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono shadow-inner"
+              />
+              <Icon
+                name="search"
+                size={16}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+              />
+            </div>
+
+            {/* Fasteners Table Tracking Grid */}
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden shadow-xl">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-900 border-b border-slate-800 text-[10px] font-mono text-slate-400 uppercase">
+                    <th className="py-3 px-4">Spesifikasi Mur / Baut</th>
+                    <th className="py-3 px-4">Letak Gudang & Rak</th>
+                    <th className="py-3 px-4">Kemasan & Satuan</th>
+                    <th className="py-3 px-4 text-center">Stok Terdata</th>
+                    <th className="py-3 px-4 text-center">Status</th>
+                    <th className="py-3 px-4 text-right">Aksi Print</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 font-mono">
+                  {products
+                    .filter((p) => {
+                      if (selectedWarehouseFilter !== 'ALL' && p.warehouse_code !== selectedWarehouseFilter) {
+                        return false;
+                      }
+                      if (
+                        searchQuery &&
+                        !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                        !p.sku.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                        !p.barcode.includes(searchQuery) &&
+                        !(p.warehouse_code && p.warehouse_code.toLowerCase().includes(searchQuery.toLowerCase()))
+                      ) {
+                        return false;
+                      }
+                      return true;
+                    })
+                    .map((item) => (
+                      <tr key={item.id} className="hover:bg-slate-900/60 transition-colors">
+                        {/* Name & SKU */}
+                        <td className="py-3 px-4">
+                          <div className="font-bold text-slate-100 text-xs">{item.name}</div>
+                          <div className="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
+                            <span className="text-blue-400 font-bold">{item.sku}</span>
+                            <span>• Barcode: {item.barcode}</span>
+                            {item.thread_spec && <span>• Spec: {item.thread_spec}</span>}
+                          </div>
+                        </td>
+
+                        {/* Location Details (Rule 1) */}
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-1.5">
+                            <Icon name="mapPin" size={13} className="text-amber-400 shrink-0" />
+                            <span className="font-bold text-amber-400">{item.warehouse_code || 'U2 GUDANG2'}</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">
+                            Rak: <b className="text-emerald-400">{item.rack_code || 'RAK-01'}</b> •{' '}
+                            {item.shelf_tier || 'Tingkat 1'}
+                          </div>
+                        </td>
+
+                        {/* Packaging */}
+                        <td className="py-3 px-4 text-slate-300 text-[11px]">
+                          <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] font-bold">
+                            {item.pack || 'KARUNG'}
+                          </span>
+                          <span className="text-[10px] text-slate-500 ml-1.5">({item.unit || 'PCS'})</span>
+                        </td>
+
+                        {/* Stock */}
+                        <td className="py-3 px-4 text-center font-bold text-slate-100 text-xs">
+                          {item.status === 'active' ? item.stock_system.toLocaleString() : (item.proposed_qty || 0).toLocaleString()} {item.unit || 'PCS'}
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3 px-4 text-center">
+                          <span
+                            className={`text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
+                              item.status === 'active'
+                                ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                                : 'bg-amber-950 text-amber-300 border-amber-800'
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+
+                        {/* Remote Print Action (Rule 2) */}
+                        <td className="py-3 px-4 text-right">
+                          <button
+                            onClick={() =>
+                              directPrintThermal({
+                                barcode: item.barcode,
+                                productName: item.name,
+                                sku: item.sku,
+                                category: item.category,
+                                qty: item.stock_system,
+                                rackCode: `${item.warehouse_code} - ${item.rack_code}`,
+                                status: item.status,
+                                targetPrinterId: selectedPrinterId,
+                              })
+                            }
+                            className="px-2.5 py-1 rounded-lg bg-purple-950 hover:bg-purple-900 border border-purple-800 text-purple-200 text-[10px] font-bold font-mono inline-flex items-center gap-1 transition-colors"
+                            title={`Cetak remote ke ${targetPrinter.name}`}
+                          >
+                            <Icon name="printer" size={12} className="text-purple-400" />
+                            Print Remote
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================ */}
+        {/* TAB 2: PROPOSAL APPROVAL QUEUE (MODE A GATE) */}
         {/* ============================================================ */}
         {activeTab === 'pending' && (
           <div className="space-y-6 animate-fade-in">
@@ -230,10 +414,10 @@ export const SupervisorDashboard = () => {
               <div>
                 <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-                  DAFTAR PROPOSAL BARANG BARU (MODE A)
+                  ANTRIAN PROPOSAL FASTENER BARU (MODE A)
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Supervisor wajib memeriksa foto fisik barang dan memastikan barcode tidak duplikat sebelum menekan Approve.
+                  Supervisor wajib memeriksa foto fisik spesifikasi ulir baut/mur sebelum menekan Approve.
                 </p>
               </div>
               <div className="text-xs font-mono text-amber-300/80 bg-amber-950/30 border border-amber-900/50 rounded-xl px-3 py-1.5">
@@ -248,7 +432,7 @@ export const SupervisorDashboard = () => {
                 </div>
                 <h4 className="text-sm font-bold text-slate-200">Semua Proposal Sudah Disetujui!</h4>
                 <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                  Tidak ada antrian proposal pending. Anda dapat membuat proposal baru melalui simulator HP Operator di sebelah kiri.
+                  Tidak ada antrian proposal pending. Anda dapat membuat proposal mur/baut baru melalui simulator HP Operator di sebelah kiri.
                 </p>
               </div>
             ) : (
@@ -258,7 +442,6 @@ export const SupervisorDashboard = () => {
                     key={item.id}
                     className="rounded-2xl border border-amber-500/30 bg-slate-900/90 overflow-hidden shadow-xl flex flex-col hover:border-amber-500/60 transition-colors"
                   >
-                    {/* Proposal Card Header */}
                     <div className="p-4 bg-gradient-to-r from-amber-950/30 to-slate-900 border-b border-slate-800 flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2">
@@ -276,7 +459,7 @@ export const SupervisorDashboard = () => {
 
                       <div className="text-right shrink-0">
                         <span className="text-[10px] font-mono text-slate-400 block">
-                          Rak: <b className="text-emerald-400">{item.proposed_location || 'RAK-A-01'}</b>
+                          Gudang: <b className="text-emerald-400">{item.warehouse_code || item.proposed_location}</b>
                         </span>
                         <span className="text-[10px] font-mono text-slate-500 block">
                           {item.created_at}
@@ -284,10 +467,8 @@ export const SupervisorDashboard = () => {
                       </div>
                     </div>
 
-                    {/* Proposal Card Body */}
                     <div className="p-4 space-y-3 flex-1">
                       <div className="flex gap-4">
-                        {/* Physical Photo with Zoom Trigger */}
                         <div
                           onClick={() => setZoomedPhoto(item.photo_url)}
                           className="w-28 h-28 rounded-xl border-2 border-amber-500/40 overflow-hidden shrink-0 relative cursor-pointer group bg-slate-950"
@@ -305,12 +486,11 @@ export const SupervisorDashboard = () => {
                           </div>
                         </div>
 
-                        {/* Specs & Proposer info */}
-                        <div className="flex-1 space-y-1.5 text-xs">
+                        <div className="flex-1 space-y-1.5 text-xs font-mono">
                           <div className="flex justify-between border-b border-slate-800 pb-1">
                             <span className="text-slate-400">Pengaju:</span>
-                            <span className="font-mono text-slate-200">
-                              {users.find((u) => u.id === item.created_by)?.name || 'Operator Lapangan'}
+                            <span className="text-slate-200">
+                              {users.find((u) => u.id === item.created_by)?.name || 'Operator Gudang'}
                             </span>
                           </div>
                           <div className="flex justify-between border-b border-slate-800 pb-1">
@@ -318,18 +498,18 @@ export const SupervisorDashboard = () => {
                             <span className="text-slate-200">{item.category}</span>
                           </div>
                           <div className="flex justify-between border-b border-slate-800 pb-1">
-                            <span className="text-slate-400">Qty Fisik Terhitung:</span>
-                            <span className="font-mono font-bold text-emerald-400">
-                              {item.proposed_qty || 1} pcs
+                            <span className="text-slate-400">Qty Diajukan:</span>
+                            <span className="font-bold text-emerald-400">
+                              {item.proposed_qty || 100} pcs
                             </span>
                           </div>
-                          <div className="text-[11px] text-slate-400 italic pt-1">
+                          <div className="text-[11px] text-slate-400 italic pt-1 font-sans">
                             "{item.notes || 'Ditemukan saat opname rak'}"
                           </div>
                         </div>
                       </div>
 
-                      {/* Barcode Strip Preview */}
+                      {/* Barcode Strip Preview & Remote Print */}
                       <div className="bg-slate-950 p-2 rounded-xl border border-slate-800 flex items-center justify-between">
                         <BarcodeGenerator
                           value={item.barcode}
@@ -346,12 +526,13 @@ export const SupervisorDashboard = () => {
                               sku: item.sku,
                               category: item.category,
                               qty: item.proposed_qty,
-                              rackCode: item.proposed_location,
+                              rackCode: item.warehouse_code || item.proposed_location,
                               status: 'pending',
+                              targetPrinterId: selectedPrinterId,
                             })
                           }
-                          className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs flex items-center gap-1 transition-colors"
-                          title="Cetak ulang label sticker thermal"
+                          className="px-2.5 py-1.5 rounded-lg bg-purple-950 hover:bg-purple-900 border border-purple-800 text-purple-200 text-xs flex items-center gap-1 transition-colors font-mono font-bold"
+                          title="Cetak ulang label draft ke printer target"
                         >
                           <Icon name="printer" size={13} />
                           Print Draft
@@ -359,7 +540,6 @@ export const SupervisorDashboard = () => {
                       </div>
                     </div>
 
-                    {/* Action Gate Buttons */}
                     <div className="p-4 bg-slate-900/60 border-t border-slate-800 flex gap-2">
                       <button
                         onClick={() => handleOpenReject(item)}
@@ -385,7 +565,7 @@ export const SupervisorDashboard = () => {
         )}
 
         {/* ============================================================ */}
-        {/* TAB 2: MONITORING SESI OPNAME & VARIANCE */}
+        {/* TAB 3: HASIL SCAN & VARIANCE */}
         {/* ============================================================ */}
         {activeTab === 'sessions' && (
           <div className="space-y-4 animate-fade-in">
@@ -404,10 +584,11 @@ export const SupervisorDashboard = () => {
                   <tr className="bg-slate-900 border-b border-slate-800 text-[10px] font-mono text-slate-400 uppercase">
                     <th className="py-3 px-4">Waktu</th>
                     <th className="py-3 px-4">Produk & Barcode</th>
+                    <th className="py-3 px-4">Gudang & Rak</th>
                     <th className="py-3 px-4 text-center">Stok Sistem</th>
                     <th className="py-3 px-4 text-center">Qty Fisik</th>
-                    <th className="py-3 px-4 text-center">Selisih (Variance)</th>
-                    <th className="py-3 px-4">Status & Catatan</th>
+                    <th className="py-3 px-4 text-center">Selisih</th>
+                    <th className="py-3 px-4">Catatan</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 font-mono">
@@ -419,6 +600,10 @@ export const SupervisorDashboard = () => {
                       <td className="py-3 px-4">
                         <div className="font-bold text-slate-200">{detail.product_name}</div>
                         <div className="text-[10px] text-slate-500">{detail.barcode}</div>
+                      </td>
+                      <td className="py-3 px-4 text-amber-300 font-bold">
+                        {detail.warehouse_code || 'U2 GUDANG2'}
+                        <span className="text-slate-400 text-[10px] block font-normal">{detail.rack_code || 'RAK-01'}</span>
                       </td>
                       <td className="py-3 px-4 text-center font-bold text-slate-300">
                         {detail.qty_system}
@@ -451,141 +636,20 @@ export const SupervisorDashboard = () => {
         )}
 
         {/* ============================================================ */}
-        {/* TAB 3: KATALOG MASTER PRODUK */}
-        {/* ============================================================ */}
-        {activeTab === 'catalog' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-              {/* Filter Pills */}
-              <div className="flex gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-mono">
-                {[
-                  { key: 'all', label: `Semua (${products.length})` },
-                  { key: 'active', label: `Resmi Active (${activeList.length})` },
-                  { key: 'pending', label: `Pending (${pendingList.length})` },
-                  { key: 'rejected', label: `Rejected (${rejectedList.length})` },
-                ].map((tab) => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setCatalogFilter(tab.key)}
-                    className={`px-3 py-1.5 rounded-lg transition-colors ${
-                      catalogFilter === tab.key
-                        ? 'bg-emerald-600 text-white font-bold'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari nama, SKU, barcode..."
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 pl-8 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 w-64"
-                />
-                <Icon
-                  name="search"
-                  size={14}
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
-                />
-              </div>
-            </div>
-
-            {/* Catalog Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {products
-                .filter((p) => {
-                  if (catalogFilter !== 'all' && p.status !== catalogFilter) return false;
-                  if (
-                    searchQuery &&
-                    !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                    !p.barcode.includes(searchQuery) &&
-                    !p.sku.toLowerCase().includes(searchQuery.toLowerCase())
-                  ) {
-                    return false;
-                  }
-                  return true;
-                })
-                .map((prod) => (
-                  <div
-                    key={prod.id}
-                    className="p-3.5 rounded-2xl border border-slate-800 bg-slate-900/60 flex flex-col justify-between space-y-2 hover:border-slate-700 transition-colors"
-                  >
-                    <div className="flex gap-3">
-                      <img
-                        src={prod.photo_url}
-                        alt={prod.name}
-                        className="w-16 h-16 rounded-xl object-cover border border-slate-700 shrink-0"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.2 rounded border ${
-                              prod.status === 'active'
-                                ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
-                                : prod.status === 'pending'
-                                ? 'bg-amber-950 text-amber-300 border-amber-800'
-                                : 'bg-red-950 text-red-300 border-red-800'
-                            }`}
-                          >
-                            {prod.status}
-                          </span>
-                          <span className="text-[10px] font-mono text-slate-400">{prod.sku}</span>
-                        </div>
-                        <h4 className="text-xs font-bold text-slate-100 truncate mt-1">{prod.name}</h4>
-                        <div className="text-[10px] font-mono text-slate-400">{prod.barcode}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] font-mono pt-2 border-t border-slate-800/80">
-                      <span className="text-slate-400">
-                        Stok:{' '}
-                        <b className="text-slate-100">
-                          {prod.status === 'active' ? prod.stock_system : prod.proposed_qty || 0} pcs
-                        </b>
-                      </span>
-                      <button
-                        onClick={() =>
-                          directPrintThermal({
-                            barcode: prod.barcode,
-                            productName: prod.name,
-                            sku: prod.sku,
-                            category: prod.category,
-                            qty: prod.stock_system,
-                            status: prod.status,
-                          })
-                        }
-                        className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-emerald-400 transition-colors"
-                        title="Print Label"
-                      >
-                        <Icon name="printer" size={14} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {/* ============================================================ */}
-        {/* TAB 4: PRINTER LAN CONFIGURATION (PORT 9100) */}
+        {/* TAB 4: REMOTE PRINTER MEJA & KANTOR (RULE 2) */}
         {/* ============================================================ */}
         {activeTab === 'printers' && (
           <div className="space-y-4 animate-fade-in">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-sm font-bold text-slate-100">MANAJEMEN PRINTER THERMAL LAN (TCP:9100)</h3>
+                <h3 className="text-sm font-bold text-slate-100">MANAJEMEN REMOTE PRINTER THERMAL LAN (TCP:9100)</h3>
                 <p className="text-xs text-slate-400">
-                  HP Android mencetak langsung ke IP statis ini melalui socket RAW TCP tanpa melalui backend server.
+                  Operator yang berada di tengah-tengah lorong rak barang dapat mengirim hasil cetak langsung ke printer meja kantor ini via raw TCP socket.
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {printers.map((prn) => (
                 <div
                   key={prn.id}
@@ -601,12 +665,15 @@ export const SupervisorDashboard = () => {
                           ● {prn.status}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-500">{prn.ping_ms}ms</span>
+                      <span className="text-[10px] font-mono text-slate-500">{prn.ping_ms}ms ping</span>
                     </div>
 
                     <h4 className="text-xs font-bold text-slate-100">{prn.name}</h4>
                     <div className="text-xs font-mono font-bold text-purple-300 mt-1">
-                      {prn.ip}:{prn.port}
+                      IP: {prn.ip}:{prn.port}
+                    </div>
+                    <div className="text-[11px] text-slate-400 mt-1">
+                      Lokasi Fisik: <b className="text-slate-200">{prn.location_desc}</b>
                     </div>
 
                     <div className="mt-3 space-y-1 text-[11px] text-slate-400 font-mono">
@@ -618,18 +685,20 @@ export const SupervisorDashboard = () => {
                   <button
                     onClick={() =>
                       directPrintThermal({
-                        barcode: '8991001001001',
-                        productName: 'TEST PRINT ESC/POS',
+                        barcode: '8992001001001',
+                        productName: 'TEST PRINT ESC/POS - PT UNISON',
                         sku: 'TEST-01',
-                        category: 'Hardware Test',
-                        qty: 1,
+                        category: 'Test Socket',
+                        qty: 100,
+                        rackCode: 'U2 GUDANG2',
                         status: 'active',
+                        targetPrinterId: prn.id,
                       })
                     }
-                    className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold font-mono flex items-center justify-center gap-1.5 transition-colors"
+                    className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-white text-xs font-bold font-mono flex items-center justify-center gap-1.5 transition-colors border border-slate-700"
                   >
                     <Icon name="printer" size={14} />
-                    Test Print Socket (9100)
+                    Test Remote Print ke {prn.name}
                   </button>
                 </div>
               ))}
@@ -644,9 +713,9 @@ export const SupervisorDashboard = () => {
           <div className="space-y-4 animate-fade-in">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-sm font-bold text-slate-100">AUDIT TRAIL LOGS PERUSAHAAN</h3>
+                <h3 className="text-sm font-bold text-slate-100">AUDIT TRAIL LOGS PT UNISON INDUSTRIAL INDONESIA</h3>
                 <p className="text-xs text-slate-400">
-                  Semua aktivitas operator, cetak socket thermal, dan approval supervisor tercatat permanen.
+                  Seluruh aktivitas hitung fisik di rak, remote print ke kantor, dan approval tercatat permanen.
                 </p>
               </div>
             </div>

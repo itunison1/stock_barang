@@ -24,14 +24,15 @@ export const WmsProvider = ({ children }) => {
 
   // Mobile Device Local State (simulating Android Room DB + SharedPreferences + WorkManager)
   const [roomProducts, setRoomProducts] = useState([]); // Cached active products in Room
-  const [currentRack, setCurrentRack] = useState(INITIAL_LOCATIONS[0]); // Current locked rack
+  const [currentRack, setCurrentRack] = useState(INITIAL_LOCATIONS[1]); // Default: U2 GUDANG2
   const [currentSession, setCurrentSession] = useState(INITIAL_STOCK_SESSIONS[0]);
   const [pendingSyncQueue, setPendingSyncQueue] = useState([]); // Room DB sync queue
   const [isOnline, setIsOnline] = useState(true); // Network toggle: Online vs Blind Spot
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState(new Date().toLocaleTimeString());
 
-  // Hardware & Peripheral Simulation
+  // Hardware & Peripheral Simulation (Remote Print Target)
+  const [selectedPrinterId, setSelectedPrinterId] = useState(2); // Default: Printer Meja Kantor (192.168.1.140)
   const [activeThermalLabel, setActiveThermalLabel] = useState(null); // Thermal sticker modal
   const [printJobs, setPrintJobs] = useState([]);
   const [eventLogs, setEventLogs] = useState([
@@ -39,13 +40,13 @@ export const WmsProvider = ({ children }) => {
       id: 'evt-1',
       time: new Date().toLocaleTimeString(),
       type: 'ROOM_DB',
-      message: 'Room DB initialized on Android device. 4 active products cached.',
+      message: 'Room DB initialized for PT Unison Industrial Indonesia. Fasteners master cached.',
     },
     {
       id: 'evt-2',
       time: new Date().toLocaleTimeString(),
       type: 'PRINTER_SOCKET',
-      message: 'Socket connection established to Thermal LAN 192.168.1.50:9100',
+      message: 'Socket connection established to Printer Meja Kantor SPV (192.168.1.140:9100)',
     },
   ]);
 
@@ -70,7 +71,7 @@ export const WmsProvider = ({ children }) => {
     const activeOnly = products.filter((p) => p.status === 'active');
     setRoomProducts(activeOnly);
     setLastSyncTime(new Date().toLocaleTimeString());
-    logEvent('ROOM_DB', `Sync Master Berhasil: ${activeOnly.length} barang active diunduh ke Room DB lokal`);
+    logEvent('ROOM_DB', `Sync Master Berhasil: ${activeOnly.length} item fastener active diunduh ke Room DB lokal`);
     return true;
   };
 
@@ -79,12 +80,12 @@ export const WmsProvider = ({ children }) => {
     syncMasterToDevice();
   }, [products]);
 
-  // Step 2: Scan Rack / Location
+  // Step 2: Scan Rack / Location (Gudang)
   const scanRack = (rackCode) => {
     const loc = locations.find((l) => l.code.toUpperCase() === rackCode.toUpperCase().trim());
     if (!loc) {
-      logEvent('SCAN_WARN', `Lokasi rak tidak dikenali: ${rackCode}`);
-      return { success: false, message: `Rak "${rackCode}" tidak terdaftar di sistem!` };
+      logEvent('SCAN_WARN', `Lokasi gudang tidak dikenali: ${rackCode}`);
+      return { success: false, message: `Gudang "${rackCode}" tidak terdaftar di sistem PT Unison!` };
     }
 
     setCurrentRack(loc);
@@ -100,12 +101,13 @@ export const WmsProvider = ({ children }) => {
       const newSession = {
         id: Date.now(),
         location_id: loc.id,
+        warehouse_code: loc.code,
         operator_id: currentUser.id,
         started_at: new Date().toLocaleString(),
         finished_at: null,
         sync_status: isOnline ? 'synced' : 'local',
-        device_id: 'ZEBRA-TC26-WMS-01',
-        notes: `Opname ${loc.code}`,
+        device_id: 'ZEBRA-TC26-WMS-UNISON01',
+        notes: `Opname ${loc.code} (${loc.zone})`,
       };
       setStockSessions((prev) => [newSession, ...prev]);
       setCurrentSession(newSession);
@@ -114,7 +116,7 @@ export const WmsProvider = ({ children }) => {
     const assignedPrinter = printers.find((p) => p.id === loc.default_printer_id) || printers[0];
     logEvent(
       'SESSION_LOCK',
-      `Sesi terkunci di ${loc.code} (${loc.zone}). Default printer socket: ${assignedPrinter.ip}:${assignedPrinter.port}`
+      `Sesi terkunci di ${loc.code} (${loc.zone}). Target socket default: ${assignedPrinter.name} (${assignedPrinter.ip}:${assignedPrinter.port})`
     );
 
     return { success: true, location: loc, printer: assignedPrinter };
@@ -127,21 +129,21 @@ export const WmsProvider = ({ children }) => {
     // Check in Room DB (cached master active)
     const activeProduct = roomProducts.find((p) => p.barcode === cleanBarcode);
     if (activeProduct) {
-      logEvent('SCAN_SUCCESS', `Barang terdaftar ditemukan di Room DB: ${activeProduct.name} [ACTIVE]`);
+      logEvent('SCAN_SUCCESS', `Fastener terdaftar ditemukan di Room DB: ${activeProduct.name} [ACTIVE] di ${activeProduct.warehouse_code || 'Gudang'}`);
       return { status: 'ACTIVE', product: activeProduct };
     }
 
     // Check if it's already a pending proposal
     const pendingProduct = products.find((p) => p.barcode === cleanBarcode && p.status === 'pending');
     if (pendingProduct) {
-      logEvent('SCAN_PENDING', `Barang ini masih berstatus PENDING di antrian approval: ${pendingProduct.name}`);
+      logEvent('SCAN_PENDING', `Fastener ini masih berstatus PENDING di antrian approval: ${pendingProduct.name}`);
       return { status: 'PENDING', product: pendingProduct };
     }
 
     // Check if it was previously rejected
     const rejectedProduct = products.find((p) => p.barcode === cleanBarcode && p.status === 'rejected');
     if (rejectedProduct) {
-      logEvent('SCAN_REJECTED', `Barang ini sebelumnya DITOLAK: ${rejectedProduct.rejection_reason}`);
+      logEvent('SCAN_REJECTED', `Fastener ini sebelumnya DITOLAK: ${rejectedProduct.rejection_reason}`);
       return { status: 'REJECTED', product: rejectedProduct };
     }
 
@@ -150,7 +152,7 @@ export const WmsProvider = ({ children }) => {
     return { status: 'NOT_FOUND', barcode: cleanBarcode };
   };
 
-  // Direct ESC/POS Thermal Print Simulator (HP -> Thermal Printer directly via TCP:9100)
+  // Direct ESC/POS Thermal Print Simulator (Remote Print to Office / Desk / Portable via TCP:9100)
   const directPrintThermal = ({
     barcode,
     productName,
@@ -159,19 +161,23 @@ export const WmsProvider = ({ children }) => {
     qty,
     rackCode,
     status = 'pending',
+    targetPrinterId = null,
   }) => {
-    const assignedPrinter = printers.find((p) => p.location_id === currentRack?.id) || printers[0];
+    const printerIdToUse = targetPrinterId || selectedPrinterId;
+    const targetPrinter = printers.find((p) => p.id === Number(printerIdToUse)) || printers[0];
 
     const labelData = {
       id: `PRN-${Date.now()}`,
-      barcode: barcode || '8990000000000',
-      productName: productName || 'BARANG PROPOSAL',
-      sku: sku || `SKU-${Date.now().toString().slice(-4)}`,
-      category: category || 'General',
-      qty: qty || 1,
-      rackCode: rackCode || currentRack?.code || 'RAK-A-01',
+      barcode: barcode || '8992000000000',
+      productName: productName || 'FASTENER PROPOSAL',
+      sku: sku || `UNS-${Date.now().toString().slice(-4)}`,
+      category: category || 'Fasteners',
+      qty: qty || 100,
+      rackCode: rackCode || currentRack?.code || 'U2 GUDANG2',
       operatorName: currentUser.name,
-      printerIp: `${assignedPrinter.ip}:${assignedPrinter.port}`,
+      printerName: targetPrinter.name,
+      printerIp: `${targetPrinter.ip}:${targetPrinter.port}`,
+      printerDesc: targetPrinter.location_desc,
       printedAt: new Date().toLocaleString(),
       status: status, // 'pending' or 'active'
       rawEscPosHex: `1B 40 1B 61 01 1D 6B 04 ${barcode} 00 1D 56 00`,
@@ -187,18 +193,18 @@ export const WmsProvider = ({ children }) => {
       user_name: currentUser.name,
       action: 'print',
       entity_type: 'printer_socket',
-      entity_id: assignedPrinter.id,
+      entity_id: targetPrinter.id,
       old_value: null,
-      new_value: { printer: labelData.printerIp, barcode: labelData.barcode, status },
+      new_value: { printer: labelData.printerIp, printerName: targetPrinter.name, barcode: labelData.barcode, status },
       ip_address: '192.168.1.105',
       created_at: new Date().toLocaleString(),
-      description: `Direct TCP:9100 Print ke ${assignedPrinter.name} (${assignedPrinter.ip}) tanpa hop server`,
+      description: `Remote direct print dari lorong rak ke ${targetPrinter.name} (${targetPrinter.ip}:9100) tanpa hop server`,
     };
     setAuditLogs((prev) => [printAudit, ...prev]);
 
     logEvent(
       'PRINTER_SOCKET',
-      `Direct ESC/POS socket bytes sent to ${assignedPrinter.ip}:9100 [Label: ${productName} - ${status.toUpperCase()}]`
+      `Direct ESC/POS socket dikirim ke ${targetPrinter.name} (${targetPrinter.ip}:9100) [Item: ${productName} - ${status.toUpperCase()}]`
     );
 
     return labelData;
@@ -219,6 +225,8 @@ export const WmsProvider = ({ children }) => {
       product_id: prod.id,
       product_name: prod.name,
       barcode: prod.barcode,
+      warehouse_code: currentRack?.code || prod.warehouse_code,
+      rack_code: prod.rack_code || 'RAK-01',
       qty_system: qtySys,
       qty_physical: qtyPhys,
       variance,
@@ -248,7 +256,7 @@ export const WmsProvider = ({ children }) => {
       new_value: { qty_physical: qtyPhys, variance, note },
       ip_address: '192.168.1.105',
       created_at: new Date().toLocaleString(),
-      description: `Hitung stok ${prod.name}: Sistem ${qtySys}, Fisik ${qtyPhys}, Selisih ${variance >= 0 ? '+' : ''}${variance}`,
+      description: `Hitung fisik ${prod.name} di ${currentRack?.code}: Sistem ${qtySys}, Fisik ${qtyPhys}, Selisih ${variance >= 0 ? '+' : ''}${variance}`,
     };
     setAuditLogs((prev) => [countAudit, ...prev]);
 
@@ -267,26 +275,31 @@ export const WmsProvider = ({ children }) => {
     category,
     description = '',
     photoUrl = null,
-    proposedQty = 1,
+    proposedQty = 500,
     notes = '',
+    locationCode = null,
   }) => {
     const newId = Date.now();
-    const newSku = `SKU-P${String(newId).slice(-4)}`;
+    const newSku = `UNS-PROP-${String(newId).slice(-4)}`;
+    const warehouseToUse = locationCode || currentRack?.code || 'U2 GUDANG2';
 
     const newProposal = {
       id: newId,
       sku: newSku,
       barcode: barcode.trim(),
       name: name.trim(),
-      description: description.trim() || 'Barang baru ditemukan saat opname rak',
-      category: category || 'Umum',
+      description: description.trim() || 'Fastener baru ditemukan saat opname rak',
+      category: category || 'Baut Hexagon',
       status: 'pending', // CRITICAL MODE A: Status strictly PENDING!
       photo_url:
         photoUrl ||
-        'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80',
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&q=80',
       stock_system: 0,
-      proposed_qty: parseInt(proposedQty, 10) || 1,
-      proposed_location: currentRack?.code || 'RAK-A-01',
+      proposed_qty: parseInt(proposedQty, 10) || 500,
+      proposed_location: warehouseToUse,
+      warehouse_code: warehouseToUse,
+      rack_code: 'RAK-BARU-01',
+      shelf_tier: 'Tingkat 1',
       created_by: currentUser.id,
       created_by_name: currentUser.name,
       approved_by: null,
@@ -297,27 +310,29 @@ export const WmsProvider = ({ children }) => {
       notes,
     };
 
-    // 1. Direct Print Label (Sticker fisik tertempel di kardus langsung di lorong rak)
+    // 1. Direct Print Label (Bisa langsung ke meja kantor atau meja operator!)
     directPrintThermal({
       barcode: newProposal.barcode,
       productName: newProposal.name,
       sku: newProposal.sku,
       category: newProposal.category,
       qty: newProposal.proposed_qty,
-      rackCode: currentRack?.code,
+      rackCode: newProposal.warehouse_code,
       status: 'pending',
     });
 
     // 2. Save locally into database
     setProducts((prev) => [newProposal, ...prev]);
 
-    // 3. Save to stock detail as pending reference (not counted in official stock yet)
+    // 3. Save to stock detail as pending reference
     const detailRecord = {
       id: Date.now() + 2,
       session_id: currentSession?.id || 1,
       product_id: newProposal.id,
       product_name: newProposal.name,
       barcode: newProposal.barcode,
+      warehouse_code: warehouseToUse,
+      rack_code: 'RAK-BARU-01',
       qty_system: 0,
       qty_physical: newProposal.proposed_qty,
       variance: newProposal.proposed_qty,
@@ -349,11 +364,11 @@ export const WmsProvider = ({ children }) => {
         name: newProposal.name,
         status: 'pending',
         proposed_qty: newProposal.proposed_qty,
-        location: currentRack?.code,
+        location: warehouseToUse,
       },
       ip_address: '192.168.1.105',
       created_at: new Date().toLocaleString(),
-      description: `Operator membuat proposal barang baru & cetak label sticker [PENDING] di ${currentRack?.code}`,
+      description: `Operator mengajukan proposal mur/baut baru & cetak label sticker [PENDING] di ${warehouseToUse}`,
     };
     setAuditLogs((prev) => [auditRecord, ...prev]);
 
@@ -390,7 +405,7 @@ export const WmsProvider = ({ children }) => {
       setPendingSyncQueue([]);
       setIsSyncing(false);
       setLastSyncTime(new Date().toLocaleTimeString());
-      logEvent('SYNC_SUCCESS', `WorkManager berhasil mengirim ${count} payload ke REST API Server.`);
+      logEvent('SYNC_SUCCESS', `WorkManager berhasil mengirim ${count} payload ke REST API Server (192.168.1.140).`);
     }, 1200);
   };
 
@@ -427,15 +442,15 @@ export const WmsProvider = ({ children }) => {
       entity_id: prod.id,
       old_value: { status: 'pending' },
       new_value: { status: 'active', stock_system: updatedProduct.stock_system },
-      ip_address: '192.168.1.20',
+      ip_address: '192.168.1.140',
       created_at: now,
-      description: `Supervisor menyetujui proposal "${prod.name}" (${prod.barcode}) -> STATUS RESMI ACTIVE, stok +${prod.proposed_qty}`,
+      description: `Supervisor menyetujui proposal fastener "${prod.name}" (${prod.barcode}) -> STATUS RESMI ACTIVE, stok +${prod.proposed_qty}`,
     };
     setAuditLogs((prev) => [auditRecord, ...prev]);
 
     logEvent(
       'SPV_APPROVAL',
-      `SUPERVISOR GATE PASSED: "${prod.name}" resmi ACTIVE. Dapat di-tracking di seluruh HP!`
+      `SUPERVISOR GATE PASSED: "${prod.name}" resmi ACTIVE. Dapat di-tracking di seluruh gudang!`
     );
 
     return updatedProduct;
@@ -454,7 +469,7 @@ export const WmsProvider = ({ children }) => {
       approved_by: supervisor.id,
       approved_by_name: supervisor.name,
       approved_at: now,
-      rejection_reason: reason || 'Tidak sesuai spesifikasi gudang resmi',
+      rejection_reason: reason || 'Spesifikasi ulir / material tidak sesuai katalog',
       updated_at: now,
     };
 
@@ -470,7 +485,7 @@ export const WmsProvider = ({ children }) => {
       entity_id: prod.id,
       old_value: { status: 'pending' },
       new_value: { status: 'rejected', rejection_reason: updatedProduct.rejection_reason },
-      ip_address: '192.168.1.20',
+      ip_address: '192.168.1.140',
       created_at: now,
       description: `Supervisor MENOLAK proposal "${prod.name}". Alasan: "${updatedProduct.rejection_reason}"`,
     };
@@ -491,7 +506,7 @@ export const WmsProvider = ({ children }) => {
       logEvent(
         'NETWORK_TOGGLE',
         next
-          ? 'WiFi terhubung kembali. WorkManager siap sinkronisasi.'
+          ? 'WiFi terhubung kembali. WorkManager siap sinkronisasi ke server 192.168.1.140.'
           : 'WiFi terputus! Mode Offline (Blind Spot) aktif. Semua aksi disimpan di Room DB.'
       );
       if (next) {
@@ -521,13 +536,14 @@ export const WmsProvider = ({ children }) => {
     setStockDetails(INITIAL_STOCK_DETAILS);
     setAuditLogs(INITIAL_AUDIT_LOGS);
     setRoomProducts(INITIAL_PRODUCTS.filter((p) => p.status === 'active'));
-    setCurrentRack(INITIAL_LOCATIONS[0]);
+    setCurrentRack(INITIAL_LOCATIONS[1]);
     setCurrentSession(INITIAL_STOCK_SESSIONS[0]);
     setPendingSyncQueue([]);
     setIsOnline(true);
     setPrintJobs([]);
     setActiveThermalLabel(null);
-    logEvent('DB_RESET', 'Database dan antrian lokal di-reset ke kondisi awal (Initial Seed).');
+    setSelectedPrinterId(2);
+    logEvent('DB_RESET', 'Database dan antrian lokal PT Unison di-reset ke kondisi awal.');
   };
 
   return (
@@ -540,6 +556,8 @@ export const WmsProvider = ({ children }) => {
         locations,
         currentRack,
         printers,
+        selectedPrinterId,
+        setSelectedPrinterId,
         products,
         stockSessions,
         currentSession,
