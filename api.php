@@ -100,8 +100,8 @@ if ($action === 'items') {
             'pack' => $r['PACK'] ?: 'DUS',
             'isi_per_pack' => (float)($r['ISI'] ?: 1),
             'warehouse_code' => $r['WCODE'] ?: 'U2 GUDANG2',
-            'rack_code' => $r['WCODE'] ? "RAK-{$r['WCODE']}" : 'RAK-A-01',
-            'shelf_tier' => 'Tingkat 2',
+            'rack_code' => null,
+            'shelf_tier' => null,
             'status' => 'active',
             'price' => (float)$r['PRICE'],
             'is_live_db' => true
@@ -142,8 +142,8 @@ if ($action === 'item') {
             'pack' => $r['PACK'] ?: 'DUS',
             'isi_per_pack' => (float)($r['ISI'] ?: 1),
             'warehouse_code' => $r['WCODE'] ?: 'U2 GUDANG2',
-            'rack_code' => $r['WCODE'] ? "RAK-{$r['WCODE']}" : 'RAK-A-01',
-            'shelf_tier' => 'Tingkat 2',
+            'rack_code' => null,
+            'shelf_tier' => null,
             'status' => 'active',
             'price' => (float)$r['PRICE'],
             'is_live_db' => true
