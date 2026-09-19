@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Stock Opname</string>
+    <string name="login_title">STOCK OPNAME</string>
+    <string name="login_subtitle">PT Unison — Baut &amp; Mur</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">MASUK</string>
+    <string name="warehouse_title">Pilih Gudang</string>
+    <string name="session_title">Sesi Aktif</string>
 </resources>

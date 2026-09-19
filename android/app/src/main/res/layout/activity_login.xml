@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center"
+    android:background="@color/bg_dark" android:padding="32dp">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/login_title" android:textColor="@color/brand_orange"
+        android:textSize="28sp" android:textStyle="bold" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/login_subtitle" android:textColor="@color/text_muted"
+        android:textSize="14sp" android:layout_marginBottom="40dp" android:layout_marginTop="4dp" />
+
+    <EditText android:id="@+id/inputUsername" android:layout_width="match_parent" android:layout_height="56dp"
+        android:hint="@string/hint_username" android:background="@color/bg_card"
+        android:padding="16dp" android:textSize="16sp" android:inputType="text"
+        android:layout_marginBottom="12dp" />
+
+    <EditText android:id="@+id/inputPassword" android:layout_width="match_parent" android:layout_height="56dp"
+        android:hint="@string/hint_password" android:background="@color/bg_card"
+        android:padding="16dp" android:textSize="16sp" android:inputType="textPassword"
+        android:layout_marginBottom="20dp" />
+
+    <TextView android:id="@+id/textError" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="@color/danger_red" android:textSize="13sp" android:visibility="gone"
+        android:layout_marginBottom="12dp" />
+
+    <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/btn_login" android:textColor="@android:color/white"
+        android:textStyle="bold" android:backgroundTint="@color/brand_orange" />
+
+    <ProgressBar android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:visibility="gone" />
+
+    <TextView android:id="@+id/textVersion" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:textColor="@color/text_muted" android:textSize="11sp"
+        android:layout_marginTop="40dp" />
+</LinearLayout>
