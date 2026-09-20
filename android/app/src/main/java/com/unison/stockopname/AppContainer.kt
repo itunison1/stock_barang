@@ -62,8 +62,14 @@ class AppContainer(private val context: Context) {
     fun newMasterSync() = MasterSyncService(api(), db.items(), db.warehouses(), plainStore)
     fun newProposalStatusSync() = ProposalStatusSync(api(), db.proposals())
 
-    /** Isi printer bawaan sekali; IP yang sudah diubah operator tidak ditimpa (OnConflict IGNORE). */
+    /** Migrasikan seed dummy lama ke satu printer LAN nyata; perubahan operator berikutnya tetap editable. */
     suspend fun ensurePrintersSeeded() {
-        db.printers().upsertAll(PrinterSeeds.printers.map { PrinterEntity(it.id, it.name, it.host, it.port, it.paper.name) })
+        val seed = PrinterSeeds.printers.single()
+        val dao = db.printers()
+        val current = dao.findById(seed.id)
+        dao.deleteExcept(seed.id)
+        if (current == null || current.host.startsWith("192.168.1.") && current.host != seed.host) {
+            dao.upsert(PrinterEntity(seed.id, seed.name, seed.host, seed.port, seed.paper.name))
+        }
     }
 }

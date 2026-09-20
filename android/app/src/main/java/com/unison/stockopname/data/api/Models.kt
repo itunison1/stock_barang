@@ -16,6 +16,21 @@ data class LoginData(
 
 data class WarehouseDto(val code: String, val name: String)
 
+data class UserCreateRequest(
+    val username: String,
+    val password: String,
+    @SerializedName("user_divisi") val userDivisi: String,
+    @SerializedName("user_level") val userLevel: Int,
+)
+
+data class UserDto(
+    val iduser: Int,
+    val username: String,
+    @SerializedName("user_divisi") val userDivisi: String?,
+    @SerializedName("user_level") val userLevel: Int,
+    @SerializedName("user_aktif") val userActive: Int,
+)
+
 data class MasterItemDto(
     val id: Long,
     @SerializedName("item_code") val itemCode: String,

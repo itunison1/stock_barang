@@ -29,6 +29,7 @@
 
         <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".DashboardActivity" android:exported="false" />
+        <activity android:name=".AccountManagementActivity" android:exported="false" />
         <activity android:name=".WarehouseActivity" android:exported="false" />
         <activity
             android:name=".SessionActivity"

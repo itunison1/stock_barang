@@ -33,6 +33,10 @@ class DashboardActivity : Activity() {
 
         val app = application as StockOpnameApp
         val user = app.container.auth.currentUser()
+        findViewById<LinearLayout>(R.id.cardAccounts).apply {
+            visibility = if (user?.level == 1) View.VISIBLE else View.GONE
+            setOnClickListener { startActivity(Intent(this@DashboardActivity, AccountManagementActivity::class.java)) }
+        }
         val textOperatorInfo = findViewById<TextView>(R.id.textOperatorInfo)
         val btnLogout = findViewById<Button>(R.id.btnLogout)
 

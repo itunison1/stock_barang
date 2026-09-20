@@ -34,6 +34,16 @@ function wms_require_auth(mysqli $conn): array {
     return $user;
 }
 
+function wms_is_admin(array $user): bool {
+    return (int)$user['user_level'] === 1;
+}
+
+function wms_require_admin(mysqli $conn): array {
+    $user = wms_require_auth($conn);
+    if (!wms_is_admin($user)) wms_json_error('Khusus administrator.', 403);
+    return $user;
+}
+
 function wms_require_table(mysqli $conn, string $table): void {
     if (preg_match('/^[a-z_]+$/', $table) !== 1) wms_json_error('Nama tabel tidak valid.', 500);
     $r = @mysqli_query($conn, "SHOW TABLES LIKE '" . $table . "'");
