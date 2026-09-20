@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <!-- Pasang APK update yang diunduh sendiri (bukan Play Store). Pengguna tetap melihat dialog sistem sekali. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
@@ -29,6 +28,7 @@
         </activity>
 
         <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".DashboardActivity" android:exported="false" />
         <activity android:name=".WarehouseActivity" android:exported="false" />
         <activity
             android:name=".SessionActivity"
@@ -36,7 +36,6 @@
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
-        <!-- Bagikan APK hasil unduhan ke Package Installer lewat content:// (file:// dilarang sejak Android 7). -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

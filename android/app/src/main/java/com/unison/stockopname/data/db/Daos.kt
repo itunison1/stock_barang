@@ -47,6 +47,11 @@ interface SessionDao {
             "ORDER BY startedAt DESC LIMIT 1"
     )
     suspend fun findOpen(operator: String, warehouse: String): SessionEntity?
+    @Query(
+        "SELECT * FROM session WHERE operator = :operator AND finishedAt IS NULL " +
+            "ORDER BY startedAt DESC LIMIT 1"
+    )
+    suspend fun findActive(operator: String): SessionEntity?
     @Query("UPDATE session SET finishedAt = :at WHERE uuid = :uuid") suspend fun finish(uuid: String, at: Long)
     @Query(
         "UPDATE session SET finishedAt = :at WHERE operator = :operator AND finishedAt IS NULL " +
@@ -63,6 +68,8 @@ interface CountDao {
             "ORDER BY createdAtDevice DESC LIMIT 1"
     )
     suspend fun latestForItem(sessionUuid: String, itemCode: String): CountEntity?
+    @Query("SELECT * FROM count_record ORDER BY createdAtDevice DESC LIMIT 50")
+    suspend fun recentCounts(): List<CountEntity>
 }
 
 @Dao
@@ -72,6 +79,8 @@ interface ProposalDao {
     suspend fun findByBarcode(barcode: String): ProposalEntity?
     @Query("UPDATE proposal SET status = :status, rejectionReason = :reason WHERE uuid = :uuid")
     suspend fun updateStatus(uuid: String, status: String, reason: String?)
+    @Query("SELECT * FROM proposal ORDER BY createdAtDevice DESC LIMIT 50")
+    suspend fun recentProposals(): List<ProposalEntity>
 }
 
 @Dao

@@ -34,4 +34,13 @@ class AppSettingsTest {
         val store = InMemoryKeyValueStore().apply { putString("base_url", "  ") }
         assertEquals(default, AppSettings(store, default).baseUrl)
     }
+
+    @Test fun rememberUsernameStoresAndRetrieves() {
+        val store = InMemoryKeyValueStore()
+        val s = AppSettings(store, default)
+        s.rememberUsername = "cseon"
+        s.isRememberMe = true
+        assertEquals("cseon", s.rememberUsername)
+        assertEquals(true, s.isRememberMe)
+    }
 }

@@ -1,39 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:gravity="center"
-    android:background="@color/bg_dark" android:padding="32dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/bg_dark">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/login_title" android:textColor="@color/brand_orange"
-        android:textSize="28sp" android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/login_subtitle" android:textColor="@color/text_muted"
-        android:textSize="14sp" android:layout_marginBottom="40dp" android:layout_marginTop="4dp" />
+        <!-- Company Header -->
+        <ImageView
+            android:id="@+id/imgLoginLogo"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:src="@drawable/unison_logo"
+            android:contentDescription="@string/desc_logo"
+            android:scaleType="fitCenter" />
 
-    <EditText android:id="@+id/inputUsername" android:layout_width="match_parent" android:layout_height="56dp"
-        android:hint="@string/hint_username" android:background="@color/bg_card"
-        android:padding="16dp" android:textSize="16sp" android:inputType="text"
-        android:layout_marginBottom="12dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="STOCK OPNAME WMS"
+            android:textColor="@color/brand_orange"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <EditText android:id="@+id/inputPassword" android:layout_width="match_parent" android:layout_height="56dp"
-        android:hint="@string/hint_password" android:background="@color/bg_card"
-        android:padding="16dp" android:textSize="16sp" android:inputType="textPassword"
-        android:layout_marginBottom="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="PT Unison Industrial Indonesia"
+            android:textColor="@color/text_muted"
+            android:textSize="13sp" />
 
-    <TextView android:id="@+id/textError" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textColor="@color/danger_red" android:textSize="13sp" android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        <!-- Login Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_card_rounded"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/btn_login" android:textColor="@android:color/white"
-        android:textStyle="bold" android:backgroundTint="@color/brand_orange" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Masuk ke Akun Operator"
+                android:textColor="@color/text_light"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
 
-    <ProgressBar android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
 
-    <TextView android:id="@+id/textVersion" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:textColor="@color/text_muted" android:textSize="11sp"
-        android:layout_marginTop="40dp" />
-</LinearLayout>
+            <EditText
+                android:id="@+id/inputUsername"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:minHeight="48dp"
+                android:hint="@string/hint_username"
+                android:textColor="@color/text_light"
+                android:textColorHint="@color/text_muted"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:textSize="15sp"
+                android:inputType="text"
+                android:layout_marginBottom="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="48dp"
+                    android:hint="@string/hint_password"
+                    android:textColor="@color/text_light"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="48dp"
+                    android:textSize="15sp"
+                    android:inputType="textPassword" />
+
+                <ImageButton
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility"
+                    android:contentDescription="@string/desc_toggle_password" />
+            </FrameLayout>
+
+            <!-- Checkbox Ingat Saya -->
+            <CheckBox
+                android:id="@+id/cbRememberMe"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:minHeight="48dp"
+                android:text="@string/remember_me"
+                android:textColor="@color/text_light"
+                android:textSize="13sp"
+                android:buttonTint="@color/brand_orange"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/textError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/danger_red"
+                android:textSize="13sp"
+                android:visibility="gone"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:minHeight="48dp"
+                android:text="@string/btn_login"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_orange" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:indeterminateTint="@color/brand_orange"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textServerInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Server: Staging (http://192.168.1.140/stock/api/)"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/textVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+</ScrollView>

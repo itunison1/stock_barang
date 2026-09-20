@@ -217,6 +217,11 @@ class SessionActivity : ComponentActivity() {
         setupListeners()
         setupPrinters()
 
+        val initialTab = intent.getIntExtra("initial_tab", 0)
+        if (initialTab in 0..3) {
+            switchTab(initialTab)
+        }
+
         val app = application as StockOpnameApp
         val operator = app.container.auth.currentUser()?.username ?: "operator"
         textActiveOperator.text = "Operator: $operator"
@@ -1076,7 +1081,9 @@ class SessionActivity : ComponentActivity() {
             if (session != null) {
                 app.container.db.sessions().finish(session.uuid, System.currentTimeMillis())
             }
-            startActivity(Intent(this@SessionActivity, WarehouseActivity::class.java))
+            val intent = Intent(this@SessionActivity, DashboardActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
             finish()
         }
     }
@@ -1133,10 +1140,16 @@ class SessionActivity : ComponentActivity() {
 
     override fun onBackPressed() {
         AlertDialog.Builder(this)
-            .setTitle("Tinggalkan Layar Sesi?")
-            .setMessage("Pilih tindakan:")
-            .setPositiveButton("Ganti Gudang") { _, _ -> finishSessionAndExit() }
+            .setTitle("Kembali ke Dashboard?")
+            .setMessage("Sesi opname gudang $warehouseCode tetap tersimpan aktif. Anda dapat melanjutkan sesi ini kapan saja dari menu utama.")
+            .setPositiveButton("Dashboard") { _, _ ->
+                val intent = Intent(this, DashboardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
+                finish()
+            }
             .setNeutralButton("Tetap di Sesi", null)
+            .setNegativeButton("Ganti Gudang") { _, _ -> finishSessionAndExit() }
             .show()
     }
 

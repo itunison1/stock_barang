@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgSplashLogo"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/unison_logo"
+            android:contentDescription="@string/desc_logo"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="PT UNISON INDUSTRIAL INDONESIA"
+            android:textColor="@color/text_light"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.06" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="WMS STOCK OPNAME"
+            android:textColor="@color/brand_orange"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Sistem Inventaris &amp; Penghitungan Fisik Gudang"
+            android:textColor="@color/text_muted"
+            android:textSize="13sp" />
+
+        <ProgressBar
+            android:id="@+id/splashProgress"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="36dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/brand_orange" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textSplashVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp"
+        android:text="v1.3 • Staging 192.168.1.140" />
+</RelativeLayout>

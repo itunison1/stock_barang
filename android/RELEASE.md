@@ -28,3 +28,11 @@ Tanpa `keystore.properties`, build release jatuh ke debug keystore (hanya untuk 
    Bila terbalik, semua HP langsung ditawari update yang APK-nya belum ada.
 
 `updates/*.apk` tidak ikut commit (`*.apk` ada di `.gitignore`).
+
+
+## Catatan Rilis v1.3 (2026-09-20)
+- **Splash Screen Branded**: Identitas visual PT Unison Industrial Indonesia memakai aset logo perusahaan resmi (`unison_logo.png`) sebelum login.
+- **Login Modern & Aman**: Tampilan login modern hierarchy rapi, toggle show/hide password (ikon mata) dengan touch target & contentDescription, checkbox "Ingat saya" (hanya menyimpan username di preferensi terenkripsi, tidak menyimpan password plaintext).
+- **Dashboard Operasional (Fase B)**: Menu visual card setelah login (bukan dump list 19 gudang): Mulai Opname, Lanjutkan Sesi, Scan Barang Cepat, Data Belum Sinkron (Outbox), Riwayat Hitung, Status Persetujuan, Cetak Label, Pengaturan. Card yang belum tersedia berlabel "Segera Hadir" (tanpa navigasi palsu).
+- **Pilihan Gudang Informatif**: Grid 2-kolom dengan kode + nama gudang, real-time search & filter untuk 19 gudang, navigasi kembali (back) jelas ke Dashboard.
+- **Staging Preservation**: Mempertahankan staging `192.168.1.140:3306/stockopname_test` dan base URL `http://192.168.1.140/stock/api/`.

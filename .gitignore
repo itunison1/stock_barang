@@ -35,3 +35,7 @@ android/.gradle/
 android/build/
 android/app/build/
 *.apk
+
+# Local build scripts
+build_final.ps1
+android/build_final.ps1
