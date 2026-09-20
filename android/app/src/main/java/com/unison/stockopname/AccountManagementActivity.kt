@@ -2,12 +2,9 @@ package com.unison.stockopname
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.InputType
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -27,17 +24,16 @@ class AccountManagementActivity : Activity() {
         val app = application as StockOpnameApp
         if (app.container.auth.currentUser()?.level != 1) { finish(); return }
 
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(32, 32, 32, 32) }
-        val username = EditText(this).apply { hint = "Username" }
-        val password = EditText(this).apply { hint = "Password minimal 8 karakter"; inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD }
-        val division = EditText(this).apply { hint = "Divisi" }
-        val role = Spinner(this).apply { adapter = ArrayAdapter(this@AccountManagementActivity, android.R.layout.simple_spinner_dropdown_item, listOf("Admin", "Supervisor", "Operator")) }
-        val add = Button(this).apply { text = "Tambah Akun" }
-        list = TextView(this).apply { setPadding(0, 24, 0, 0) }
-        listOf(TextView(this).apply { text = "KELOLA AKUN"; textSize = 22f }, username, password, division, role, add, list).forEach {
-            root.addView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        setContentView(R.layout.activity_account_management)
+        val username = findViewById<EditText>(R.id.inputAccountUsername)
+        val password = findViewById<EditText>(R.id.inputAccountPassword)
+        val division = findViewById<EditText>(R.id.inputAccountDivision)
+        val role = findViewById<Spinner>(R.id.spinnerAccountRole).apply {
+            adapter = ArrayAdapter(this@AccountManagementActivity, android.R.layout.simple_spinner_dropdown_item, listOf("Admin", "Supervisor", "Operator"))
         }
-        setContentView(root)
+        val add = findViewById<Button>(R.id.btnAddAccount)
+        list = findViewById(R.id.textAccountList)
+
         add.setOnClickListener {
             val levels = intArrayOf(1, 2, 3)
             scope.launch {

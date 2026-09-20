@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand_orange">#FF6B00</color>
-    <color name="brand_orange_light">#FF8533</color>
-    <color name="brand_orange_dark">#D95A00</color>
-    <color name="bg_dark">#1E2530</color>
-    <color name="bg_card">#2A3242</color>
-    <color name="bg_card_darker">#181F2A</color>
-    <color name="bg_dark_banner">#181F2A</color>
-    <color name="tab_unselected">#242C3A</color>
-    <color name="border_card">#3F4D63</color>
-    <color name="text_light">#F5F5F5</color>
-    <color name="text_muted">#9AA5B1</color>
-    <color name="blue_sub">#93C5FD</color>
-    <color name="success_green">#2ECC71</color>
-    <color name="danger_red">#E74C3C</color>
-    <color name="warning_gold">#F59E0B</color>
-    <color name="badge_bg_disabled">#374151</color>
-    <color name="badge_text_disabled">#9CA3AF</color>
-    <color name="ic_launcher_background">#1E2530</color>
+    <!-- Nama resource lama dipertahankan agar diff kecil; palet sekarang biru ala MEview. -->
+    <color name="brand_orange">#3B82F6</color>
+    <color name="brand_orange_light">#60A5FA</color>
+    <color name="brand_orange_dark">#2563EB</color>
+    <color name="bg_dark">#090C14</color>
+    <color name="bg_card">#121627</color>
+    <color name="bg_card_darker">#0C0F1A</color>
+    <color name="bg_dark_banner">#0C0F1A</color>
+    <color name="tab_unselected">#0E111D</color>
+    <color name="border_card">#262C40</color>
+    <color name="text_light">#EEF2F9</color>
+    <color name="text_muted">#8992A8</color>
+    <color name="blue_sub">#60A5FA</color>
+    <color name="success_green">#22C55E</color>
+    <color name="danger_red">#F0453F</color>
+    <color name="warning_gold">#F0A020</color>
+    <color name="badge_bg_disabled">#1B2032</color>
+    <color name="badge_text_disabled">#8992A8</color>
+    <color name="ic_launcher_background">#090C14</color>
 </resources>
