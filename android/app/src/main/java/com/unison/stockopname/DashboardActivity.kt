@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.app.DownloadManager
 import android.graphics.Color
+import androidx.core.content.ContextCompat
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -77,13 +78,14 @@ class DashboardActivity : Activity() {
         val cardApproval = findViewById<LinearLayout>(R.id.cardApproval)
         val cardPrint = findViewById<LinearLayout>(R.id.cardPrint)
         val cardSettings = findViewById<LinearLayout>(R.id.cardSettings)
+        val cardHowItWorks = findViewById<LinearLayout>(R.id.cardHowItWorks)
 
         // Operator Info
         textOperatorInfo.text = "Operator: ${user?.username ?: "-"} (${user?.division ?: "Gudang"})"
 
         // Logout
         btnLogout.setOnClickListener {
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Keluar Akun")
                 .setMessage("Apakah Anda ingin keluar dari aplikasi?")
                 .setPositiveButton("Ya, Keluar") { _, _ ->
@@ -205,6 +207,11 @@ class DashboardActivity : Activity() {
         cardSettings.setOnClickListener {
             showSettingsDialog(app)
         }
+
+        // Card 9: Cara Kerja
+        cardHowItWorks.setOnClickListener {
+            showHowItWorksDialog()
+        }
     }
 
     override fun onResume() {
@@ -256,7 +263,7 @@ class DashboardActivity : Activity() {
                     "Fisik: ${c.qtyPhysical} | Sistem: ${c.qtySystem} | Var: ${c.variance} (${sdf.format(Date(c.createdAtDevice))})"
                 }
             }
-            AlertDialog.Builder(this@DashboardActivity)
+            AlertDialog.Builder(this@DashboardActivity, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Riwayat Hitung Fisik (15 Terakhir)")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
@@ -276,7 +283,7 @@ class DashboardActivity : Activity() {
                     if (p.rejectionReason != null) "Alasan: ${p.rejectionReason}" else "Menunggu verifikasi SPV"
                 }
             }
-            AlertDialog.Builder(this@DashboardActivity)
+            AlertDialog.Builder(this@DashboardActivity, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Status Proposal Barang")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
@@ -295,7 +302,7 @@ class DashboardActivity : Activity() {
                 "• Gagal: $failed record\n" +
                 "• Terkirim: $sent record\n\n" +
                 "Sync berjalan otomatis di background lewat WorkManager ketika terhubung jaringan staging."
-            AlertDialog.Builder(this@DashboardActivity)
+            AlertDialog.Builder(this@DashboardActivity, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Status Outbox Sinkronisasi")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
@@ -314,9 +321,40 @@ class DashboardActivity : Activity() {
             "• Operator: ${user?.username ?: "-"} (Level ${user?.level ?: 0})\n" +
             "• Scanner: CameraX + ML Kit (Barcode 1D/2D)\n" +
             "• Target Perangkat: Android 10+ (Zebra TC26 & Handphone)"
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
             .setTitle("Pengaturan & Informasi Sistem")
             .setMessage(message)
+            .setPositiveButton("Tutup", null)
+            .create().also(::showReadableDialog)
+    }
+
+    private fun showHowItWorksDialog() {
+        val operatorGuide = "TUGAS OPERATOR (Level 3):\n\n" +
+            "1. SCAN — Arahkan kamera/scanner ke barcode barang. Sistem otomatis mencari nama barang di katalog.\n\n" +
+            "2. HITUNG — Masukkan jumlah fisik yang Anda hitung di rak. Sistem otomatis membandingkan dengan stok sistem (Variance).\n\n" +
+            "3. Kalau barcode TIDAK ditemukan di katalog — jangan lewati barang itu. Buat 'Proposal Temuan Fisik (Mode A)', wajib foto barang sebagai bukti. Ini menunggu persetujuan Supervisor, tidak langsung masuk ke stok resmi.\n\n" +
+            "4. CETAK LABEL — Kalau butuh cetak ulang label yang rusak/hilang, isi barcode dan nama barang lalu kirim ke printer gudang. Nama barang & barcode otomatis terisi kalau Anda baru saja SCAN barang itu di sesi yang sama; kalau ganti HP atau sesi baru, isi/scan ulang.\n\n" +
+            "5. SYNC — Data hitungan tersimpan dulu di HP (offline-safe). Tekan SYNC untuk kirim ke server pusat begitu ada sinyal. Jangan tutup app sebelum status 'Terkirim'.\n\n" +
+            "6. Riwayat Hitung — daftar 15 hitungan terakhir yang Anda lakukan di HP ini (barang, qty, selisih, waktu). Hanya catatan lokal, bukan laporan resmi perusahaan."
+
+        val supervisorGuide = "TUGAS SUPERVISOR (Level 2) & ADMIN (Level 1):\n\n" +
+            "1. Status Persetujuan — pantau semua proposal barang baru dari operator (Mode A). Setiap proposal wajib ada foto bukti sebelum disetujui.\n\n" +
+            "2. Persetujuan proposal SAAT INI dilakukan lewat Dashboard Web (bukan dari HP), supaya foto besar bisa diperiksa jelas dan tercatat siapa yang menyetujui.\n\n" +
+            "3. Kelola Akun (khusus Admin) — tambah/nonaktifkan user, atur level akses: Admin bisa semua, Supervisor bisa lihat & putuskan proposal, Operator hanya scan & hitung.\n\n" +
+            "4. Variance besar (selisih hitung fisik vs sistem jauh berbeda) harus dicek ulang sebelum disetujui — jangan asal approve.\n\n" +
+            "5. Data 'DB Live (.159)' di menu Pengaturan bersifat Read-Only untuk semua orang — perubahan stok resmi hanya lewat proses opname yang sudah disetujui, bukan edit langsung."
+
+        val istilah = "ISTILAH DI APLIKASI:\n\n" +
+            "• Opname = kegiatan hitung ulang stok fisik di gudang.\n" +
+            "• Variance = selisih antara stok sistem dan hasil hitung fisik.\n" +
+            "• Proposal Mode A = usulan barang baru yang tidak ada di katalog, wajib foto + approval Supervisor.\n" +
+            "• Draft/Pending = label sementara, belum resmi, dicetak sebelum proposal disetujui.\n" +
+            "• Label Resmi = label final untuk barang yang statusnya sudah aktif di sistem.\n" +
+            "• Sinkron (SYNC) = mengirim data offline dari HP ke server pusat."
+
+        AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
+            .setTitle("📖 Cara Kerja Aplikasi")
+            .setMessage("$operatorGuide\n\n────────────\n\n$supervisorGuide\n\n────────────\n\n$istilah")
             .setPositiveButton("Tutup", null)
             .create().also(::showReadableDialog)
     }
@@ -324,11 +362,14 @@ class DashboardActivity : Activity() {
     private fun showReadableDialog(dialog: AlertDialog) {
         dialog.setOnShowListener {
             val titleId = resources.getIdentifier("alertTitle", "id", "android")
-            dialog.findViewById<TextView>(titleId)?.setTextColor(Color.rgb(20, 20, 20))
-            dialog.findViewById<TextView>(android.R.id.message)?.setTextColor(Color.rgb(33, 33, 33))
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.rgb(230, 105, 0))
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.rgb(230, 105, 0))
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(Color.rgb(230, 105, 0))
+            val textLight = ContextCompat.getColor(this, R.color.text_light)
+            val textMuted = ContextCompat.getColor(this, R.color.text_muted)
+            val brandBlue = ContextCompat.getColor(this, R.color.brand_orange)
+            dialog.findViewById<TextView>(titleId)?.setTextColor(textLight)
+            dialog.findViewById<TextView>(android.R.id.message)?.setTextColor(textMuted)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(brandBlue)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(brandBlue)
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(brandBlue)
         }
         dialog.show()
     }
@@ -338,7 +379,7 @@ class DashboardActivity : Activity() {
         updateChecked = true
         scope.launch {
             val info = app.container.updates.checkForUpdate(app.container.settings.baseUrl, BuildConfig.VERSION_CODE) ?: return@launch
-            val dialog = AlertDialog.Builder(this@DashboardActivity)
+            val dialog = AlertDialog.Builder(this@DashboardActivity, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Update v${info.versionName} tersedia")
                 .setMessage(info.notes.ifBlank { "Versi aplikasi baru tersedia." })
                 .setPositiveButton("Update sekarang") { _, _ ->

@@ -478,7 +478,7 @@ class SessionActivity : ComponentActivity() {
 
         // Safe Session Ending
         btnEndSession.setOnClickListener {
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Ganti Gudang / Selesai Sesi")
                 .setMessage("Apakah Anda yakin ingin mengakhiri sesi opname di $warehouseCode?")
                 .setPositiveButton("Ya, Selesaikan") { _, _ ->
@@ -489,7 +489,7 @@ class SessionActivity : ComponentActivity() {
         }
 
         btnLogout.setOnClickListener {
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
                 .setTitle("Keluar Akun")
                 .setMessage("Keluar dari aplikasi dan akhiri sesi aktif?")
                 .setPositiveButton("Logout") { _, _ ->
@@ -682,7 +682,7 @@ class SessionActivity : ComponentActivity() {
                     promptPrintAfterCount(r.record)
                 }
                 is SaveCountResult.NeedsResolution -> {
-                    AlertDialog.Builder(this@SessionActivity)
+                    AlertDialog.Builder(this@SessionActivity, R.style.Theme_StockOpname_Dialog)
                         .setTitle("Hitungan Ganda Terdeteksi")
                         .setMessage(
                             "Barang ${item.itemCode} sudah pernah dihitung dalam sesi ini.\n\n" +
@@ -704,7 +704,7 @@ class SessionActivity : ComponentActivity() {
     }
 
     private fun promptPrintAfterCount(record: CountEntity) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.Theme_StockOpname_Dialog)
             .setTitle("Hitungan Tersimpan")
             .setMessage("Data opname ${record.itemCode} berhasil disimpan.\nCetak label fisik sekarang?")
             .setPositiveButton("Cetak Label") { _, _ ->
@@ -868,7 +868,7 @@ class SessionActivity : ComponentActivity() {
                     executePrint()
                 }
 
-                AlertDialog.Builder(this@SessionActivity)
+                AlertDialog.Builder(this@SessionActivity, R.style.Theme_StockOpname_Dialog)
                     .setTitle("Proposal Tersimpan")
                     .setMessage("Proposal '${prop.name}' tersimpan di perangkat.\nCetak label DRAFT (Pending Approval)?")
                     .setPositiveButton("Cetak Draft") { _, _ ->

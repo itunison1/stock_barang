@@ -11,4 +11,18 @@
     </style>
 
     <style name="Theme.StockOpname.Splash" parent="Theme.StockOpname" />
+
+    <style name="Theme.StockOpname.Dialog" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:windowBackground">@color/bg_card</item>
+        <item name="android:textColorPrimary">@color/text_light</item>
+        <item name="android:textColorSecondary">@color/text_muted</item>
+        <item name="android:colorAccent">@color/brand_orange</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Theme.StockOpname.Dialog.Button</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/Theme.StockOpname.Dialog.Button</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/Theme.StockOpname.Dialog.Button</item>
+    </style>
+
+    <style name="Theme.StockOpname.Dialog.Button" parent="android:Widget.Material.Button.Borderless">
+        <item name="android:textColor">@color/brand_orange</item>
+    </style>
 </resources>
