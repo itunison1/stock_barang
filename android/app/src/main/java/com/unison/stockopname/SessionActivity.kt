@@ -1139,18 +1139,10 @@ class SessionActivity : ComponentActivity() {
     }
 
     override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setTitle("Kembali ke Dashboard?")
-            .setMessage("Sesi opname gudang $warehouseCode tetap tersimpan aktif. Anda dapat melanjutkan sesi ini kapan saja dari menu utama.")
-            .setPositiveButton("Dashboard") { _, _ ->
-                val intent = Intent(this, DashboardActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                startActivity(intent)
-                finish()
-            }
-            .setNeutralButton("Tetap di Sesi", null)
-            .setNegativeButton("Ganti Gudang") { _, _ -> finishSessionAndExit() }
-            .show()
+        startActivity(Intent(this, DashboardActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        })
+        finish()
     }
 
     override fun onDestroy() {

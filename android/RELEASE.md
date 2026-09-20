@@ -36,3 +36,9 @@ Tanpa `keystore.properties`, build release jatuh ke debug keystore (hanya untuk 
 - **Dashboard Operasional (Fase B)**: Menu visual card setelah login (bukan dump list 19 gudang): Mulai Opname, Lanjutkan Sesi, Scan Barang Cepat, Data Belum Sinkron (Outbox), Riwayat Hitung, Status Persetujuan, Cetak Label, Pengaturan. Card yang belum tersedia berlabel "Segera Hadir" (tanpa navigasi palsu).
 - **Pilihan Gudang Informatif**: Grid 2-kolom dengan kode + nama gudang, real-time search & filter untuk 19 gudang, navigasi kembali (back) jelas ke Dashboard.
 - **Staging Preservation**: Mempertahankan staging `192.168.1.140:3306/stockopname_test` dan base URL `http://192.168.1.140/stock/api/`.
+
+## Catatan Rilis v1.3.1 (2026-09-20)
+- Tombol Back dari sesi langsung kembali ke satu Dashboard; sesi opname tetap aktif, tanpa modal pilihan berulang.
+- CTA `Lanjutkan Sesi` duplikat dihapus; satu tombol sesi aktif menjadi jalur utama.
+- Seluruh dialog Dashboard memakai teks gelap yang terbaca pada background putih.
+- Printer default tunggal sementara: POS-80C LAN `192.168.1.206:9100`; seed printer yang belum tersedia dihapus.

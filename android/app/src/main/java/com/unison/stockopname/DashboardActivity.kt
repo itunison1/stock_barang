@@ -3,6 +3,7 @@ package com.unison.stockopname
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -66,7 +67,7 @@ class DashboardActivity : Activity() {
                     finish()
                 }
                 .setNegativeButton("Batal", null)
-                .show()
+                .create().also(::showReadableDialog)
         }
 
         // Observasi Outbox Flow
@@ -103,7 +104,8 @@ class DashboardActivity : Activity() {
                 startActivity(Intent(this, WarehouseActivity::class.java))
             }
         }
-        cardResume.setOnClickListener(onResumeSession)
+        // Satu CTA saja untuk sesi aktif; hindari target navigasi ganda.
+        cardResume.visibility = View.GONE
         btnQuickActionSession.setOnClickListener(onResumeSession)
 
         // Card 3: Scan Barang
@@ -233,7 +235,7 @@ class DashboardActivity : Activity() {
                 .setTitle("Riwayat Hitung Fisik (15 Terakhir)")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
-                .show()
+                .create().also(::showReadableDialog)
         }
     }
 
@@ -253,7 +255,7 @@ class DashboardActivity : Activity() {
                 .setTitle("Status Proposal Barang")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
-                .show()
+                .create().also(::showReadableDialog)
         }
     }
 
@@ -272,7 +274,7 @@ class DashboardActivity : Activity() {
                 .setTitle("Status Outbox Sinkronisasi")
                 .setMessage(message)
                 .setPositiveButton("Tutup", null)
-                .show()
+                .create().also(::showReadableDialog)
         }
     }
 
@@ -291,7 +293,19 @@ class DashboardActivity : Activity() {
             .setTitle("Pengaturan & Informasi Sistem")
             .setMessage(message)
             .setPositiveButton("Tutup", null)
-            .show()
+            .create().also(::showReadableDialog)
+    }
+
+    private fun showReadableDialog(dialog: AlertDialog) {
+        dialog.setOnShowListener {
+            val titleId = resources.getIdentifier("alertTitle", "id", "android")
+            dialog.findViewById<TextView>(titleId)?.setTextColor(Color.rgb(20, 20, 20))
+            dialog.findViewById<TextView>(android.R.id.message)?.setTextColor(Color.rgb(33, 33, 33))
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.rgb(230, 105, 0))
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.rgb(230, 105, 0))
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(Color.rgb(230, 105, 0))
+        }
+        dialog.show()
     }
 
     override fun onDestroy() {
