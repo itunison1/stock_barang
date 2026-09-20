@@ -523,17 +523,6 @@ class SessionActivity : ComponentActivity() {
         btnScanCamera.text = "KAMERA"
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-                startCameraScanner()
-            } else {
-                Toast.makeText(this, "Izin kamera diperlukan untuk scan barcode", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun switchTab(tabIndex: Int) {
         if (tabIndex != 0) stopCameraScanner()
         btnTabScan.setBackgroundResource(if (tabIndex == 0) R.drawable.bg_tab_selected else R.drawable.bg_tab_unselected)
@@ -730,10 +719,18 @@ class SessionActivity : ComponentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            launchCamera()
-        } else {
-            Toast.makeText(this, "Izin kamera diperlukan untuk mengambil foto bukti fisik", Toast.LENGTH_SHORT).show()
+        val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        when (requestCode) {
+            CAMERA_PERMISSION_REQUEST -> if (granted) {
+                startCameraScanner()
+            } else {
+                Toast.makeText(this, "Izin kamera diperlukan untuk scan barcode", Toast.LENGTH_SHORT).show()
+            }
+            101 -> if (granted) {
+                launchCamera()
+            } else {
+                Toast.makeText(this, "Izin kamera diperlukan untuk mengambil foto bukti fisik", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
