@@ -54,6 +54,8 @@ data class CountPayload(
     @SerializedName("client_uuid") val clientUuid: String,
     @SerializedName("session_uuid") val sessionUuid: String,
     @SerializedName("warehouse_code") val warehouseCode: String,
+    @SerializedName("expected_warehouse") val expectedWarehouse: String? = null,
+    @SerializedName("exception_type") val exceptionType: String? = null,
     @SerializedName("item_code") val itemCode: String,
     @SerializedName("item_name") val itemName: String,
     @SerializedName("qty_system") val qtySystem: Double,

@@ -27,6 +27,26 @@ CREATE TABLE IF NOT EXISTS wms_counts (
   KEY idx_counts_wh (warehouse_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS wms_location_exceptions (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  count_uuid CHAR(36) NOT NULL,
+  username VARCHAR(50) NOT NULL,
+  item_code VARCHAR(50) NOT NULL,
+  expected_warehouse VARCHAR(50) NOT NULL,
+  found_warehouse VARCHAR(50) NOT NULL,
+  rack_code VARCHAR(50) NULL,
+  evidence_note VARCHAR(500) NOT NULL DEFAULT '',
+  status ENUM('REVIEW_REQUIRED','RECOUNT_REQUIRED','APPROVED_RETURN','APPROVED_TRANSFER','REJECTED') NOT NULL DEFAULT 'REVIEW_REQUIRED',
+  reviewed_by VARCHAR(50) NULL,
+  reviewed_at DATETIME NULL,
+  review_reason VARCHAR(500) NULL,
+  created_at DATETIME NOT NULL,
+  UNIQUE KEY uq_location_exception_count (count_uuid),
+  KEY idx_location_exception_status (status),
+  KEY idx_location_exception_item (item_code),
+  KEY idx_location_exception_route (expected_warehouse, found_warehouse)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS wms_proposals (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   client_uuid CHAR(36) NOT NULL,

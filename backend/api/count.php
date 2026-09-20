@@ -25,7 +25,14 @@ $variance = (float)$b['variance'];
 $rack = $b['rack_code'] ?? null;
 $note = (string)($b['note'] ?? '');
 $supersedes = $b['supersedes_uuid'] ?? null;
+$exceptionType = strtoupper(trim((string)($b['exception_type'] ?? '')));
+$expectedWarehouse = trim((string)($b['expected_warehouse'] ?? ''));
+if ($exceptionType !== '' && $exceptionType !== 'MISPLACED') wms_json_error('exception_type tidak valid.', 422);
+if ($exceptionType === 'MISPLACED' && ($expectedWarehouse === '' || $expectedWarehouse === $warehouse)) {
+    wms_json_error('Lokasi sistem dan lokasi temuan wajib berbeda.', 422);
+}
 
+mysqli_begin_transaction($conn);
 $stmt = $conn->prepare(
     "INSERT INTO wms_counts (client_uuid, session_uuid, username, warehouse_code, item_code, item_name,
         qty_system, qty_physical, variance, rack_code, note, supersedes_uuid,
@@ -39,8 +46,31 @@ $stmt->bind_param(
     $clientUuid, $sessionUuid, $username, $warehouse, $itemCode, $itemName,
     $qtySystem, $qtyPhysical, $variance, $rack, $note, $supersedes, $deviceAt, $skew
 );
-if (!$stmt->execute()) wms_json_error('Gagal menyimpan hitungan.', 500);
+if (!$stmt->execute()) {
+    mysqli_rollback($conn);
+    wms_json_error('Gagal menyimpan hitungan.', 500);
+}
 $duplicate = $stmt->affected_rows === 0;
 $stmt->close();
 
-wms_json_success(['duplicate' => $duplicate]);
+if (!$duplicate && $exceptionType === 'MISPLACED') {
+    wms_require_table($conn, 'wms_location_exceptions');
+    $ex = $conn->prepare(
+        "INSERT INTO wms_location_exceptions
+         (count_uuid, username, item_code, expected_warehouse, found_warehouse, rack_code, evidence_note, status, created_at)
+         VALUES (?,?,?,?,?,?,?,'REVIEW_REQUIRED',NOW())"
+    );
+    $ex->bind_param('sssssss', $clientUuid, $username, $itemCode, $expectedWarehouse, $warehouse, $rack, $note);
+    if (!$ex->execute()) {
+        mysqli_rollback($conn);
+        wms_json_error('Gagal mencatat exception salah lokasi.', 500);
+    }
+    $ex->close();
+}
+mysqli_commit($conn);
+
+wms_json_success([
+    'duplicate' => $duplicate,
+    'status' => $exceptionType === 'MISPLACED' ? 'REVIEW_REQUIRED' : ($variance == 0.0 ? 'VERIFIED' : 'REVIEW_REQUIRED'),
+    'exception_type' => $exceptionType !== '' ? $exceptionType : null,
+]);

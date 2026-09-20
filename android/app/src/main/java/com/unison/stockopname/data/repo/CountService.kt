@@ -42,12 +42,14 @@ class CountService(
 
         val finalQty = DuplicateCountPolicy.resolve(existing?.qtyPhysical, qty, action)
         val variance = VarianceCalculator.variance(finalQty, item.stock)
+        val misplaced = !item.warehouseCode.isNullOrBlank() && item.warehouseCode != session.warehouseCode
+        val exceptionNote = if (misplaced) "[MISPLACED][EXPECTED:${item.warehouseCode}] ${note.trim()}" else note.trim()
         val record = CountEntity(
             uuid = newUuid(), sessionUuid = session.uuid, warehouseCode = session.warehouseCode,
             itemCode = item.itemCode, itemName = item.itemName, qtySystem = item.stock,
             qtyPhysical = finalQty, variance = variance,
             rackCode = rackCode?.trim()?.takeIf { it.isNotEmpty() },
-            note = note.trim(), supersedesUuid = existing?.uuid,
+            note = exceptionNote, supersedesUuid = existing?.uuid,
             createdAtDevice = clock(), operator = session.operator,
         )
 

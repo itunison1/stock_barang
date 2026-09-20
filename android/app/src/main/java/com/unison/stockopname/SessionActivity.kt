@@ -658,6 +658,12 @@ class SessionActivity : ComponentActivity() {
         }
 
         val userNote = inputCountNote.text.toString().trim()
+        val misplaced = !item.warehouseCode.isNullOrBlank() && item.warehouseCode != session.warehouseCode
+        if (misplaced && userNote.isBlank()) {
+            Toast.makeText(this, "Barang salah lokasi: isi catatan posisi fisik sebelum simpan.", Toast.LENGTH_LONG).show()
+            inputCountNote.requestFocus()
+            return
+        }
         val metaNote = "[MODE:$mode|SRC:$currentInputSource] $userNote".trim()
 
         val app = application as StockOpnameApp

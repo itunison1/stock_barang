@@ -14,6 +14,8 @@ object Payloads {
     fun count(c: CountEntity): String = gson.toJson(
         CountPayload(
             clientUuid = c.uuid, sessionUuid = c.sessionUuid, warehouseCode = c.warehouseCode,
+            expectedWarehouse = c.note.substringAfter("[EXPECTED:", "").substringBefore("]").takeIf { it.isNotBlank() },
+            exceptionType = if (c.note.contains("[MISPLACED]")) "MISPLACED" else null,
             itemCode = c.itemCode, itemName = c.itemName, qtySystem = c.qtySystem,
             qtyPhysical = c.qtyPhysical, variance = c.variance, rackCode = c.rackCode, note = c.note,
             supersedesUuid = c.supersedesUuid, createdAtDevice = isoUtc(c.createdAtDevice),
