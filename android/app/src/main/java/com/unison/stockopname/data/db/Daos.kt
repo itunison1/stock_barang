@@ -36,6 +36,7 @@ interface PrinterDao {
     @Query("SELECT * FROM printer ORDER BY id") suspend fun all(): List<PrinterEntity>
     @Query("SELECT * FROM printer WHERE id = :id") suspend fun findById(id: Long): PrinterEntity?
     @Query("DELETE FROM printer WHERE id != :keepId") suspend fun deleteExcept(keepId: Long)
+    @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun upsertAll(list: List<PrinterEntity>)
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun upsert(printer: PrinterEntity)
     @Update suspend fun update(printer: PrinterEntity)
 }
