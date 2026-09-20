@@ -142,15 +142,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginEnd="4dp">
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:src="@drawable/ic_warehouse"
                         android:contentDescription="Mulai Opname" />
 
@@ -159,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:text="Mulai Opname"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -168,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:text="Pilih dari 19 gudang"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -176,15 +179,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginStart="4dp">
+                    android:layout_marginStart="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:src="@drawable/ic_barcode_scan"
                         android:contentDescription="Lanjutkan Sesi" />
 
@@ -193,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:text="Lanjutkan Sesi"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -203,7 +209,7 @@
                         android:layout_height="wrap_content"
                         android:text="Hitung fisik &amp; variance"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -219,15 +225,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginEnd="4dp">
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:src="@drawable/ic_barcode_scan"
                         android:contentDescription="Scan Kamera" />
 
@@ -236,7 +245,7 @@
                         android:layout_height="wrap_content"
                         android:text="Scan Barang"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -245,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:text="CameraX + ML Kit"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -253,21 +262,22 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginStart="4dp">
+                    android:layout_marginStart="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:src="@drawable/ic_sync"
                             android:contentDescription="Sync Outbox" />
 
@@ -275,19 +285,24 @@
                             android:id="@+id/badgePendingOutbox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_gravity="top|end"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="-4dp"
+                            android:minWidth="18dp"
+                            android:minHeight="18dp"
+                            android:gravity="center"
                             android:background="@drawable/bg_badge_active"
                             android:text="0 pending"
                             android:textColor="@color/text_light"
                             android:textSize="10sp" />
-                    </LinearLayout>
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Data Belum Sinkron"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -297,7 +312,7 @@
                         android:layout_height="wrap_content"
                         android:text="Semua data tersinkron"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -313,55 +328,24 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginEnd="4dp">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_history"
-                        android:contentDescription="Riwayat Hitung" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Riwayat Hitung"
-                        android:textColor="@color/text_light"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rekap hitungan sesi"
-                        android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cardApproval"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:layout_marginStart="4dp">
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_approval"
-                            android:contentDescription="Status Persetujuan" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_history"
+                            android:contentDescription="Riwayat Hitung" />
 
                         <TextView
                             android:id="@+id/badgePendingCount"
@@ -384,9 +368,68 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Riwayat Hitung"
+                        android:textColor="@color/text_light"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rekap hitungan sesi"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardApproval"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:layout_marginStart="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_approval"
+                            android:contentDescription="Status Persetujuan" />
+
+                        <TextView
+                            android:id="@+id/badgePendingCountApproval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|end"
+                            android:layout_marginStart="18dp"
+                            android:layout_marginTop="-4dp"
+                            android:minWidth="18dp"
+                            android:minHeight="18dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_badge_alert"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Status Persetujuan"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -395,7 +438,7 @@
                         android:layout_height="wrap_content"
                         android:text="Proposal barang baru"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -411,33 +454,36 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginEnd="4dp">
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🖨️"
-                        android:textSize="22sp" />
+                        android:textSize="24sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Cetak Label"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:layout_marginTop="6dp" />
+                        android:layout_marginTop="8dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Label draft TCP 9100"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -445,15 +491,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:background="@drawable/bg_card_interactive"
+                    android:minHeight="60dp"
+                    android:background="@color/bg_card"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:layout_marginStart="4dp">
+                    android:layout_marginStart="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:src="@drawable/ic_settings"
                         android:contentDescription="Pengaturan" />
 
@@ -462,7 +511,7 @@
                         android:layout_height="wrap_content"
                         android:text="Pengaturan"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -471,7 +520,7 @@
                         android:layout_height="wrap_content"
                         android:text="Server staging &amp; info"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -480,19 +529,22 @@
                 android:id="@+id/cardHowItWorks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="80dp"
-                android:background="@drawable/bg_card_interactive"
+                android:minHeight="60dp"
+                android:background="@color/bg_card"
+                android:elevation="2dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="14dp"
+                android:padding="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="📖"
-                    android:textSize="22sp"
+                    android:textSize="24sp"
                     android:layout_marginEnd="12dp" />
 
                 <LinearLayout
@@ -506,7 +558,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cara Kerja"
                         android:textColor="@color/text_light"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -514,7 +566,7 @@
                         android:layout_height="wrap_content"
                         android:text="Panduan alur &amp; istilah untuk Operator dan Supervisor"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -523,11 +575,12 @@
                 android:id="@+id/cardAccounts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="80dp"
-                android:background="@drawable/bg_card_interactive"
+                android:minHeight="60dp"
+                android:background="@color/bg_card"
+                android:elevation="2dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="14dp"
+                android:padding="12dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="16dp">
 
@@ -541,8 +594,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kelola Akun"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -550,16 +601,17 @@
                         android:layout_height="wrap_content"
                         android:text="Tambah user, password, dan hak akses"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Admin"
-                    android:textColor="@color/brand_orange"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/text_light"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="12dp" />
             </LinearLayout>
 
             <TextView
@@ -568,7 +620,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Alur: Scan → Detail → Hitung → Variance → Proposal → Audit"
                 android:textColor="@color/text_muted"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:layout_marginBottom="16dp" />
         </LinearLayout>
     </ScrollView>
