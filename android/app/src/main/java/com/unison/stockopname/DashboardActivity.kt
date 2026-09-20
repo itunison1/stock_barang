@@ -2,7 +2,11 @@ package com.unison.stockopname
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.app.DownloadManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -26,12 +30,29 @@ class DashboardActivity : Activity() {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var activeSession: SessionEntity? = null
     private var activeWarehouseName: String? = null
+    private var updateChecked = false
+    private var updateDownloadId: Long? = null
+    private var updateApkName: String? = null
+    private val updateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L) == updateDownloadId) {
+                updateApkName?.let { (application as StockOpnameApp).container.updates.installDownloadedApk(this@DashboardActivity, it) }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(updateReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            registerReceiver(updateReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        }
 
         val app = application as StockOpnameApp
+        checkForUpdate(app)
         val user = app.container.auth.currentUser()
         findViewById<LinearLayout>(R.id.cardAccounts).apply {
             visibility = if (user?.level == 1) View.VISIBLE else View.GONE
@@ -312,8 +333,30 @@ class DashboardActivity : Activity() {
         dialog.show()
     }
 
+    private fun checkForUpdate(app: StockOpnameApp) {
+        if (updateChecked) return
+        updateChecked = true
+        scope.launch {
+            val info = app.container.updates.checkForUpdate(app.container.settings.baseUrl, BuildConfig.VERSION_CODE) ?: return@launch
+            val dialog = AlertDialog.Builder(this@DashboardActivity)
+                .setTitle("Update v${info.versionName} tersedia")
+                .setMessage(info.notes.ifBlank { "Versi aplikasi baru tersedia." })
+                .setPositiveButton("Update sekarang") { _, _ ->
+                    updateApkName = info.apkFileName
+                    updateDownloadId = app.container.updates.enqueueDownload(this@DashboardActivity, app.container.settings.baseUrl, info)
+                    Toast.makeText(this@DashboardActivity, "Update sedang diunduh", Toast.LENGTH_LONG).show()
+                }
+                .apply { if (!info.mandatory) setNegativeButton("Nanti", null) }
+                .create()
+            dialog.setCanceledOnTouchOutside(!info.mandatory)
+            dialog.setCancelable(!info.mandatory)
+            showReadableDialog(dialog)
+        }
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
+        runCatching { unregisterReceiver(updateReceiver) }
         scope.cancel()
+        super.onDestroy()
     }
 }
