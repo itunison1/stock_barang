@@ -1,8 +1,8 @@
 package com.unison.stockopname
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
+import androidx.activity.ComponentActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -33,6 +34,9 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.unison.stockopname.data.db.CountEntity
 import com.unison.stockopname.data.db.ItemEntity
@@ -54,6 +58,7 @@ import com.unison.stockopname.domain.DuplicateAction
 import com.unison.stockopname.domain.VarianceCalculator
 import com.unison.stockopname.domain.WatermarkSpec
 import com.unison.stockopname.sync.SyncOutcome
+import com.unison.stockopname.util.CameraBarcodeScanner
 import com.unison.stockopname.util.Watermarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +72,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.max
 
-class SessionActivity : Activity() {
+class SessionActivity : ComponentActivity() {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -112,7 +117,11 @@ class SessionActivity : Activity() {
     private lateinit var textScanSource: TextView
     private lateinit var inputBarcode: EditText
     private lateinit var btnScanManual: Button
+    private lateinit var btnScanCamera: Button
+    private lateinit var cameraPreviewContainer: FrameLayout
+    private lateinit var previewView: PreviewView
     private lateinit var progressScan: ProgressBar
+    private var cameraScanner: CameraBarcodeScanner? = null
 
     private lateinit var cardFoundItem: LinearLayout
     private lateinit var textFoundItemCode: TextView
@@ -256,6 +265,9 @@ class SessionActivity : Activity() {
         textScanSource = findViewById(R.id.textScanSource)
         inputBarcode = findViewById(R.id.inputBarcode)
         btnScanManual = findViewById(R.id.btnScanManual)
+        btnScanCamera = findViewById(R.id.btnScanCamera)
+        cameraPreviewContainer = findViewById(R.id.cameraPreviewContainer)
+        previewView = findViewById(R.id.previewView)
         progressScan = findViewById(R.id.progressScan)
 
         cardFoundItem = findViewById(R.id.cardFoundItem)
@@ -358,6 +370,10 @@ class SessionActivity : Activity() {
             } else {
                 Toast.makeText(this, "Masukkan kode barcode", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        btnScanCamera.setOnClickListener {
+            if (cameraScanner?.isScanning == true) stopCameraScanner() else requestCameraScanner()
         }
 
         inputBarcode.setOnEditorActionListener { _, actionId, _ ->
@@ -479,7 +495,47 @@ class SessionActivity : Activity() {
         }
     }
 
+    private fun requestCameraScanner() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startCameraScanner()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST)
+        }
+    }
+
+    private fun startCameraScanner() {
+        cameraPreviewContainer.visibility = View.VISIBLE
+        btnScanCamera.text = "STOP"
+        textScanSource.text = "Sumber: KAMERA"
+        cameraScanner?.release()
+        cameraScanner = CameraBarcodeScanner(this, previewView) { barcode ->
+            currentInputSource = "CAMERA"
+            inputBarcode.setText(barcode)
+            stopCameraScanner()
+            doScanLookup(barcode, "CAMERA")
+        }.also { it.start() }
+    }
+
+    private fun stopCameraScanner() {
+        cameraScanner?.release()
+        cameraScanner = null
+        cameraPreviewContainer.visibility = View.GONE
+        btnScanCamera.text = "KAMERA"
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+                startCameraScanner()
+            } else {
+                Toast.makeText(this, "Izin kamera diperlukan untuk scan barcode", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun switchTab(tabIndex: Int) {
+        if (tabIndex != 0) stopCameraScanner()
         btnTabScan.setBackgroundResource(if (tabIndex == 0) R.drawable.bg_tab_selected else R.drawable.bg_tab_unselected)
         btnTabProposal.setBackgroundResource(if (tabIndex == 1) R.drawable.bg_tab_selected else R.drawable.bg_tab_unselected)
         btnTabPrint.setBackgroundResource(if (tabIndex == 2) R.drawable.bg_tab_selected else R.drawable.bg_tab_unselected)
@@ -1059,6 +1115,7 @@ class SessionActivity : Activity() {
     }
 
     override fun onPause() {
+        stopCameraScanner()
         super.onPause()
         try {
             unregisterReceiver(dataWedgeReceiver)
@@ -1087,7 +1144,13 @@ class SessionActivity : Activity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        cameraScanner?.release()
+        cameraScanner = null
         scope.cancel()
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST = 2001
     }
 }

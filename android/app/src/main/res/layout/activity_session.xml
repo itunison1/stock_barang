@@ -270,7 +270,40 @@
                         android:layout_marginStart="8dp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp" />
+
+                    <Button
+                        android:id="@+id/btnScanCamera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="KAMERA"
+                        android:textColor="@color/text_light"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:background="@drawable/bg_btn_green"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
                 </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/cameraPreviewContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@android:color/black"
+                    android:visibility="gone">
+
+                    <androidx.camera.view.PreviewView
+                        android:id="@+id/previewView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="260dp"
+                        android:layout_height="110dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_scan_overlay" />
+                </FrameLayout>
 
                 <ProgressBar
                     android:id="@+id/progressScan"
