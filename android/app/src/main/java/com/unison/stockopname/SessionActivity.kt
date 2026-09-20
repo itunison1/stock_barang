@@ -10,9 +10,13 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -168,6 +172,9 @@ class SessionActivity : ComponentActivity() {
     private lateinit var spinnerPrinters: Spinner
     private lateinit var inputPrintHost: EditText
     private lateinit var inputPrintPort: EditText
+    private lateinit var textPrinterStatus: TextView
+    private lateinit var dotPrinterStatus: View
+    private lateinit var btnCheckPrinter: Button
     private lateinit var inputPrintBarcode: EditText
     private lateinit var inputPrintName: EditText
     private lateinit var inputPrintQty: EditText
@@ -323,6 +330,9 @@ class SessionActivity : ComponentActivity() {
         spinnerPrinters = findViewById(R.id.spinnerPrinters)
         inputPrintHost = findViewById(R.id.inputPrintHost)
         inputPrintPort = findViewById(R.id.inputPrintPort)
+        textPrinterStatus = findViewById(R.id.textPrinterStatus)
+        dotPrinterStatus = findViewById(R.id.dotPrinterStatus)
+        btnCheckPrinter = findViewById(R.id.btnCheckPrinter)
         inputPrintBarcode = findViewById(R.id.inputPrintBarcode)
         inputPrintName = findViewById(R.id.inputPrintName)
         inputPrintQty = findViewById(R.id.inputPrintQty)
@@ -457,6 +467,10 @@ class SessionActivity : ComponentActivity() {
             executePrint()
         }
 
+        btnCheckPrinter.setOnClickListener {
+            checkPrinterConnection()
+        }
+
         // Sync Tab: Manual Outbox Sync & Master Sync
         btnTriggerSync.setOnClickListener {
             triggerOutboxSync()
@@ -560,12 +574,30 @@ class SessionActivity : ComponentActivity() {
         if (variance == 0.0) {
             textVariance.text = "Selisih: 0 (SESUAI SISTEM)"
             textVariance.setTextColor(Color.parseColor("#2ECC71")) // Green
-        } else if (variance > 0) {
-            textVariance.text = "Selisih: +$fmtVar (LEBIH)"
-            textVariance.setTextColor(Color.parseColor("#E74C3C")) // Danger Red
         } else {
-            textVariance.text = "Selisih: $fmtVar (KURANG)"
-            textVariance.setTextColor(Color.parseColor("#E74C3C")) // Danger Red
+            val pct = VarianceCalculator.variancePercent(currentPhysicalQty, item.stock)
+            val color = if (pct < 5.0) Color.parseColor("#F1C40F") else Color.parseColor("#E74C3C") // Yellow <5%, Red >=5%
+            if (variance > 0) {
+                textVariance.text = "Selisih: +$fmtVar (LEBIH)"
+            } else {
+                textVariance.text = "Selisih: $fmtVar (KURANG)"
+            }
+            textVariance.setTextColor(color)
+        }
+    }
+
+    private fun vibrate(durationMs: Long) {
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(durationMs)
         }
     }
 
@@ -592,6 +624,7 @@ class SessionActivity : ComponentActivity() {
 
             when (val outcome = result.outcome) {
                 is ScanOutcome.Found -> {
+                    vibrate(60)
                     val item = outcome.item
                     currentScanItem = item
                     currentPhysicalQty = 0
@@ -619,6 +652,7 @@ class SessionActivity : ComponentActivity() {
                     inputPrintQty.setText("0")
                 }
                 is ScanOutcome.NotFound -> {
+                    vibrate(250)
                     cardNotFound.visibility = View.VISIBLE
                     textNotFoundMsg.text = "❌ Barcode '$rawBarcode' tidak ditemukan di katalog lokal."
                 }
@@ -957,6 +991,37 @@ class SessionActivity : ComponentActivity() {
                 val msg = res.exceptionOrNull()?.message ?: "Gagal terhubung ke printer"
                 textPrintFeedback.text = "❌ $msg"
                 textPrintFeedback.setTextColor(Color.parseColor("#E74C3C"))
+            }
+        }
+    }
+
+    private fun setPrinterDot(color: Int) {
+        (dotPrinterStatus.background as? GradientDrawable)?.setColor(color)
+    }
+
+    private fun checkPrinterConnection() {
+        val host = inputPrintHost.text.toString().trim()
+        val port = inputPrintPort.text.toString().toIntOrNull() ?: 9100
+        if (host.isEmpty()) {
+            Toast.makeText(this, "IP Printer wajib diisi", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val app = application as StockOpnameApp
+        textPrinterStatus.text = "Mengecek..."
+        textPrinterStatus.setTextColor(Color.parseColor("#F59E0B"))
+        setPrinterDot(Color.parseColor("#F59E0B"))
+        btnCheckPrinter.isEnabled = false
+        scope.launch {
+            val res = app.container.printerClient.checkConnection(host, port)
+            btnCheckPrinter.isEnabled = true
+            if (res.isSuccess) {
+                textPrinterStatus.text = "Printer terhubung"
+                textPrinterStatus.setTextColor(Color.parseColor("#2ECC71"))
+                setPrinterDot(Color.parseColor("#2ECC71"))
+            } else {
+                textPrinterStatus.text = "Printer tidak terjangkau"
+                textPrinterStatus.setTextColor(Color.parseColor("#E74C3C"))
+                setPrinterDot(Color.parseColor("#E74C3C"))
             }
         }
     }

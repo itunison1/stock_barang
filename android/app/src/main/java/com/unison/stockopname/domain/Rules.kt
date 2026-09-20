@@ -3,6 +3,13 @@ package com.unison.stockopname.domain
 object VarianceCalculator {
     /** Selisih = qty fisik - qty sistem (Bab 2.3 panduan). */
     fun variance(qtyPhysical: Int, qtySystem: Double): Double = qtyPhysical - qtySystem
+
+    /** Persentase selisih relatif terhadap stok sistem. 0 kalau stok sistem 0 dan selisih 0. */
+    fun variancePercent(qtyPhysical: Int, qtySystem: Double): Double {
+        val variance = variance(qtyPhysical, qtySystem)
+        if (qtySystem == 0.0) return if (variance == 0.0) 0.0 else 100.0
+        return kotlin.math.abs(variance) / qtySystem * 100.0
+    }
 }
 
 data class Misplacement(val registeredWarehouse: String, val scannedWarehouse: String) {

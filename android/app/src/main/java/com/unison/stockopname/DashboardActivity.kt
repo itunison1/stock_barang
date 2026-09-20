@@ -217,6 +217,21 @@ class DashboardActivity : Activity() {
     override fun onResume() {
         super.onResume()
         refreshActiveSession()
+        refreshPendingBadge()
+    }
+
+    private fun refreshPendingBadge() {
+        val app = application as StockOpnameApp
+        val badge = findViewById<TextView>(R.id.badgePendingCount)
+        scope.launch {
+            val count = app.container.db.proposals().countPending()
+            if (count > 0) {
+                badge.text = if (count > 99) "99+" else count.toString()
+                badge.visibility = View.VISIBLE
+            } else {
+                badge.visibility = View.GONE
+            }
+        }
     }
 
     private fun refreshActiveSession() {

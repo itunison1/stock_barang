@@ -83,6 +83,8 @@ interface ProposalDao {
     suspend fun updateStatus(uuid: String, status: String, reason: String?)
     @Query("SELECT * FROM proposal ORDER BY createdAtDevice DESC LIMIT 50")
     suspend fun recentProposals(): List<ProposalEntity>
+    @Query("SELECT COUNT(*) FROM proposal WHERE status = 'pending'")
+    suspend fun countPending(): Int
 }
 
 @Dao

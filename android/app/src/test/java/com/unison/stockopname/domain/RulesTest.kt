@@ -19,6 +19,26 @@ class RulesTest {
         assertEquals(0.0, VarianceCalculator.variance(10, 10.0), 0.0001)
     }
 
+    // --- variancePercent (dipakai tier warna hijau/kuning/merah di UI) ---
+    @Test fun variancePercentZeroWhenNoDifference() {
+        assertEquals(0.0, VarianceCalculator.variancePercent(10, 10.0), 0.0001)
+    }
+
+    @Test fun variancePercentSmallDifferenceUnderFivePercent() {
+        // selisih 4 dari 100 = 4% -> kuning
+        assertEquals(4.0, VarianceCalculator.variancePercent(96, 100.0), 0.0001)
+    }
+
+    @Test fun variancePercentLargeDifferenceAtOrAboveFivePercent() {
+        // selisih 10 dari 100 = 10% -> merah
+        assertEquals(10.0, VarianceCalculator.variancePercent(90, 100.0), 0.0001)
+    }
+
+    @Test fun variancePercentHandlesZeroSystemStock() {
+        assertEquals(100.0, VarianceCalculator.variancePercent(5, 0.0), 0.0001)
+        assertEquals(0.0, VarianceCalculator.variancePercent(0, 0.0), 0.0001)
+    }
+
     // --- misplacement ---
     @Test fun sameWarehouseNoAlert() {
         assertNull(MisplacementChecker.check("U2 GUDANG3", "U2 GUDANG3"))
