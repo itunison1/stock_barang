@@ -19,8 +19,8 @@ android {
         applicationId = "com.unison.stockopname"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.6"
+        versionCode = 8
+        versionName = "1.7"
         buildConfigField("String", "DEFAULT_BASE_URL", "\"http://192.168.1.140/stock/api/\"")
     }
 

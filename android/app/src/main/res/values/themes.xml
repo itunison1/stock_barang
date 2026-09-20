@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.StockOpname" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.StockOpname" parent="android:Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/brand_orange</item>
         <item name="android:colorAccent">@color/brand_orange</item>
         <item name="android:windowBackground">@color/bg_dark</item>
