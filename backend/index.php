@@ -1,0 +1,39 @@
+<?php
+session_start();
+if (!isset($_SESSION['wms_user'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'><path d='M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WMS Stock Opname Barang — Mode A (Proposal Approval System)</title>
+    <meta name="description" content="Sistem Stock Opname Barang Mode A: Operator Create Draft, Direct Thermal LAN Print, Room DB Offline-First, dan Supervisor Approval Gate." />
+    <!-- Standalone Offline Tailwind Script (Works in closed factory intranet without internet) -->
+    <script src="./tailwind.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              slate: {
+                850: '#0f172a',
+                950: '#050811',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-D3osqsTw.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bqi8tG9f.css">
+  </head>
+  <body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div id="root"></div>
+
+  </body>
+</html>
