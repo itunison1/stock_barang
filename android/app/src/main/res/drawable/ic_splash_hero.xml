@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hero icon untuk splash & login: gudang di tengah, baut-mur sebagai aksen sudut -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+
+    <!-- ========== LINGKARAN LATAR BELAKANG ========== -->
+    <!-- Outer glow ring -->
+    <path
+        android:fillColor="#1AE87722"
+        android:pathData="M80,80 m-72,0 a72,72 0 1,0 144,0 a72,72 0 1,0 -144,0" />
+    <!-- Inner circle background -->
+    <path
+        android:fillColor="#2A2A2A"
+        android:pathData="M80,80 m-58,0 a58,58 0 1,0 116,0 a58,58 0 1,0 -116,0" />
+    <!-- Inner ring accent -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#E87722"
+        android:strokeWidth="1.5"
+        android:pathData="M80,80 m-54,0 a54,54 0 1,0 108,0 a54,54 0 1,0 -108,0" />
+
+    <!-- ========== GUDANG UTAMA (tengah) ========== -->
+    <!-- Atap gudang (segitiga / trapesium) -->
+    <path
+        android:fillColor="#E87722"
+        android:pathData="M40,72 L80,50 L120,72 Z" />
+    <!-- Badan gudang -->
+    <path
+        android:fillColor="#3A3A3A"
+        android:strokeColor="#E87722"
+        android:strokeWidth="1.5"
+        android:pathData="M46,72 L46,105 L114,105 L114,72 Z" />
+    <!-- Pintu besar tengah -->
+    <path
+        android:fillColor="#1E1E1E"
+        android:pathData="M68,105 L68,85 Q68,82 71,82 L89,82 Q92,82 92,85 L92,105 Z" />
+    <!-- Garis pintu tengah -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#E87722"
+        android:strokeWidth="1"
+        android:pathData="M80,82 L80,105" />
+    <!-- Jendela kiri -->
+    <path
+        android:fillColor="#1E3A5C"
+        android:strokeColor="#60A5FA"
+        android:strokeWidth="1"
+        android:pathData="M52,78 L63,78 L63,88 L52,88 Z" />
+    <!-- Jendela kanan -->
+    <path
+        android:fillColor="#1E3A5C"
+        android:strokeColor="#60A5FA"
+        android:strokeWidth="1"
+        android:pathData="M97,78 L108,78 L108,88 L97,88 Z" />
+    <!-- Garis atap detail -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFB05A"
+        android:strokeWidth="1"
+        android:pathData="M80,52 L80,72" />
+
+    <!-- ========== BAUT KIRI ATAS (aksen) ========== -->
+    <!-- Kepala baut hex -->
+    <path
+        android:fillColor="#E87722"
+        android:pathData="M27,28 L32,25 L37,28 L37,34 L32,37 L27,34 Z" />
+    <!-- Lubang tengah baut -->
+    <path
+        android:fillColor="#1E1E1E"
+        android:pathData="M32,32 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <!-- Batang baut -->
+    <path
+        android:fillColor="#E87722"
+        android:strokeWidth="0"
+        android:pathData="M30,37 L30,44 L34,44 L34,37 Z" />
+    <!-- Ulir baut (garis-garis) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFB05A"
+        android:strokeWidth="1"
+        android:pathData="M30,39 L34,39 M30,41 L34,41 M30,43 L34,43" />
+
+    <!-- ========== MUR KANAN ATAS (aksen) ========== -->
+    <!-- Mur hex -->
+    <path
+        android:fillColor="#B05A10"
+        android:pathData="M123,25 L129,22 L135,25 L135,33 L129,36 L123,33 Z" />
+    <!-- Lubang mur (lebih besar) -->
+    <path
+        android:fillColor="#1E1E1E"
+        android:pathData="M129,29 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <!-- Garis tepi mur -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#E87722"
+        android:strokeWidth="1"
+        android:pathData="M123,25 L129,22 L135,25 L135,33 L129,36 L123,33 Z" />
+
+    <!-- ========== BAUT KECIL KIRI BAWAH (aksen) ========== -->
+    <path
+        android:fillColor="#B05A10"
+        android:pathData="M26,118 L30,116 L34,118 L34,123 L30,125 L26,123 Z" />
+    <path
+        android:fillColor="#1E1E1E"
+        android:pathData="M30,121 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- ========== MUR KECIL KANAN BAWAH (aksen) ========== -->
+    <path
+        android:fillColor="#E87722"
+        android:pathData="M126,118 L130,116 L134,118 L134,124 L130,126 L126,124 Z" />
+    <path
+        android:fillColor="#1E1E1E"
+        android:pathData="M130,122 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- ========== TITIK DEKORATIF ========== -->
+    <path android:fillColor="#E87722" android:pathData="M80,115 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+    <path android:fillColor="#FFB05A" android:pathData="M72,112 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" />
+    <path android:fillColor="#FFB05A" android:pathData="M88,112 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" />
+
+</vector>
