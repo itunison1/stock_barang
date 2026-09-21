@@ -634,7 +634,13 @@ class SessionActivity : ComponentActivity() {
                     textFoundItemName.text = item.itemName
                     val unitStr = item.unit?.takeIf { it.isNotEmpty() } ?: "PCS"
                     val packStr = if (item.pack.isNullOrEmpty()) "" else " | Pack: ${item.isiPerPack ?: "-"} / ${item.pack}"
-                    textFoundItemDetails.text = "Stok Sistem: ${item.stock} $unitStr$packStr"
+                    var detailsStr = "Stok Sistem: ${item.stock} $unitStr$packStr"
+                    outcome.label?.let { lbl ->
+                        // Scan berasal dari label karung WIP, bukan barcode master.
+                        val sp = lbl.spnum?.takeIf { it > 0 }?.let { " | SP #$it" } ?: ""
+                        detailsStr += "\n🏷 Label Karung ${lbl.serial}$sp"
+                    }
+                    textFoundItemDetails.text = detailsStr
 
                     if (outcome.misplacement != null) {
                         cardMisplacement.visibility = View.VISIBLE

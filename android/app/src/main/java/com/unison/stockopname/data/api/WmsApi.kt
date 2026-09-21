@@ -41,9 +41,14 @@ interface WmsApi {
     @GET("proposal_status.php")
     suspend fun proposalStatus(): Response<ApiEnvelope<List<ProposalStatusDto>>>
 
+    @GET("label_resolve.php")
+    suspend fun labelResolve(@Query("serial") serial: String): Response<ApiEnvelope<LabelResolveDto>>
+
     @GET("users.php")
     suspend fun users(): Response<ApiEnvelope<List<UserDto>>>
 
     @POST("users.php")
     suspend fun createUser(@Body body: UserCreateRequest): Response<ApiEnvelope<UserDto>>
 }
+
+

@@ -52,7 +52,7 @@ class AppContainer(private val context: Context) {
     private val audit by lazy { AuditWriter(db) }
 
     val sessions: SessionService by lazy { SessionService(db, audit) }
-    val scan: ScanService by lazy { ScanService(db) }
+    val scan: ScanService by lazy { ScanService(db, api = { api() }) }
     val counts: CountService by lazy { CountService(db, syncTrigger, audit) }
     val proposals: ProposalService by lazy { ProposalService(db, syncTrigger, audit) }
     val printerClient = PrinterClient()

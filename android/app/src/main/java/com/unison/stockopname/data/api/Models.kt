@@ -100,3 +100,15 @@ data class ProposalStatusDto(
     @SerializedName("rejection_reason") val rejectionReason: String?,
     @SerializedName("approved_at") val approvedAt: String?,
 )
+
+/** Hasil resolusi label karung WIP dari label_resolve.php. */
+data class LabelResolveDto(
+    val type: String? = null,
+    val serial: String,
+    val itcode: String,
+    val status: String? = null,
+    val spnum: Long? = null,
+    @SerializedName("sp_sequence") val spSequence: Int? = null,
+)
+
+
