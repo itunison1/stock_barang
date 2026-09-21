@@ -39,3 +39,8 @@ android/app/build/
 # Local build scripts
 build_final.ps1
 android/build_final.ps1
+
+# Artefak build/insiden lokal
+deploy_ready_140/
+hs_err_pid*.log
+replay_pid*.log

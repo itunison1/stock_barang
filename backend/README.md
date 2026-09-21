@@ -23,3 +23,10 @@ Base URL app: `http://192.168.1.140/stock/api/` (dari LAN kantor jangan pakai IP
 3. Upload APK ke `stock/updates/StockOpname-<versi>.apk`.
 4. `curl -sI http://192.168.1.140/stock/updates/StockOpname-<versi>.apk` harus 200.
 5. **Baru** upload `stock/updates/version.json` yang naik. Bila terbalik, HP ditawari update yang APK-nya belum ada.
+
+## File root stock/ (di luar api/)
+
+File berikut deploy dari ackend/ ke root stock/ di server:
+- login.php, index.php, logout.php, .htaccess, dmin/ -> portal supervisor/admin
+- pi.php (bridge tunggal; di repo juga ada salinan di public/api.php yang ikut vite build)
+- config.php dibuat manual di server dari config.example.php - JANGAN commit
