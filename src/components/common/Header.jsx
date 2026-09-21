@@ -52,10 +52,10 @@ export const Header = ({
           <button
             onClick={onOpenDbConfigModal}
             className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono transition-colors"
-            title="Lihat Konfigurasi Database Server 192.168.1.159 / 1.140"
+            title="Lihat Konfigurasi Database Server 192.168.1.140"
           >
             <span className={`h-2 w-2 rounded-full ${liveDbStatus?.connected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-            <span className="text-[11px]">DB 1.159</span>
+            <span className="text-[11px]">DB 1.140</span>
           </button>
 
           {/* View Mode Pills */}

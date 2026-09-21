@@ -371,25 +371,25 @@ export const SupervisorDashboard = () => {
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-1.5">
                             <Icon name="mapPin" size={13} className="text-amber-400 shrink-0" />
-                            <span className="font-bold text-amber-400">{item.warehouse_code || 'U2 GUDANG2'}</span>
+                            <span className="font-bold text-amber-400">{item.warehouse_code || '—'}</span>
                           </div>
                           <div className="text-[10px] text-slate-400 mt-0.5">
                             Rak: <b className="text-emerald-400">{item.rack_code || 'RAK-01'}</b> •{' '}
-                            {item.shelf_tier || 'Tingkat 1'}
+                            {item.shelf_tier || '—'}
                           </div>
                         </td>
 
                         {/* Packaging */}
                         <td className="py-3 px-4 text-slate-300 text-[11px]">
                           <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] font-bold">
-                            {item.pack || 'KARUNG'}
+                            {item.pack || '—'}
                           </span>
-                          <span className="text-[10px] text-slate-500 ml-1.5">({item.unit || 'PCS'})</span>
+                          <span className="text-[10px] text-slate-500 ml-1.5">({item.unit || ''})</span>
                         </td>
 
                         {/* Stock */}
                         <td className="py-3 px-4 text-center font-bold text-slate-100 text-xs">
-                          {item.status === 'active' ? item.stock_system.toLocaleString() : (item.proposed_qty || 0).toLocaleString()} {item.unit || 'PCS'}
+                          {item.status === 'active' ? item.stock_system.toLocaleString() : (item.proposed_qty || 0).toLocaleString()} {item.unit || ''}
                         </td>
 
                         {/* Status */}
@@ -632,7 +632,7 @@ export const SupervisorDashboard = () => {
                         <div className="text-[10px] text-slate-500">{detail.barcode}</div>
                       </td>
                       <td className="py-3 px-4 text-amber-300 font-bold">
-                        {detail.warehouse_code || 'U2 GUDANG2'}
+                        {detail.warehouse_code || '—'}
                         <span className="text-slate-400 text-[10px] block font-normal">{detail.rack_code || 'RAK-01'}</span>
                       </td>
                       <td className="py-3 px-4 text-center font-bold text-slate-300">
@@ -808,7 +808,7 @@ export const SupervisorDashboard = () => {
                     </span>
                   </div>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Server: <b className="text-slate-200">192.168.1.159:3306</b> • DB: <b className="text-emerald-300">produksi</b> • User: <b className="text-slate-200">usr_android</b> • Total: <b className="text-amber-400 font-bold">176.673 Fasteners</b>
+                    Server: <b className="text-slate-200">{liveDbStatus.host}</b> • DB: <b className="text-emerald-300">{liveDbStatus.database}</b> • User: <b className="text-slate-200">{liveDbStatus.user}</b> • Total: <b className="text-amber-400 font-bold">{liveDbStatus.total_items != null ? liveDbStatus.total_items.toLocaleString() : '—'} Fasteners</b>
                   </p>
                 </div>
               </div>
@@ -916,7 +916,7 @@ export const SupervisorDashboard = () => {
                             {item.name}
                           </td>
                           <td className="py-2.5 px-4 text-[11px] text-slate-400">
-                            <span className="text-slate-200 font-bold">{item.pack || 'DUS'}</span>
+                            <span className="text-slate-200 font-bold">{item.pack || '—'}</span>
                             {item.isi_per_pack > 1 && ` (${item.isi_per_pack.toLocaleString()} ${item.unit})`}
                           </td>
                           <td className="py-2.5 px-4 font-bold text-emerald-400">

@@ -223,7 +223,7 @@ export const ExecutivePresentationModal = ({ isOpen, onClose }) => {
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-slate-300 text-[11px] pt-1">
-              <div>Server IP: <b className="text-slate-100">192.168.1.159:3306</b></div>
+              <div>Server IP: <b className="text-slate-100">192.168.1.140:3306</b></div>
               <div>Database: <b className="text-emerald-300">produksi</b></div>
               <div>User: <b className="text-slate-100">usr_android</b></div>
               <div>Total Data: <b className="text-amber-400 font-bold">176.673 Item Fasteners</b></div>

@@ -393,8 +393,8 @@ export const MobileTerminal = () => {
                             {scanResult.product.name}
                           </h4>
                           <div className="text-[10px] text-slate-400 mt-0.5">
-                            Kemasan: <b className="text-slate-200">{scanResult.product.pack || 'KARUNG'}</b> • Satuan:{' '}
-                            <b className="text-slate-200">{scanResult.product.unit || 'PCS'}</b>
+                            Kemasan: <b className="text-slate-200">{scanResult.product.pack || '—'}</b> • Satuan:{' '}
+                            <b className="text-slate-200">{scanResult.product.unit || '—'}</b>
                           </div>
                         </div>
                       </div>
@@ -409,7 +409,7 @@ export const MobileTerminal = () => {
                           <div>
                             <span className="text-slate-500 block text-[9px]">Gudang:</span>
                             <span className="font-bold text-amber-400">
-                              {scanResult.product.warehouse_code || 'U2 GUDANG2'}
+                              {scanResult.product.warehouse_code || '—'}
                             </span>
                           </div>
                           <div>
@@ -640,14 +640,14 @@ export const MobileTerminal = () => {
                       <div className="p-2 rounded-lg bg-slate-950 border border-slate-850 grid grid-cols-2 gap-1 text-[10px] font-mono">
                         <div>
                           <span className="text-slate-500">Gudang:</span>{' '}
-                          <b className="text-amber-400">{item.warehouse_code || 'U2 GUDANG2'}</b>
+                          <b className="text-amber-400">{item.warehouse_code || '—'}</b>
                         </div>
                         <div>
                           <span className="text-slate-500">Rak:</span>{' '}
                           <b className="text-emerald-400">{item.rack_code || 'RAK-01'}</b>
                         </div>
                         <div className="col-span-2 text-slate-400">
-                          Posisi: {item.shelf_tier || 'Tingkat 1'} • Stok: <b>{item.stock_system} {item.unit || 'PCS'}</b>
+                          Posisi: {item.shelf_tier || '—'} • Stok: <b>{item.stock_system} {item.unit || ''}</b>
                         </div>
                       </div>
 

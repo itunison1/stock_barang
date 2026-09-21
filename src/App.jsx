@@ -85,7 +85,7 @@ function AppContent() {
               onClick={() => setIsDbConfigModalOpen(true)}
               className="text-emerald-400 hover:text-emerald-300 font-mono text-[11px] underline"
             >
-              DB Produksi 1.159 →
+              DB 1.140 →
             </button>
             <button
               onClick={() => setIsBlueprintModalOpen(true)}

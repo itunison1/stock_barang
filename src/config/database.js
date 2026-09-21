@@ -15,8 +15,7 @@ export const UNISON_DB_CONFIG = {
 
   // Kredensial Database MySQL Server Nyata (Sesuai di MEviewer config.php)
   server: {
-    host: '192.168.1.159', // Host aktif database produksi
-    secondaryHost: '192.168.1.140', // Server MEview
+    host: '192.168.1.140', // Host DB untuk testing (semua layer)
     database: 'produksi',
     username: 'usr_android',
     password: 'zUNSprod', // Password database produksi Unison

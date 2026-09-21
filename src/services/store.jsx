@@ -22,14 +22,14 @@ export const WmsProvider = ({ children }) => {
   const [stockDetails, setStockDetails] = useState(INITIAL_STOCK_DETAILS);
   const [auditLogs, setAuditLogs] = useState(INITIAL_AUDIT_LOGS);
 
-  // Live MySQL Database Bridge (192.168.1.159 database 'produksi' via usr_android)
+  // Live MySQL Database Bridge (192.168.1.140 via usr_android)
   const [liveDbStatus, setLiveDbStatus] = useState({
     connected: false,
-    host: '192.168.1.159:3306',
+    host: '192.168.1.140:3306',
     database: 'produksi',
     user: 'usr_android',
-    total_items: 176673,
-    total_users: 14,
+    total_items: null,
+    total_users: null,
     checked: false,
   });
 

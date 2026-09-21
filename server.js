@@ -1,6 +1,6 @@
 /**
  * Backend API Bridge — PT Unison Industrial Indonesia
- * Menghubungkan aplikasi web ke Database MySQL `produksi` di 192.168.1.159 / 192.168.1.140
+ * Menghubungkan aplikasi web ke Database MySQL `produksi` di 192.168.1.140
  * Kredensial: user 'usr_android' / pass 'zUNSprod'
  */
 
@@ -16,10 +16,10 @@ app.use(express.json());
 
 // Database Connection Pool
 const pool = mysql.createPool({
-  host: '192.168.1.159',
+  host: process.env.WMS_DB_HOST || '192.168.1.140',
   user: 'usr_android',
   password: 'zUNSprod',
-  database: 'produksi',
+  database: process.env.WMS_DB_NAME || 'produksi',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -34,7 +34,7 @@ app.get('/api/status', async (req, res) => {
     res.json({
       status: 'ONLINE',
       connected: true,
-      host: '192.168.1.159:3306',
+      host: `${process.env.WMS_DB_HOST || '192.168.1.140'}:3306`,
       database: 'produksi',
       user: 'usr_android',
       total_items: countResult[0].total_items,
@@ -83,10 +83,10 @@ app.get('/api/items', async (req, res) => {
       name: r.ITNAME,
       category: r.ITNAME.includes('MUR') ? 'Mur / Nut' : (r.ITNAME.includes('BAUT') ? 'Baut / Bolt' : 'Fasteners'),
       stock_system: parseFloat(r.STOCK) || 0,
-      unit: r.UNIT || 'PCS',
-      pack: r.PACK || 'DUS',
-      isi_per_pack: parseFloat(r.ISI) || 1,
-      warehouse_code: r.WCODE || 'U2 GUDANG2',
+      unit: r.UNIT || null,
+      pack: r.PACK || null,
+      isi_per_pack: (r.ISI !== null && r.ISI !== '' ? parseFloat(r.ISI) : null),
+      warehouse_code: r.WCODE || null,
       rack_code: null,
       shelf_tier: null,
       status: 'active',
@@ -130,10 +130,10 @@ app.get('/api/item/:code', async (req, res) => {
         name: r.ITNAME,
         category: r.ITNAME.includes('MUR') ? 'Mur / Nut' : (r.ITNAME.includes('BAUT') ? 'Baut / Bolt' : 'Fasteners'),
         stock_system: parseFloat(r.STOCK) || 0,
-        unit: r.UNIT || 'PCS',
-        pack: r.PACK || 'DUS',
-        isi_per_pack: parseFloat(r.ISI) || 1,
-        warehouse_code: r.WCODE || 'U2 GUDANG2',
+        unit: r.UNIT || null,
+        pack: r.PACK || null,
+        isi_per_pack: (r.ISI !== null && r.ISI !== '' ? parseFloat(r.ISI) : null),
+        warehouse_code: r.WCODE || null,
         rack_code: null,
         shelf_tier: null,
         status: 'active',
