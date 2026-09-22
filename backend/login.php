@@ -81,18 +81,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-he
 #login-page::after{width:300px;height:300px;bottom:-100px;right:-60px;background:rgba(34,197,94,.15);animation:orbFloat 6s ease-in-out infinite reverse}
 @keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
 .login-visual{position:relative;z-index:1;flex:1 1 480px;max-width:480px;height:520px;display:flex;align-items:center;justify-content:center}
-.bolt-scene{position:relative;width:100%;height:100%}
-.bolt{position:absolute;color:var(--accent-2);filter:drop-shadow(0 12px 30px rgba(14,165,233,.35));animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite}
-.bolt-lg{width:230px;height:230px;top:50%;left:50%;margin:-115px 0 0 -115px;opacity:.95;animation-name:boltSpin;animation-duration:16s}
-.bolt-md{width:120px;height:120px;top:10%;right:6%;opacity:.55;color:var(--accent);animation-name:boltSpinRev,boltFloat;animation-duration:11s,5s}
-.bolt-sm{width:70px;height:70px;bottom:10%;left:2%;opacity:.4;color:#0ea5e9;animation-name:boltSpin,boltFloat;animation-duration:7.5s,4s;animation-delay:0s,.8s}
-.bolt-xs{width:44px;height:44px;bottom:22%;right:16%;opacity:.3;color:#67e8f9;animation-name:boltSpinRev,boltFloat;animation-duration:5.5s,3.4s;animation-delay:0s,1.4s}
-@keyframes boltSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes boltSpinRev{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
-@keyframes boltFloat{0%,100%{margin-top:0}50%{margin-top:-14px}}
-.bolt-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px dashed rgba(14,165,233,.2);pointer-events:none}
-.bolt-ring.r1{width:340px;height:340px;margin:-170px 0 0 -170px;animation:boltSpin 40s linear infinite}
-.bolt-ring.r2{width:420px;height:420px;margin:-210px 0 0 -210px;animation:boltSpinRev 55s linear infinite}
+.hero-scene{position:relative;width:100%;height:100%}
+.hero{position:absolute;filter:drop-shadow(0 12px 30px rgba(232,119,34,.35))}
+.hero-lg{width:230px;height:230px;top:50%;left:50%;margin:-115px 0 0 -115px;opacity:.95;animation:heroFloat 5s ease-in-out infinite}
+.hero-md{width:120px;height:120px;top:10%;right:6%;opacity:.55;animation:heroSpinRev 11s linear infinite}
+.hero-sm{width:70px;height:70px;bottom:10%;left:2%;opacity:.4;animation:heroSpin 7.5s linear infinite}
+.hero-xs{width:44px;height:44px;bottom:22%;right:16%;opacity:.3;animation:heroSpinRev 5.5s linear infinite}
+@keyframes heroSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes heroSpinRev{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
+@keyframes heroFloat{0%,100%{margin-top:0}50%{margin-top:-14px}}
+.hero-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px dashed rgba(232,119,34,.25);pointer-events:none}
+.hero-ring.r1{width:340px;height:340px;margin:-170px 0 0 -170px;animation:heroSpin 40s linear infinite}
+.hero-ring.r2{width:420px;height:420px;margin:-210px 0 0 -210px;animation:heroSpinRev 55s linear infinite}
 .login-visual-text{position:absolute;left:0;right:0;bottom:0;text-align:center;z-index:2}
 .lv-title{font-family:var(--font-display);font-size:23px;font-weight:700;letter-spacing:.2px;margin-bottom:10px}
 .lv-title span{color:var(--accent-2)}
@@ -132,13 +132,42 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-he
 <body>
 <div id="login-page">
   <div class="login-visual">
-    <div class="bolt-scene">
-      <svg class="bolt bolt-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      <svg class="bolt bolt-md" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      <svg class="bolt bolt-sm" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      <svg class="bolt bolt-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      <div class="bolt-ring r1"></div>
-      <div class="bolt-ring r2"></div>
+    <div class="hero-scene">
+      <!-- Hero gudang + baut-mur: identik dengan ic_splash_hero.xml Android (fb4d15a) -->
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+        <symbol id="hero-gudang" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="72" fill="#1AE87722"/>
+          <circle cx="80" cy="80" r="58" fill="#2A2A2A"/>
+          <circle cx="80" cy="80" r="54" fill="none" stroke="#E87722" stroke-width="1.5"/>
+          <path d="M40,72 L80,50 L120,72 Z" fill="#E87722"/>
+          <path d="M46,72 L46,105 L114,105 L114,72 Z" fill="#3A3A3A" stroke="#E87722" stroke-width="1.5"/>
+          <path d="M68,105 L68,85 Q68,82 71,82 L89,82 Q92,82 92,85 L92,105 Z" fill="#1E1E1E"/>
+          <path d="M80,82 L80,105" fill="none" stroke="#E87722" stroke-width="1"/>
+          <path d="M52,78 L63,78 L63,88 L52,88 Z" fill="#1E3A5C" stroke="#60A5FA" stroke-width="1"/>
+          <path d="M97,78 L108,78 L108,88 L97,88 Z" fill="#1E3A5C" stroke="#60A5FA" stroke-width="1"/>
+          <path d="M80,52 L80,72" fill="none" stroke="#FFB05A" stroke-width="1"/>
+          <path d="M80,115 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" fill="#E87722"/>
+          <path d="M72,112 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" fill="#FFB05A"/>
+          <path d="M88,112 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" fill="#FFB05A"/>
+        </symbol>
+        <symbol id="hero-baut" viewBox="20 19 24 26">
+          <path d="M27,28 L32,25 L37,28 L37,34 L32,37 L27,34 Z" fill="#E87722"/>
+          <path d="M32,32 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" fill="#1E1E1E"/>
+          <path d="M30,37 L30,44 L34,44 L34,37 Z" fill="#E87722"/>
+          <path d="M30,39 L34,39 M30,41 L34,41 M30,43 L34,43" fill="none" stroke="#FFB05A" stroke-width="1"/>
+        </symbol>
+        <symbol id="hero-mur" viewBox="117 16 24 24">
+          <path d="M123,25 L129,22 L135,25 L135,33 L129,36 L123,33 Z" fill="#B05A10"/>
+          <path d="M129,29 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" fill="#1E1E1E"/>
+          <path d="M123,25 L129,22 L135,25 L135,33 L129,36 L123,33 Z" fill="none" stroke="#E87722" stroke-width="1"/>
+        </symbol>
+      </defs></svg>
+      <svg class="hero hero-lg"><use href="#hero-gudang"/></svg>
+      <svg class="hero hero-md"><use href="#hero-mur"/></svg>
+      <svg class="hero hero-sm"><use href="#hero-baut"/></svg>
+      <svg class="hero hero-xs"><use href="#hero-mur"/></svg>
+      <div class="hero-ring r1"></div>
+      <div class="hero-ring r2"></div>
     </div>
     <div class="login-visual-text">
       <div class="lv-title">WMS <span>Stock Opname</span></div>
