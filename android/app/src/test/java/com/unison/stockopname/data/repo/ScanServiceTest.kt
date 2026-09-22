@@ -180,6 +180,17 @@ class ScanServiceTest {
         assertEquals("9CM36I810J", api.requested)
     }
 
+    @Test fun lotGudangWithHyphenResolves() = runBlocking {
+        // Lot dengan tanda hubung (contoh nyata: 8DB39FA-GJ, 1.890 lot format ini)
+        db.items().upsertAll(listOf(testItem("NM8H0120K", warehouse = "U2 GUDANG2")))
+        val api = FakeLabelApi(FakeLabelMode.OK)
+        val svc = ScanService(db, api = { api })
+        val r = svc.lookup("8DB39FA-GJ", "U2 GUDANG2")!!
+        val found = r.outcome as ScanOutcome.Found
+        assertEquals("NM8H0120K", found.item.itemCode)
+        assertEquals("8DB39FA-GJ", api.requested)
+    }
+
     @Test fun kSerialWithoutApiStaysOfflineNotFound() = runBlocking {
         // Tanpa api (konstruktor lama), serial K tetap NotFound offline.
         assertEquals(ScanOutcome.NotFound("K00004AV"), service.lookup("K00004AV", "U2 GUDANG2")!!.outcome)

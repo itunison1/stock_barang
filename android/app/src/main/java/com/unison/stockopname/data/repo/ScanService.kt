@@ -31,8 +31,8 @@ data class ScanResult(val parsed: ParsedBarcode, val outcome: ScanOutcome)
 /** Label karung WIP: K + 7 karakter alfanumerik, contoh K00004AV (data .159: 100% cocok). */
 private val K_SERIAL = Regex("^K[A-Z0-9]{7}$")
 
-/** Lot Gudang Apps (FoxPro): 8-12 karakter alfanumerik, contoh 9CM36I810J. */
-private val LOT_GUDANG = Regex("^[A-Z0-9]{8,12}$")
+/** Lot Gudang Apps (FoxPro): 7-14 karakter alfanumerik/hubung, contoh 9CM36I810J, 8DB39FA-GJ. */
+private val LOT_GUDANG = Regex("^[A-Z0-9-]{7,14}$")
 
 /**
  * Pencarian offline-first ke Room; bila tidak ketemu dan scan berupa serial label

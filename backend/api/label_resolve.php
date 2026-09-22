@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') wms_json_error('Gunakan GET.', 405);
 $serial = isset($_GET['serial']) ? strtoupper(trim((string)$_GET['serial'])) : '';
 if ($serial === '') wms_json_error('Parameter serial wajib diisi. Contoh: ?serial=K00004AV', 400);
 $isKSerial = preg_match('/^K[A-Z0-9]{7}$/', $serial) === 1;
-$isLot = preg_match('/^[A-Z0-9]{8,12}$/', $serial) === 1;
+$isLot = preg_match('/^[A-Z0-9-]{7,14}$/', $serial) === 1;
 if (!$isKSerial && !$isLot) {
-    wms_json_error('Format tidak valid. Label karung: K + 7 karakter (K00004AV). Lot Gudang Apps: 8-12 karakter alfanumerik (contoh 9CM36I810J).', 400);
+    wms_json_error('Format tidak valid. Label karung: K + 7 karakter (K00004AV). Lot Gudang Apps: 7-14 karakter alfanumerik/hubung (contoh 9CM36I810J, 8DB39FA-GJ).', 400);
 }
 
 if ($isKSerial) {
