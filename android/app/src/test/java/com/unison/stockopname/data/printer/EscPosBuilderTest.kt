@@ -47,11 +47,52 @@ class EscPosBuilderTest {
 
     @Test fun containsItemFieldsAndCompanyHeader() {
         val t = text(EscPosBuilder.label(label(), PaperWidth.MM80))
-        assertTrue(t.contains("PT UNISON INDUSTRIAL INDONESIA"))
+        assertTrue(t.contains("PT UNISON"))
+        assertTrue(t.contains("INDUSTRIAL INDONESIA"))
+        assertTrue(t.contains("FASTENER - MUR & BAUT"))
         assertTrue(t.contains("BAUT 3/8 x 50 CEMET"))
         assertTrue(t.contains("U2 GUDANG3"))
         assertTrue(t.contains("Qty     : 500"))
         assertTrue(t.contains("Operator: Kirana"))
+    }
+
+    @Test fun headerStartsWithIconRaster() {
+        val b = EscPosBuilder.label(label(), PaperWidth.MM80)
+        // GS v 0 (0x1D 0x76 0x30) m=0, xL=8 (64px/8), yL=24 — icon gudang+baut
+        val i = indexOf(b, 0x1D, 0x76, 0x30, 0x00, 0x08, 0x00, 24, 0)
+        assertTrue("icon raster header tidak ditemukan", i >= 0)
+        // posisi raster tepat setelah init + center
+        assertEquals(0x1B.toByte(), b[0]); assertEquals(0x40.toByte(), b[1])
+    }
+
+    @Test fun qrModel2CommandPresent() {
+        val b = EscPosBuilder.label(label(barcode = "ABC123"), PaperWidth.MM80)
+        // GS ( k : model 2
+        assertTrue(indexOf(b, 0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00) >= 0)
+        // ukuran modul 6
+        assertTrue(indexOf(b, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x06) >= 0)
+        // koreksi M
+        assertTrue(indexOf(b, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, 0x31) >= 0)
+        // simpan + cetak (data "ABC123" = 6 byte → pL=0x09, pH=0x00)
+        assertTrue(indexOf(b, 0x1D, 0x28, 0x6B, 0x09, 0x00, 0x31, 0x50, 0x30) >= 0)
+        assertTrue(indexOf(b, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30) >= 0)
+        // QR muncul SEBELUM Code128 (2D di atas, 1D di bawah)
+        val qrPos = indexOf(b, 0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00)
+        val codePos = indexOf(b, 0x1D, 0x6B, 0x49)
+        assertTrue("QR harus dicetak sebelum Code128", qrPos in 0 until codePos)
+    }
+
+    @Test fun skuAndLotRenderWhenPresent() {
+        val d = label().copy(sku = "U-THX-3850", lotNo = "LOT-2026-09")
+        val t = text(EscPosBuilder.label(d, PaperWidth.MM80))
+        assertTrue(t.contains("SKU     : U-THX-3850"))
+        assertTrue(t.contains("Lot/Batch: LOT-2026-09"))
+    }
+
+    @Test fun skuAndLotOmittedWhenBlank() {
+        val t = text(EscPosBuilder.label(label(), PaperWidth.MM80))
+        assertFalse(t.contains("SKU     :"))
+        assertFalse(t.contains("Lot/Batch:"))
     }
 
     @Test fun barcodeUsesCode128SetBWithLength() {

@@ -178,6 +178,8 @@ class SessionActivity : ComponentActivity() {
     private lateinit var inputPrintBarcode: EditText
     private lateinit var inputPrintName: EditText
     private lateinit var inputPrintQty: EditText
+    private lateinit var inputPrintSku: EditText
+    private lateinit var inputPrintLot: EditText
     private lateinit var radioGroupLabelType: RadioGroup
     private lateinit var radioPrintOfficial: RadioButton
     private lateinit var radioPrintPending: RadioButton
@@ -336,6 +338,8 @@ class SessionActivity : ComponentActivity() {
         inputPrintBarcode = findViewById(R.id.inputPrintBarcode)
         inputPrintName = findViewById(R.id.inputPrintName)
         inputPrintQty = findViewById(R.id.inputPrintQty)
+        inputPrintSku = findViewById(R.id.inputPrintSku)
+        inputPrintLot = findViewById(R.id.inputPrintLot)
         radioGroupLabelType = findViewById(R.id.radioGroupLabelType)
         radioPrintOfficial = findViewById(R.id.radioPrintOfficial)
         radioPrintPending = findViewById(R.id.radioPrintPending)
@@ -990,6 +994,8 @@ class SessionActivity : ComponentActivity() {
             operatorName = operator,
             printedAt = timeStr,
             pending = isPending,
+            sku = inputPrintSku.text.toString().trim().ifEmpty { null },
+            lotNo = inputPrintLot.text.toString().trim().ifEmpty { null },
         )
 
         val bytes = EscPosBuilder.label(labelData, PaperWidth.MM80)
