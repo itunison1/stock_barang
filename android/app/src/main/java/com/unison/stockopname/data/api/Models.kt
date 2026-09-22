@@ -101,7 +101,9 @@ data class ProposalStatusDto(
     @SerializedName("approved_at") val approvedAt: String?,
 )
 
-/** Hasil resolusi label karung WIP dari label_resolve.php. */
+/** Hasil resolusi label karung WIP dari label_resolve.php.
+ *  type "label_karung": serial/itcode/status/spnum/spSequence.
+ *  type "lot_gudang": lot Gudang Apps (FoxPro), itemName/isi/isidos/pack/unit terisi. */
 data class LabelResolveDto(
     val type: String? = null,
     val serial: String,
@@ -109,6 +111,13 @@ data class LabelResolveDto(
     val status: String? = null,
     val spnum: Long? = null,
     @SerializedName("sp_sequence") val spSequence: Int? = null,
+    val item_name: String? = null,
+    val isi: Int? = null,
+    val isidos: Int? = null,
+    val pack: String? = null,
+    val unit: String? = null,
+    val last_printed: String? = null,
+    val qty: Int? = null,
 )
 
 

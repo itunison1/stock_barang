@@ -160,6 +160,26 @@ class ScanServiceTest {
         assertEquals(ScanOutcome.NotFound("K00004AV"), svc.lookup("K00004AV", "U2 GUDANG2")!!.outcome)
     }
 
+    // ===== Fallback lot Gudang Apps (8-12 alnum, contoh 9CM36I810J) =====
+
+    @Test fun lotGudangResolvesToCatalogItemAndCarriesLabelInfo() = runBlocking {
+        db.items().upsertAll(listOf(testItem("NM8H0120K", warehouse = "U2 GUDANG2")))
+        val api = FakeLabelApi(FakeLabelMode.OK)
+        val svc = ScanService(db, api = { api })
+        val r = svc.lookup("9CM36I810J", "U2 GUDANG2")!!
+        val found = r.outcome as ScanOutcome.Found
+        assertEquals("NM8H0120K", found.item.itemCode)
+        assertEquals("9CM36I810J", found.label!!.serial)
+        assertEquals("9CM36I810J", api.requested)
+    }
+
+    @Test fun lotGudangUnknownFallsBackToModeA() = runBlocking {
+        val api = FakeLabelApi(FakeLabelMode.NOT_FOUND)
+        val svc = ScanService(db, api = { api })
+        assertEquals(ScanOutcome.NotFound("9CM36I810J"), svc.lookup("9CM36I810J", "U2 GUDANG2")!!.outcome)
+        assertEquals("9CM36I810J", api.requested)
+    }
+
     @Test fun kSerialWithoutApiStaysOfflineNotFound() = runBlocking {
         // Tanpa api (konstruktor lama), serial K tetap NotFound offline.
         assertEquals(ScanOutcome.NotFound("K00004AV"), service.lookup("K00004AV", "U2 GUDANG2")!!.outcome)
