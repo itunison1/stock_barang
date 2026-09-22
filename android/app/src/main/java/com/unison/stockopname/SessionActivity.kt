@@ -636,9 +636,20 @@ class SessionActivity : ComponentActivity() {
                     val packStr = if (item.pack.isNullOrEmpty()) "" else " | Pack: ${item.isiPerPack ?: "-"} / ${item.pack}"
                     var detailsStr = "Stok Sistem: ${item.stock} $unitStr$packStr"
                     outcome.label?.let { lbl ->
-                        // Scan berasal dari label karung WIP, bukan barcode master.
-                        val sp = lbl.spnum?.takeIf { it > 0 }?.let { " | SP #$it" } ?: ""
-                        detailsStr += "\n🏷 Label Karung ${lbl.serial}$sp"
+                        // Scan berasal dari label karung WIP atau lot Gudang Apps, bukan barcode master.
+                        if (lbl.type == "lot_gudang") {
+                            detailsStr += "\n📦 Karton Gudang Apps ${lbl.serial}"
+                            lbl.isi?.let { isi ->
+                                val dosStr = lbl.isidos?.takeIf { it > 0 }?.let { " / dos $it" } ?: ""
+                                detailsStr += "\n• Isi/karton: $isi"
+                                if (!lbl.pack.isNullOrEmpty()) detailsStr += " $dosStr ${lbl.pack}"
+                            }
+                            lbl.qty?.takeIf { it > 0 }?.let { detailsStr += "\n• Qty label: $it" }
+                            lbl.last_printed?.takeIf { it.isNotEmpty() }?.let { detailsStr += "\n• Dicetak: $it" }
+                        } else {
+                            val sp = lbl.spnum?.takeIf { it > 0 }?.let { " | SP #$it" } ?: ""
+                            detailsStr += "\n🏷 Label Karung ${lbl.serial}$sp"
+                        }
                     }
                     textFoundItemDetails.text = detailsStr
 
