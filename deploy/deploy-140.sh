@@ -61,7 +61,7 @@ if [[ " $* " == *" --apk "* ]]; then
   ok "debug.keystore = milik .119 (7bd5d7cc...)"
 
   echo "[i] gradlew assembleRelease..."
-  (cd android && ./gradlew :app:testDebugUnitTest :app:assembleRelease --no-daemon | tail -3)
+  (cd android && sh gradlew :app:testDebugUnitTest :app:assembleRelease --no-daemon | tail -3)
   APK="android/app/build/outputs/apk/release/app-release.apk"
   [ -f "$APK" ] || fail "APK fisik tidak ada setelah build."
   CERT_APK=$("$SDK/build-tools/35.0.0/apksigner" verify --print-certs "$APK" \
