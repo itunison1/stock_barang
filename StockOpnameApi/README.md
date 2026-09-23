@@ -8,10 +8,11 @@ aturan session/scan idempoten, migration dua tabel, dan fake repository test-onl
 - Tidak terhubung atau menulis ke MySQL produksi.
 - Tidak ada allocator serial, print, legacy-label confirm, stock mutation, atau deploy.
 
-Alasannya: schema aktual `wip_handling_unit`, `wip_handling_event`,
-`wip_current_stock`, dan allocator serial belum dapat diaudit read-only dari host ini:
-akun aplikasi ditolak oleh MySQL pada sumber `192.168.1.108`. Menebak nama/semantik
-kolom dapat mengubah stock atau memutus ledger.
+Alasannya: audit read-only target Android di `192.168.1.140`, database
+`stockopname_test`, membuktikan hanya `wip_label` dan `wip_lokasi_m` yang tersedia.
+`wip_handling_unit`, `wip_handling_event`, `wip_current_stock`, dan
+`wip_label_print_job` belum ada di staging. Menebak nama/semantik kolom atau membuat
+ledger pengganti dapat mengubah stock atau memutus audit.
 
 ## Yang siap
 
