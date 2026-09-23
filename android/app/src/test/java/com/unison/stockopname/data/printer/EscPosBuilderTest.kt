@@ -48,21 +48,23 @@ class EscPosBuilderTest {
     @Test fun containsItemFieldsAndCompanyHeader() {
         val t = text(EscPosBuilder.label(label(), PaperWidth.MM80))
         assertTrue(t.contains("PT UNISON"))
-        assertTrue(t.contains("INDUSTRIAL INDONESIA"))
-        assertTrue(t.contains("FASTENER - MUR & BAUT"))
+        // REVISI KEMPAKAN 2026-09-23: tagline tidak dicetak lagi
+        assertFalse(t.contains("INDUSTRIAL INDONESIA"))
+        assertFalse(t.contains("FASTENER - MUR & BAUT"))
         assertTrue(t.contains("BAUT 3/8 x 50 CEMET"))
         assertTrue(t.contains("U2 GUDANG3"))
         assertTrue(t.contains("Qty     : 500"))
         assertTrue(t.contains("Operator: Kirana"))
     }
 
-    @Test fun headerStartsWithIconRaster() {
+    @Test fun compactLabelHasNoRasterIconAndShortFeed() {
         val b = EscPosBuilder.label(label(), PaperWidth.MM80)
-        // GS v 0 (0x1D 0x76 0x30) m=0, xL=8 (64px/8), yL=24 — icon gudang+baut
-        val i = indexOf(b, 0x1D, 0x76, 0x30, 0x00, 0x08, 0x00, 24, 0)
-        assertTrue("icon raster header tidak ditemukan", i >= 0)
-        // posisi raster tepat setelah init + center
-        assertEquals(0x1B.toByte(), b[0]); assertEquals(0x40.toByte(), b[1])
+        // Tidak ada perintah raster GS v 0 lagi (icon gudang+baut dihapus)
+        assertEquals(-1, indexOf(b, 0x1D, 0x76, 0x30))
+        // Feed akhir 2 baris (0x1B 0x64 0x02), bukan 4 - hemat kertas
+        val feed = indexOf(b, 0x1B, 0x64)
+        assertTrue("feed akhir tidak ditemukan", feed >= 0)
+        assertEquals(2, b[feed + 2].toInt())
     }
 
     @Test fun qrModel2CommandPresent() {
